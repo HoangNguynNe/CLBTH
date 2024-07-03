@@ -1,4 +1,4 @@
-LQDOJ: Le Quy Don Online Judge
+CLBTHOJ: CLB Tin Học Online Judge - Khoa Tin Học - UED
 ===
 
 [![](https://github.com/DMOJ/online-judge/workflows/build/badge.svg)](https://lqdoj.edu.vn/)
@@ -8,23 +8,11 @@ LQDOJ: Le Quy Don Online Judge
 
 ## Overview
 
-Homepage: [https://lqdoj.edu.vn](https://lqdoj.edu.vn)
+Homepage: [https://clbthoj.clbtinhocued.me](https://clbthoj.clbtinhocued.me)
 
 Based on [DMOJ](https://dmoj.ca/).
 
-Supported languages: 
-
-- Assembly (x64)
-- AWK
-- C
-- C++03 / C++11 / C++14 / C++17 / C++20
-- Java 11
-- Pascal
-- Perl
-- Python 2 / Python 3
-- PyPy 2 / PyPy 3
-
-Support plagiarism detection via [Stanford MOSS](https://theory.stanford.edu/~aiken/moss/).
+Clone to [LQDOJ](https://lqdoj.edu.vn)
 
 ## Installation
 
