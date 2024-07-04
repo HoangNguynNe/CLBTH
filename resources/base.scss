@@ -356,8 +356,6 @@ hr {
 footer {
     text-align: center;
     height: 40px;
-    border-top: 1px solid $border_gray;
-    background: #ededed;
 }
 
 html {
@@ -496,7 +494,7 @@ noscript #noscript {
 }
 
 #page-container {
-    min-height: 100%;
+    min-height: 93%;
     position: relative;
     margin: 0 auto;
     border-right: 1px solid $border_gray;
@@ -631,7 +629,7 @@ noscript #noscript {
 }
 
 #chat-icon {
-    color: darkgreen;
+    color: #026599;
 }
 
 #chat-icon:hover {

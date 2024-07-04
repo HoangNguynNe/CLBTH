@@ -25,6 +25,7 @@
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
     <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap" rel="stylesheet">
     <meta name="msapplication-TileColor" content="#FFBB33">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     {# Chrome 39 for Android colour #}
@@ -122,12 +123,12 @@
             <li>
               <a href="{{ node.path }}" id="fa-icon-links" class="normal-text nav-{{ node.key }}{% if node.key in nav_tab %} active{% endif %}">
                 <span class="nav-fa-icon{{'-active' if node.key in nav_tab else''}}">
-                  {% if node.key == "problems" %} <i class="fa fa-puzzle-piece"></i> {% endif %}
-                  {% if node.key == "submit" %} <i class="fa fa-code"></i> {% endif %}
-                  {% if node.key == "user" %} <i class="fa fa-user"></i> {% endif %}
-                  {% if node.key == "contest" %} <i class="fa fa-ranking-star"></i> {% endif %}
-                  {% if node.key == "group" %} <i class="fa fa-building-columns"></i> {% endif %}
-                  {% if node.key == "about" %} <i class="fa fa-at"></i> {% endif %}
+                  {% if node.key == "problems" %} <i class="fa fa-puzzle-piece" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "submit" %} <i class="fa fa-code" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "user" %} <i class="fa fa-user" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "contest" %} <i class="fa fa-ranking-star" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "group" %} <i class="fa fa-building-columns" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "about" %} <i class="fa fa-at" style="color:#026599"></i> {% endif %}
                 </span>
                 {{ user_trans(node.label) }}
                 {% if not node.is_leaf_node %}
@@ -230,7 +231,7 @@
           {% else %}
             <span class="anon">
               <a href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}"><h4 class="nav-right-text">{{ _('Log in') }}</h4></a>
-              <a href="{{ url('registration_register') }}"><h4 class="nav-right-text">{{ _('Sign up') }}</h4></a>
+              <!-- Sign up-->
             </span>
           {% endif %}
         </div>
@@ -393,24 +394,244 @@
       {% include "katex-load.html" %}
       {% block footer %}
         <footer>
-          <span id="footer-content">
-            <br>
-            <a class="background-footer" target="_blank" href="https://dmoj.ca">proudly powered by <b>DMOJ</b></a>|<a target="_blank" href="https://github.com/LQDJudge/online-judge"> developed by LQDJudge team</a>
-            {% if i18n_config.footer %}
-              {{ i18n_config.footer|safe }} |
-            {% endif %}
-            <form action="{{ url('set_language') }}" method="post" style="display: inline" id="form-lang">
-              {% csrf_token %}
-              <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-              <select name="language" onchange="form.submit()" style="height: 1.5em">
-                {% for language in language_info_list(LANGUAGES) %}
-                  <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-                    {{ language.name_local }} ({{ language.code }})
-                  </option>
-                {% endfor %}
-              </select>
-            </form>
-          </span>
+          <style>
+
+            #lightings
+            {
+              position: absolute;
+              width: 100%;
+            }
+    
+    
+            #one
+            {
+              /*animation*/
+              -webkit-animation: one 5s ease-in-out infinite alternate;
+              -moz-animation: one 5s ease-in-out infinite alternate;
+              -ms-animation: one 5s ease-in-out infinite alternate;
+              -o-animation: one 5s ease-in-out infinite alternate;
+              animation: one 5s ease-in-out infinite alternate;
+            }
+            @-webkit-keyframes 
+            one { from {
+            -webkit-box-shadow: 0 0 250px 20px #473C78;
+            }
+    
+            to { -webkit-box-shadow: 0 0 100px 15px #F72A3B; }
+            }
+            @-moz-keyframes 
+            one { from {
+            -moz-box-shadow: 0 0 250px 20px #473C78;
+            }
+    
+            to { -moz-box-shadow: 0 0 100px 15px #F72A3B; }
+            }
+            @-o-keyframes 
+            one { from {
+            -o-box-shadow: 0 0 250px 20px #473C78;
+            }
+    
+            to { -o-box-shadow: 0 0 100px 15px #F72A3B; }
+            }
+    
+            @keyframes 
+            one { from {
+            box-shadow: 0 0 250px 20px #473C78;
+            }
+    
+            to {box-shadow: 0 0 100px 15px #F72A3B; }
+            }
+    
+            #two
+            {
+              width: 90%;
+              /*animation*/
+              -webkit-animation: two 4s ease-in-out infinite alternate;
+              -moz-animation: two 4s ease-in-out infinite alternate;
+              -ms-animation: two 4s ease-in-out infinite alternate;
+              -o-animation: two 4s ease-in-out infinite alternate;
+              animation: two 4s ease-in-out infinite alternate;
+            }
+            @-webkit-keyframes 
+            two { from {
+            -webkit-box-shadow: 0 0 250px 20px #18C499;
+            }
+    
+            to { -webkit-box-shadow: 0 0 100px 15px #D8F05E; }
+            }
+            @-moz-keyframes 
+            two { from {
+            -moz-box-shadow: 0 0 250px 20px #18C499;
+            }
+    
+            to { -moz-box-shadow: 0 0 100px 15px #D8F05E; }
+            }
+            @-o-keyframes 
+            two { from {
+            -o-box-shadow: 0 0 250px 20px #18C499;
+            }
+    
+            to { -o-box-shadow: 0 0 100px 15px #D8F05E; }
+            }
+    
+            @keyframes 
+            two { from {
+            box-shadow: 0 0 250px 20px #18C499;
+            }
+    
+            to { box-shadow: 0 0 100px 15px #D8F05E; }
+            }
+    
+            #three
+            {
+              width: 80%;
+              /*animation*/
+              -webkit-animation: three 3s ease-in-out infinite alternate;
+              -moz-animation: three 3s ease-in-out infinite alternate;
+              -ms-animation: three 3s ease-in-out infinite alternate;
+              -o-animation: three 3s ease-in-out infinite alternate;
+              animation: three 3s ease-in-out infinite alternate;
+            }
+            @-webkit-keyframes 
+            three { from {
+            -webkit-box-shadow: 0 0 250px 20px #FFDD00;
+            }
+    
+            to { -webkit-box-shadow: 0 0 100px 15px #3E33FF; }
+            }
+            @-moz-keyframes 
+            three { from {
+            -moz-box-shadow: 0 0 250px 20px #FFDD00;
+            }
+    
+            to { -moz-box-shadow: 0 0 100px 15px #3E33FF }
+            }
+            @-o-keyframes 
+            three { from {
+            -o-box-shadow: 0 0 250px 20px #FFDD00;
+            }
+    
+            to { -o-box-shadow: 0 0 100px 15px #3E33FF }
+            }
+    
+            @keyframes 
+            three { from {
+            box-shadow: 0 0 250px 20px #FFDD00;
+            }
+    
+            to { box-shadow: 0 0 100px 15px #3E33FF }
+            }
+    
+            #four
+            {
+              width: 70%;
+              /*animation*/
+              -webkit-animation: four 2s ease-in-out infinite alternate;
+              -moz-animation: four 2s ease-in-out infinite alternate;
+              -ms-animation: four 2s ease-in-out infinite alternate;
+              -o-animation: four 2s ease-in-out infinite alternate;
+              animation: four 2s ease-in-out infinite alternate;
+            }
+            @-webkit-keyframes 
+            four { from {
+            -webkit-box-shadow: 0 0 250px 20px #781848;
+            }
+    
+            to { -webkit-box-shadow: 0 0 100px 15px #F2BBE9; }
+            }
+            @-moz-keyframes 
+            four { from {
+            -moz-box-shadow: 0 0 250px 20px #781848;
+            }
+    
+            to { -moz-box-shadow: 0 0 100px 15px #F2BBE9; }
+            }
+            @-o-keyframes 
+            four { from {
+            -o-box-shadow: 0 0 250px 20px #781848;
+            }
+    
+            to { -o-box-shadow: 0 0 100px 15px #F2BBE9; }
+            }
+    
+            @keyframes 
+            four { from {
+            shadow: 0 0 250px 20px #781848;
+            }
+    
+            to { shadow: 0 0 100px 15px #F2BBE9; }
+            }
+    
+            #five
+            {
+              width: 60%;
+              /*animation*/
+              -webkit-animation: five 1s ease-in-out infinite alternate;
+              -moz-animation: five 1s ease-in-out infinite alternate;
+              -ms-animation: five 1s ease-in-out infinite alternate;
+              -o-animation: five 1s ease-in-out infinite alternate;
+              animation: five 1s ease-in-out infinite alternate;
+            }
+            @-webkit-keyframes 
+            five { from {
+            -webkit-box-shadow: 0 0 250px 20px #42F2A1;
+            }
+    
+            to { -webkit-box-shadow: 0 0 100px 15px #F4F6AD; }
+            }
+            @-moz-keyframes 
+            five { from {
+            -moz-box-shadow: 0 0 250px 20px #42F2A1;
+            }
+    
+            to { -moz-box-shadow: 0 0 100px 15px #F4F6AD; }
+            }
+            @-o-keyframes 
+            five { from {
+            -o-box-shadow: 0 0 250px 20px #42F2A1;
+            }
+    
+            to { -o-box-shadow: 0 0 100px 15px #F4F6AD; }
+            }
+    
+            @keyframes 
+            five { from {
+            box-shadow: 0 0 250px 20px #42F2A1;
+            }
+    
+            to { box-shadow: 0 0 100px 15px #F4F6AD; }
+            }
+          </style>
+
+          <article id="wrap">
+            <article id="lightings">
+              <a class="background-footer" target="_blank" href="https://dmoj.ca">Mã nguồn được cung cấp bởi <b>DMOJ</b></a>|<a target="_blank" href="https://github.com/LQDJudge/online-judge"> Lập trình bởi LQDJudge team </a> và <a target="_blank" href="https://github.com/LQDJudge/online-judge"> Phát triển bởi CLBTH team </a>
+              {% if i18n_config.footer %}
+                {{ i18n_config.footer|safe }} |
+              {% endif %}
+              <form action="{{ url('set_language') }}" method="post" style="display: inline" id="form-lang">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path() }}">
+                <select name="language" onchange="form.submit()" style="height: 1.5em">
+                  {% for language in language_info_list(LANGUAGES) %}
+                    <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+                      {{ language.name_local }} ({{ language.code }})
+                    </option>
+                  {% endfor %}
+                </select>
+              </form>
+                <section id="one">
+                      <section id="two">
+                          <section id="three">
+                              <section id="four">
+                                  <section id="five">
+                                </section>
+                              </section>
+                          </section>
+                      </section>
+                    </section>
+              </article>
+            </article>
         </footer>
       {% endblock %}
     </div>

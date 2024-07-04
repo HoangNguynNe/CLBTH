@@ -4309,7 +4309,8 @@ html .md-typeset .footnote-ref{
     font-weight:700;
     margin-top:1em;
     padding:.6617647059em 1.1764705882em;
-    position:relative
+    position:relative;
+    border-radius: .4em .4em 0 0
 }
 .highlight span.filename+pre{
     margin-top:0

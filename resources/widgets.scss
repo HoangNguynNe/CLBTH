@@ -144,7 +144,7 @@
 
 input {
     &[type=text], &[type=password], &[type=email], &[type=number], &[type=datetime-local], &[type=date] {
-        padding: 4px 8px;
+        padding: 7px 80px;
         color: #555;
         background: #FFF none;
         border: 1px solid $border_gray;
@@ -714,9 +714,9 @@ ul.errorlist {
 
     display: inline-block;
     position: relative;
-    margin: 5em auto auto -10em;
+    margin: 2em auto auto -10em;
     top: 40%;
-    left: 50%;
+    left: 45%;
 
     h4 {
         padding-top: 1em;

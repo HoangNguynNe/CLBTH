@@ -108,11 +108,6 @@ register_patterns = [
         name="registration_activate",
     ),
     url(
-        r"^register/$",
-        RegistrationView.as_view(title=_("Register")),
-        name="registration_register",
-    ),
-    url(
         r"^register/complete/$",
         TitledTemplateView.as_view(
             template_name="registration/registration_complete.html",
