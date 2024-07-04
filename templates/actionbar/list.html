@@ -11,19 +11,51 @@
         class="like-button actionbar-button {% if pagevote.vote_score(request.profile) == 1 %}voted{% endif %}"
         onclick="javascript:pagevote_upvote({{ pagevote.id }}, event)">
         <span class="pagevote-score" id="pagevote-score-{{pagevote.id}}">{{ pagevote.score }}</span>
-        <i class="far fa-thumbs-up" style="font-size: large;"></i>
+        <i class="action_has has_liked" aria-label="like" type="button">
+          <span data-icon=""
+            ><svg
+              data-icon="aoeri"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              fill="none"
+            >
+              <path
+                d="m8.05,11.99c0-.84.28-1.07,1.2-1.25,1.6-.31,2.35-.74,3.14-1.54,1.19-1.21,1.58-1.97,2.18-3.24.66-1.69,1.55-2.82,3.04-2.76.9.03,2.33.8,1.67,2.72-.31.9-1.98,3.61-2.23,4.23-.18.46.4.8.8.8h2.5c1.2,0,2.2,1,2.2,2.2l-1.1,5.6c-.3,1.5-1.02,2.23-2.2,2.2h-7.6c-2,0-3.6-1.6-3.6-3.6v-5.35Z"
+                data-d="thumb"
+              ></path>
+              <path
+                d="m5.4,19.9c0,.6-.5,1.1-1.1,1.1h-1c-1,0-1.9-.9-1.9-1.9v-6.3c0-1,.9-1.9,1.9-1.9h.9c.7,0,1.2.6,1.2,1.2v7.7Z"
+                data-d="sleeves"
+              ></path></svg
+          ></span>
+        </i>        
         <span class="actionbar-text">{{_("Like")}}</span>
       </span>
       <span id="dislike-button-{{pagevote.id}}"
         class="dislike-button actionbar-button {% if pagevote.vote_score(request.profile) == -1 %}voted{% endif %}"
         onclick="javascript:pagevote_downvote({{ pagevote.id }}, event)">
-        <i class="far fa-thumbs-down" style="font-size: large;"></i>
+        <i class="action_has has_liked" aria-label="like" type="button">
+          <span data-icon=""><svg data-icon="aoeri" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linejoin="round" stroke-linecap="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor" fill="none" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" transform="matrix(1,-1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)">
+              <path d="m8.05,11.99c0-.84.28-1.07,1.2-1.25,1.6-.31,2.35-.74,3.14-1.54,1.19-1.21,1.58-1.97,2.18-3.24.66-1.69,1.55-2.82,3.04-2.76.9.03,2.33.8,1.67,2.72-.31.9-1.98,3.61-2.23,4.23-.18.46.4.8.8.8h2.5c1.2,0,2.2,1,2.2,2.2l-1.1,5.6c-.3,1.5-1.02,2.23-2.2,2.2h-7.6c-2,0-3.6-1.6-3.6-3.6v-5.35Z" data-d="thumb"></path>
+              <path d="m5.4,19.9c0,.6-.5,1.1-1.1,1.1h-1c-1,0-1.9-.9-1.9-1.9v-6.3c0-1,.9-1.9,1.9-1.9h.9c.7,0,1.2.6,1.2,1.2v7.7Z" data-d="sleeves"></path></svg></span>
+        </i>
       </span>
     </span>
     {% if not hide_actionbar_comment %}
       <span class="actionbar-block">
         <span class="actionbar-button actionbar-comment">
-          <i class="far fa-comment" style="font-size: large;"></i>
+          <i class="action_has has_liked" aria-label="like" type="button">
+            <span data-icon=""><svg fill="#000000" width="20" height="20" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.5 1.853c-8.133 0-14.75 5.663-14.75 12.624 0.045 2.863 1.132 5.465 2.896 7.45l-0.010-0.012c-0.608 2.418-1.844 4.491-3.525 6.104l-0.004 0.004c-0.22 0.225-0.355 0.534-0.355 0.873 0 0.691 0.56 1.252 1.252 1.252 0.089 0 0.175-0.009 0.259-0.027l-0.008 0.001c3.458-0.576 6.524-1.93 9.121-3.877l-0.054 0.039c1.547 0.517 3.328 0.816 5.179 0.817h0c8.133 0 14.75-5.664 14.75-12.625s-6.617-12.624-14.75-12.624zM16.5 24.602c-0.015 0-0.034 0-0.052 0-1.77 0-3.465-0.321-5.030-0.908l0.099 0.032c-0.045-0.011-0.1-0.020-0.155-0.025l-0.005-0c-0.085-0.025-0.182-0.041-0.283-0.045l-0.002-0c-0.074 0.005-0.142 0.016-0.207 0.033l0.008-0.002c-0.1 0.013-0.19 0.035-0.275 0.068l0.008-0.003c-0.079 0.039-0.146 0.081-0.209 0.129l0.003-0.002c-0.064 0.033-0.118 0.067-0.169 0.105l0.003-0.002c-1.371 1.186-3 2.115-4.789 2.69l-0.098 0.027c0.896-1.391 1.555-3.025 1.872-4.778l0.012-0.082c0.005-0.031-0.005-0.060-0.002-0.092 0.002-0.028 0.003-0.060 0.003-0.093 0-0.311-0.107-0.597-0.286-0.824l0.002 0.003c-0.019-0.023-0.025-0.051-0.046-0.073-1.617-1.608-2.626-3.826-2.652-6.28l-0-0.005c0-5.582 5.495-10.124 12.25-10.124s12.25 4.542 12.25 10.124-5.496 10.125-12.25 10.125z" data-d="thumb"></path>
+                </svg></span>
+          </i>
           <span class="actionbar-text">
             {{_("Comment")}}
           </span>
@@ -39,14 +71,31 @@
       <span id="bookmark-button-{{bookmark.id}}"
         class="bookmark-button actionbar-button {% if bookmark.is_bookmarked_by(request.profile) %} bookmarked {% endif %}"
         onclick="javascript:bookmark({{ bookmark.id }}, event)">
-        <i class="far fa-bookmark" style="font-size: large;"></i>
+        <i class="action_has has_saved" aria-label="save" type="button">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke-linejoin="round" stroke-linecap="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+            <path d="m19,21H5c-1.1,0-2-.9-2-2V5c0-1.1.9-2,2-2h11l5,5v11c0,1.1-.9,2-2,2Z" stroke-linejoin="round" stroke-linecap="round" data-path="box"></path>
+            <path d="M7 3L7 8L15 8" stroke-linejoin="round" stroke-linecap="round" data-path="line-top"></path>
+            <path d="M17 20L17 13L7 13L7 20" stroke-linejoin="round" stroke-linecap="round" data-path="line-bottom"></path>
+          </svg>
+        </i>
         <span class="actionbar-text">{{_("Bookmark")}}</span>
       </span>
     </span>
     <span class="actionbar-block">
       <span class="actionbar-button actionbar-share" style="position: relative"
         {{"share-url=" + share_url if share_url else ""}} onclick="javascript:actionbar_share(this, event)">
-        <i class=" fa fa-share" style="font-size: large;"></i>
+        <i class="action_has has_liked" aria-label="like" type="button">
+          <span data-icon=""
+            ><svg
+            fill="none" width="20" height="20" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"
+                data-d="thumb"
+              ></path>
+              </svg
+          ></span>
+        </i>
         <span class="actionbar-text">{{_("Share")}}</span>
       </span>
     </span>

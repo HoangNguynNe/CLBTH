@@ -276,7 +276,8 @@ a {
         justify-content: center;
     }
     .pagevote-score {
-        margin-right: 0.3em;
+        margin: auto;
+        padding: 0 .3em;
     }
     .like-button {
         padding-right: 0.5em;
@@ -298,6 +299,7 @@ a {
     }
     .actionbar-text {
         padding-left: 0.4em;
+        margin: auto;
     }
     .bookmarked {
         color: rgb(180, 180, 7);
@@ -312,7 +314,7 @@ a {
         transition: 0.3s all ease;
     }
 
-    span#like-button-2:hover{
+    span#like-button-1:hover{
         color: #ffffff;
         background: #008cff;
         border: 1px solid #008cff;
@@ -322,12 +324,7 @@ a {
         transition: 0.3s all ease;
     }
 
-    span#like-button-2:active{
-        transition: 0.3s all ease;
-    }
-
-
-    span#dislike-button-2:hover{
+    span#dislike-button-1:hover{
         color: #ffffff;
         background: #A60321;
         border: 1px solid #A60321;
@@ -337,7 +334,7 @@ a {
         transition: 0.3s all ease;
     }
 
-    span#bookmark-button-2:hover{
+    span#bookmark-button-1:hover{
         color: #ffffff;
         background: #008cff;
         border: 1px solid #008cff;
@@ -356,6 +353,195 @@ a {
         0 0 100px #008cff;
         transition: 0.3s all ease;
     } 
+
+    //fa-bookmark
+    .action_has {
+        --color: 0 0% 60%;
+        --color-has: 211deg 100% 48%;
+    
+    }
+    .has_liked svg,
+    .has_saved svg {
+        overflow: visible;
+        height: calc(var(--sz) * 1.75);
+        width: calc(var(--sz) * 1.75);
+        --ease: cubic-bezier(0.5, 0, 0.25, 1);
+        --zoom-from: 1.75;
+        --zoom-via: 0.75;
+        --zoom-to: 1;
+        --duration: 1s;
+    }
+    
+    span#bookmark-button-1:hover path[data-path="box"] {
+        transition: all 0.3s var(--ease);
+        animation: has-saved var(--duration) var(--ease) forwards;
+        fill: hsl(var(--color-has) / 0.35);
+    }
+    span#bookmark-button-1:hover path[data-path="line-top"] {
+        animation: has-saved-line-top var(--duration) var(--ease) forwards;
+    }
+    span#bookmark-button-1:hover path[data-path="line-bottom"] {
+        animation: has-saved-line-bottom var(--duration) var(--ease) forwards,
+        has-saved-line-bottom-2 calc(var(--duration) * 1) var(--ease)
+            calc(var(--duration) * 0.75);
+    }
+
+
+    @keyframes has-saved-line-top {
+        33.333% {
+        transform: rotate(0deg) translate(1px, 2px) scale(var(--zoom-from));
+        d: path("M 3 5 L 3 8 L 3 8");
+        }
+        66.666% {
+        transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+        }
+        99.999% {
+        transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+    @keyframes has-saved-line-bottom {
+        33.333% {
+        transform: rotate(0deg) translate(1px, 2px) scale(var(--zoom-from));
+        d: path("M 17 20 L 17 13 L 7 13 L 7 20");
+        }
+        66.666% {
+        transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+        }
+        99.999% {
+        transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        d: path("M 17 21 L 17 21 L 7 21 L 7 21");
+        }
+    }
+    @keyframes has-saved-line-bottom-2 {
+        from {
+        d: path("M 17 21 L 17 21 L 7 21 L 7 21");
+        }
+        to {
+        transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        d: path("M 17 20 L 17 13 L 7 13 L 7 20");
+        fill: white;
+        }
+    }
+    @keyframes has-saved {
+        33.333% {
+        transform: rotate(0deg) translate(1px, 2px) scale(var(--zoom-from));
+        }
+        66.666% {
+        transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+        }
+        99.999% {
+        transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+
+    //Like and dislike
+
+    span#like-button-1:hover [data-d="thumb"] {
+        animation: has-liked-thumb var(--duration) var(--ease) forwards;
+    }
+    span#like-button-1:hover [data-d="sleeves"] {
+        animation: has-liked-sleeves var(--duration) var(--ease) forwards;
+    }
+
+    span#dislike-button-1:hover [data-d="thumb"] {
+        animation: has-liked-thumb var(--duration) var(--ease) forwards;
+    }
+    span#dislike-button-1:hover [data-d="sleeves"] {
+        animation: has-liked-sleeves var(--duration) var(--ease) forwards;
+    }
+
+    span.actionbar-button.actionbar-share:hover [data-d="thumb"] {
+        animation: has-share-thumb var(--duration) var(--ease) forwards;
+    }
+
+    span.actionbar-button.actionbar-comment:hover [data-d="thumb"] {
+        animation: has-comment-thumb var(--duration) var(--ease) forwards;
+    }
+    
+    @keyframes has-comment-thumb {
+        33.333% {
+          transform: rotate(-20deg) translate(1px, 2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+          d: path(
+            "M16.5 1.853c-8.133 0-14.75 5.663-14.75 12.624 0.045 2.863 1.132 5.465 2.896 7.45l-0.010-0.012c-0.608 2.418-1.844 4.491-3.525 6.104l-0.004 0.004c-0.22 0.225-0.355 0.534-0.355 0.873 0 0.691 0.56 1.252 1.252 1.252 0.089 0 0.175-0.009 0.259-0.027l-0.008 0.001c3.458-0.576 6.524-1.93 9.121-3.877l-0.054 0.039c1.547 0.517 3.328 0.816 5.179 0.817h0c8.133 0 14.75-5.664 14.75-12.625s-6.617-12.624-14.75-12.624zM16.5 24.602c-0.015 0-0.034 0-0.052 0-1.77 0-3.465-0.321-5.030-0.908l0.099 0.032c-0.045-0.011-0.1-0.020-0.155-0.025l-0.005-0c-0.085-0.025-0.182-0.041-0.283-0.045l-0.002-0c-0.074 0.005-0.142 0.016-0.207 0.033l0.008-0.002c-0.1 0.013-0.19 0.035-0.275 0.068l0.008-0.003c-0.079 0.039-0.146 0.081-0.209 0.129l0.003-0.002c-0.064 0.033-0.118 0.067-0.169 0.105l0.003-0.002c-1.371 1.186-3 2.115-4.789 2.69l-0.098 0.027c0.896-1.391 1.555-3.025 1.872-4.778l0.012-0.082c0.005-0.031-0.005-0.060-0.002-0.092 0.002-0.028 0.003-0.060 0.003-0.093 0-0.311-0.107-0.597-0.286-0.824l0.002 0.003c-0.019-0.023-0.025-0.051-0.046-0.073-1.617-1.608-2.626-3.826-2.652-6.28l-0-0.005c0-5.582 5.495-10.124 12.25-10.124s12.25 4.542 12.25 10.124-5.496 10.125-12.25 10.125z"
+          );
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+      
+    @keyframes has-share-thumb {
+        33.333% {
+          transform: rotate(-20deg) translate(1px, 2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+          d: path(
+            "M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"
+          );
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+      
+      
+    @keyframes has-liked-thumb {
+        33.333% {
+          transform: rotate(-20deg) translate(1px, 2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+          d: path(
+            "m8.05,11.99c0-.84.28-1.07,1.2-1.25,1.6-.31,2.3-.64,2.9-1.09,0,0,1.64-1.31,2.21-3.11,1.12-3.59,2.11-4.85,3.72-4.85,2.27,0,2.96,2.22,2.55,3.54-.6,1.97-3.81,4.09-3.94,4.99-.07.49.76.72,1.16.72h2.5c1.2,0,2.2,1,2.2,2.2l-1.1,5.6c-.3,1.5-1.02,2.23-2.2,2.2h-7.6c-2,0-3.6-1.6-3.6-3.6v-5.35Z"
+          );
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+      
+    @keyframes has-liked-sleeves {
+        33.333% {
+          transform: rotate(10deg) translate(6px, -2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(-10deg) translate(-6px, 0px) scale(var(--zoom-via));
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }      
+      
+    @keyframes has-liked-thumb {
+        33.333% {
+          transform: rotate(-20deg) translate(1px, 2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
+          d: path(
+            "m8.05,11.99c0-.84.28-1.07,1.2-1.25,1.6-.31,2.3-.64,2.9-1.09,0,0,1.64-1.31,2.21-3.11,1.12-3.59,2.11-4.85,3.72-4.85,2.27,0,2.96,2.22,2.55,3.54-.6,1.97-3.81,4.09-3.94,4.99-.07.49.76.72,1.16.72h2.5c1.2,0,2.2,1,2.2,2.2l-1.1,5.6c-.3,1.5-1.02,2.23-2.2,2.2h-7.6c-2,0-3.6-1.6-3.6-3.6v-5.35Z"
+          );
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
+      
+    @keyframes has-liked-sleeves {
+        33.333% {
+          transform: rotate(10deg) translate(6px, -2px) scale(var(--zoom-from));
+        }
+        66.666% {
+          transform: rotate(-10deg) translate(-6px, 0px) scale(var(--zoom-via));
+        }
+        99.999% {
+          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
+        }
+    }
     // https://uiverse.io/zjssun/tidy-sloth-40
 }
 

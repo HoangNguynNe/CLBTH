@@ -518,11 +518,11 @@ a.edit-profile {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgb(2 101 153);
     transition: box-shadow 0.3s;
 
     &:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
     }
 
     .card-header {

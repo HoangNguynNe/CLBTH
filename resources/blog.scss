@@ -35,8 +35,20 @@
 .left-sidebar-item.active {
     color: white;
     font-weight: bold;
-    background-color: $theme_color;
+    background-image: linear-gradient(90deg,
+    #026599 0%,
+    #298cdb 50%,
+    #5fa2c4 75%,
+    #026599 100%);
+    color: black;
+    animation: slide 10s linear infinite;
 
+    @keyframes slide {
+        100% {
+          background-position: 50rem;
+        }
+      }
+    
     .sidebar-icon {
         color: white;
     }
@@ -139,6 +151,7 @@
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s all ease;
 
     .title {
         margin-bottom: 0.2em;
@@ -149,6 +162,11 @@
 .blog-box:hover, .blog-box:not(.pre-expand-blog) {
     border-color: #8a8a8a;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.blog-box:hover {
+    box-shadow: 0 0 8px rgb(2 101 153);
+    transition: 0.3s all ease;
 }
 
 .blog-description {

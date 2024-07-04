@@ -360,7 +360,7 @@ ul.pagination {
 
             span {
                 color: #f1efef;
-                background-color: #ab6247;
+                background-color: #026599;
                 border-color: #6a240b;
             }
         }
@@ -519,6 +519,12 @@ ul.select2-selection__rendered {
     border-top-right-radius: $widget_border_radius;
     margin-bottom: 1.5em;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s all ease;
+
+    &:hover {
+        box-shadow: 0 0 8px rgb(2 101 153);
+        transition: 0.3s all ease;
+    }
 }
 
 .ws-closed {
