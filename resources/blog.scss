@@ -35,12 +35,7 @@
 .left-sidebar-item.active {
     color: white;
     font-weight: bold;
-    background-image: linear-gradient(90deg,
-    #026599 0%,
-    #298cdb 50%,
-    #5fa2c4 75%,
-    #026599 100%);
-    color: black;
+    background-image: linear-gradient(90deg, #015C92 0%, #2D82B5 25%, #ABD1DC 50%, #88CDF6 75%, #015C92 100%);
     animation: slide 10s linear infinite;
 
     @keyframes slide {

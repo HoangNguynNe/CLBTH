@@ -1946,6 +1946,10 @@ input::placeholder {
     border-color: rgb(81, 88, 91);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 2px;
 }
+.blog-box:hover {
+    box-shadow: 0 0 8px rgb(2 101 153);
+    transition: 0.3s all ease;
+}
 .problem-feed-name a {
     color: rgb(102, 177, 250);
 }
@@ -2334,10 +2338,10 @@ a.user-redirect:hover {
 }
 .profile-card {
     border-color: rgb(58, 62, 65);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+    box-shadow: 0 0 8px rgb(2 101 153);
 }
 .profile-card:hover {
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 16px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
 }
 .profile-card .card-header {
     background-color: rgb(29, 31, 32);
@@ -3142,11 +3146,11 @@ a.voted {
     color: rgb(232, 230, 227);
 }
 .chat-input-icon {
-    background-color: rgb(48, 104, 78);
+    background-color: #4169e1;
     color: rgb(232, 230, 227);
 }
 .chat-input-icon:hover {
-    background-color: rgb(62, 136, 112);
+    background-color: #6c87d8;
     background-image: initial;
 }
 .chat .active-span {

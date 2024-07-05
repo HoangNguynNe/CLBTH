@@ -283,20 +283,50 @@ a {
         padding-right: 0.5em;
         border-radius: .5em 0 0 .5em;
     }
-    .actionbar-button:hover {
-        background: darkgray;
+
+    .like-button:hover {
+        color: #ffffff;
+        background: #008cff;
+        border: 1px solid #008cff;
+        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
+        box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
+        0 0 100px #008cff;
+        transition: 0.3s all ease;
     }
+
     .dislike-button {
         padding-left: 0.5em;
         border-radius: 0 .5em .5em 0;
         border-left: 0;
     }
+
+    .dislike-button:hover {
+        color: #ffffff;
+        background: #A60321;
+        border: 1px solid #A60321;
+        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
+        box-shadow: 0 0 5px #A60321, 0 0 20px #A60321, 0 0 50px #A60321,
+        0 0 100px #A60321;
+        transition: 0.3s all ease;
+    }
+
     .like-button.voted {
         color: blue;
     }
     .dislike-button.voted {
         color: red;
     }
+
+    .bookmark-button:hover {
+        color: #ffffff;
+        background: #008cff;
+        border: 1px solid #008cff;
+        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
+        box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
+        0 0 100px #008cff;
+        transition: 0.3s all ease;
+    }
+
     .actionbar-text {
         padding-left: 0.4em;
         margin: auto;
@@ -313,37 +343,6 @@ a {
         0 0 100px #008cff;
         transition: 0.3s all ease;
     }
-
-    span#like-button-1:hover{
-        color: #ffffff;
-        background: #008cff;
-        border: 1px solid #008cff;
-        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
-        box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
-        0 0 100px #008cff;
-        transition: 0.3s all ease;
-    }
-
-    span#dislike-button-1:hover{
-        color: #ffffff;
-        background: #A60321;
-        border: 1px solid #A60321;
-        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
-        box-shadow: 0 0 5px #A60321, 0 0 20px #A60321, 0 0 50px #A60321,
-        0 0 100px #A60321;
-        transition: 0.3s all ease;
-    }
-
-    span#bookmark-button-1:hover{
-        color: #ffffff;
-        background: #008cff;
-        border: 1px solid #008cff;
-        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
-        box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
-        0 0 100px #008cff;
-        transition: 0.3s all ease;
-    }
-
     span.actionbar-button.actionbar-share:hover{
         color: #ffffff;
         background: #008cff;
@@ -355,6 +354,7 @@ a {
     } 
 
     //fa-bookmark
+    
     .action_has {
         --color: 0 0% 60%;
         --color-has: 211deg 100% 48%;
@@ -372,21 +372,21 @@ a {
         --duration: 1s;
     }
     
-    span#bookmark-button-1:hover path[data-path="box"] {
+    .bookmark-button:hover path[data-path="box"] {
         transition: all 0.3s var(--ease);
         animation: has-saved var(--duration) var(--ease) forwards;
         fill: hsl(var(--color-has) / 0.35);
     }
-    span#bookmark-button-1:hover path[data-path="line-top"] {
+    .bookmark-button:hover path[data-path="line-top"] {
         animation: has-saved-line-top var(--duration) var(--ease) forwards;
     }
-    span#bookmark-button-1:hover path[data-path="line-bottom"] {
+    .bookmark-button:hover path[data-path="line-bottom"] {
         animation: has-saved-line-bottom var(--duration) var(--ease) forwards,
         has-saved-line-bottom-2 calc(var(--duration) * 1) var(--ease)
             calc(var(--duration) * 0.75);
     }
-
-
+  
+  
     @keyframes has-saved-line-top {
         33.333% {
         transform: rotate(0deg) translate(1px, 2px) scale(var(--zoom-from));
@@ -433,27 +433,27 @@ a {
         transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
         }
     }
-
+  
     //Like and dislike
-
-    span#like-button-1:hover [data-d="thumb"] {
+  
+    .like-button:hover [data-d="thumb"] {
         animation: has-liked-thumb var(--duration) var(--ease) forwards;
     }
-    span#like-button-1:hover [data-d="sleeves"] {
+    .like-button:hover [data-d="sleeves"] {
         animation: has-liked-sleeves var(--duration) var(--ease) forwards;
     }
-
-    span#dislike-button-1:hover [data-d="thumb"] {
+  
+    .dislike-button:hover [data-d="thumb"] {
         animation: has-liked-thumb var(--duration) var(--ease) forwards;
     }
-    span#dislike-button-1:hover [data-d="sleeves"] {
+    .dislike-button:hover [data-d="sleeves"] {
         animation: has-liked-sleeves var(--duration) var(--ease) forwards;
     }
-
+  
     span.actionbar-button.actionbar-share:hover [data-d="thumb"] {
         animation: has-share-thumb var(--duration) var(--ease) forwards;
     }
-
+  
     span.actionbar-button.actionbar-comment:hover [data-d="thumb"] {
         animation: has-comment-thumb var(--duration) var(--ease) forwards;
     }
@@ -516,33 +516,6 @@ a {
         }
     }      
       
-    @keyframes has-liked-thumb {
-        33.333% {
-          transform: rotate(-20deg) translate(1px, 2px) scale(var(--zoom-from));
-        }
-        66.666% {
-          transform: rotate(20deg) translate(2px, -2px) scale(var(--zoom-via));
-          d: path(
-            "m8.05,11.99c0-.84.28-1.07,1.2-1.25,1.6-.31,2.3-.64,2.9-1.09,0,0,1.64-1.31,2.21-3.11,1.12-3.59,2.11-4.85,3.72-4.85,2.27,0,2.96,2.22,2.55,3.54-.6,1.97-3.81,4.09-3.94,4.99-.07.49.76.72,1.16.72h2.5c1.2,0,2.2,1,2.2,2.2l-1.1,5.6c-.3,1.5-1.02,2.23-2.2,2.2h-7.6c-2,0-3.6-1.6-3.6-3.6v-5.35Z"
-          );
-        }
-        99.999% {
-          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
-        }
-    }
-      
-    @keyframes has-liked-sleeves {
-        33.333% {
-          transform: rotate(10deg) translate(6px, -2px) scale(var(--zoom-from));
-        }
-        66.666% {
-          transform: rotate(-10deg) translate(-6px, 0px) scale(var(--zoom-via));
-        }
-        99.999% {
-          transform: rotate(0deg) translate(0px, 0px) scale(var(--zoom-to));
-        }
-    }
-    // https://uiverse.io/zjssun/tidy-sloth-40
 }
 
 .show_more_comment {
