@@ -198,6 +198,61 @@ input {
     }
 }
 
+button.btn-NopBai {
+    font-family: inherit;
+    font-size: 18px;
+    background: linear-gradient(to bottom, #4dc7d9 0%,#66a6ff 100%);
+    color: white;
+    padding: 0.8em 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+  }
+  
+  button.btn-NopBai:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgb(97 173 247);
+  }
+  
+  button.btn-NopBai:active {
+    transform: scale(0.95);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  button.btn-NopBai span {
+    display: block;
+    margin-left: 0.4em;
+    transition: all 0.3s;
+  }
+  
+  button.btn-NopBai svg {
+    width: 34px;
+    height: 34px;
+    fill: white;
+    transition: all 0.3s;
+  }
+  
+  button.btn-NopBai .svg-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 0.5em;
+    transition: all 0.3s;
+  }
+  
+  
+  button.btn-NopBai:hover svg {
+    transform: rotate(45deg);
+  }
+    
+
 // Bootstrap-y copy button
 .btn-clipboard {
     top: -5px;
