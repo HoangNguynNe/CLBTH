@@ -35,15 +35,24 @@
 .left-sidebar-item.active {
     color: white;
     font-weight: bold;
-    background-image: linear-gradient(90deg, #015C92 0%, #2D82B5 25%, #ABD1DC 50%, #88CDF6 75%, #015C92 100%);
-    animation: slide 10s linear infinite;
+    background: linear-gradient(-45deg, #6bc5f8, #cf59e6, #6bc5f8, #cf59e6);
+    background-size: 400% 400%;
+    animation: gradient 5s ease infinite;
 
-    @keyframes slide {
+    @keyframes gradient {
+        0% {
+          background-position: 0 50%;
+        }
+      
+        50% {
+          background-position: 100% 50%;
+        }
+      
         100% {
-          background-position: 50rem;
+          background-position: 0 50%;
         }
       }
-    
+      
     .sidebar-icon {
         color: white;
     }
