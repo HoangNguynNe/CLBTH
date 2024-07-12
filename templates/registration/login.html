@@ -62,10 +62,11 @@
           </td>
         </tr>
       <hr>
+      <a href="{{ url('password_reset') }}" style="float: right;">{{ _('Forgot your password?') }}</a>
       <button class="btn-donate" style="float:left; width: -webkit-fill-available;" type="submit">{{ _('Login!') }}</button>
       <input type="hidden" name="next" value="{{ next }}">
       </form>
-    <br><a href="{{ url('password_reset') }}" style="float: right;">{{ _('Forgot your password?') }}</a>
+    <br>
 
     {% if form.has_google_auth or form.has_facebook_auth or form.has_github_auth %}
       <h4>{{ _('Or log in with...') }}</h4>

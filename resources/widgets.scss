@@ -144,7 +144,7 @@
 
 input {
     &[type=text], &[type=password], &[type=email], &[type=number], &[type=datetime-local], &[type=date] {
-        padding: 7px 80px;
+        padding: 0.67857143em 1em;
         color: #555;
         background: #FFF none;
         border: 1px solid $border_gray;
@@ -156,6 +156,7 @@ input {
         // Need this explicitly because UA stylesheet for Chrome on 4k makes
         // everything look bad otherwise (forces it to 9.3px)
         font-size: $base_font_size;
+        width: 100%;
     }
 
     &[type=number] {
