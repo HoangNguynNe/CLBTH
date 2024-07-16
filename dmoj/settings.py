@@ -22,12 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "5*9f5q57mqmlz2#f$x1h76&jxy#yortjl1v+l*6hd18$d*yx#0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 SITE_ID = 1
 SITE_NAME = "CLBTHOJ"
@@ -478,7 +474,7 @@ ML_OUTPUT_PATH = None
 USE_SUBDOMAIN = False
 
 # Chat
-CHAT_SECRET_KEY = "QUdVFsxk6f5-Hd8g9BXv81xMqvIZFRqMl-KbRzztW-U="
+CHAT_SECRET_KEY = "b+)bz17k5-6nw6cvbiled^qrq95=*+w1^k9sl5jes@5-fAo6)="
 
 # Nginx
 META_REMOTE_ADDRESS_KEY = "REMOTE_ADDR"
