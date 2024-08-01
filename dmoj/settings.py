@@ -474,7 +474,7 @@ ML_OUTPUT_PATH = None
 USE_SUBDOMAIN = False
 
 # Chat
-CHAT_SECRET_KEY = "b+)bz17k5-6nw6cvbiled^qrq95=*+w1^k9sl5jes@5-fAo6)="
+CHAT_SECRET_KEY = "QUdVFsxk6f5-Hd8g9BXv81xMqvIZFRqMl-KbRzztW-U="
 
 # Nginx
 META_REMOTE_ADDRESS_KEY = "REMOTE_ADDR"

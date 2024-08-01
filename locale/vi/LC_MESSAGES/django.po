@@ -2535,11 +2535,11 @@ msgstr "test case ID"
 
 #: judge/models/ticket.py:10
 msgid "ticket title"
-msgstr "tiêu đề báo cáo"
+msgstr "tiêu đề hỗ trợ"
 
 #: judge/models/ticket.py:13
 msgid "ticket creator"
-msgstr "người báo cáo"
+msgstr "người hỗ trợ"
 
 #: judge/models/ticket.py:17
 msgid "creation time"
@@ -2774,7 +2774,7 @@ msgstr "Trang %d"
 
 #: judge/views/blog.py:172
 msgid "Ticket feed"
-msgstr "Báo cáo"
+msgstr "Hỗ Trợ"
 
 #: judge/views/blog.py:189
 msgid "Comment feed"
@@ -3593,27 +3593,27 @@ msgstr "format kỳ thi"
 
 #: judge/views/ticket.py:60 judge/views/ticket.py:66
 msgid "Ticket title"
-msgstr "Tiêu đề báo cáo"
+msgstr "Tiêu đề hỗ trợ"
 
 #: judge/views/ticket.py:124 judge/views/ticket.py:128
 #, python-format
 msgid "New ticket for %s"
-msgstr "Báo cáo mới cho %s"
+msgstr "hỗ trợ mới cho %s"
 
 #: judge/views/ticket.py:205
 #, python-format
 msgid "%(title)s - Ticket %(id)d"
-msgstr "%(title)s - Báo cáo %(id)d"
+msgstr "%(title)s - hỗ trợ %(id)d"
 
 #: judge/views/ticket.py:334
 #, python-format
 msgid "Tickets - Page %(number)d of %(total)d"
-msgstr "Báo cáo - Trang %(number)d trên %(total)d"
+msgstr "hỗ trợ - Trang %(number)d trên %(total)d"
 
 #: judge/views/ticket.py:400
 #, python-format
 msgid "New Ticket: %s"
-msgstr "Báo cáo mới: %s"
+msgstr "hỗ trợ mới: %s"
 
 #: judge/views/ticket.py:403
 #, python-format
@@ -3631,7 +3631,7 @@ msgstr "không người nào"
 #: judge/views/ticket.py:439
 #, python-format
 msgid "New Ticket Message For: %s"
-msgstr "Tin nhắn báo cáo mới cho: %s"
+msgstr "Tin nhắn hỗ trợ mới cho: %s"
 
 #: judge/views/totp.py:42 templates/registration/totp_enable.html:86
 msgid "Enable Two Factor Authentication"
@@ -3713,7 +3713,7 @@ msgstr "Chia sẻ"
 
 #: templates/actionbar/list.html:57
 msgid "Report"
-msgstr "Báo cáo"
+msgstr "hỗ trợ"
 
 #: templates/actionbar/media-js.html:116
 msgid "Copied link"
@@ -3866,7 +3866,7 @@ msgstr "Tin tức"
 
 #: templates/blog/list.html:47
 msgid "Ticket"
-msgstr "Báo cáo"
+msgstr "hỗ trợ"
 
 #: templates/blog/list.html:48
 msgid "Events"
@@ -3874,7 +3874,7 @@ msgstr "Sự kiện"
 
 #: templates/blog/list.html:60
 msgid "You have no ticket"
-msgstr "Bạn không có báo cáo"
+msgstr "Bạn không có hỗ trợ"
 
 #: templates/blog/list.html:73 templates/problem/list.html:150
 #: templates/problem/problem.html:448
@@ -5190,7 +5190,7 @@ msgstr "Xem hướng dẫn"
 
 #: templates/problem/problem.html:213
 msgid "Manage tickets"
-msgstr "Xử lý báo cáo"
+msgstr "Xử lý hỗ trợ"
 
 #: templates/problem/problem.html:220
 msgid "Edit problem"
@@ -5202,7 +5202,7 @@ msgstr "Chỉnh sửa test"
 
 #: templates/problem/problem.html:234
 msgid "My tickets"
-msgstr "Báo cáo của tôi"
+msgstr "hỗ trợ của tôi"
 
 #: templates/problem/problem.html:244
 msgid "Manage submissions"
@@ -5933,11 +5933,11 @@ msgstr "Sử dụng thông báo từ desktop"
 
 #: templates/ticket/list.html:229
 msgid "Show my tickets only"
-msgstr "Chỉ hiển thị các báo cáo dành cho tôi"
+msgstr "Chỉ hiển thị các hỗ trợ dành cho tôi"
 
 #: templates/ticket/list.html:233
 msgid "Filing user"
-msgstr "Người báo cáo"
+msgstr "Người hỗ trợ"
 
 #: templates/ticket/list.html:242
 msgid "Assignee"
@@ -5953,16 +5953,16 @@ msgstr "Người được ủy thác"
 
 #: templates/ticket/new_problem.html:7
 msgid "Thanks for opening a ticket!"
-msgstr "Cảm ơn bạn đã báo cáo!"
+msgstr "Cảm ơn bạn đã hỗ trợ!"
 
 #: templates/ticket/new_problem.html:9
 msgid ""
-"Please keep in mind that this form is for reporting issues with a problem "
-"statement, and not for asking for help. If you require assistance on solving "
-"a problem, ask in the comments instead."
+"Please note that this form is for help with difficult "
+"issues, not for asking about easy ones. If you need help solving an "
+"easy assignment, please ask in the comments."
 msgstr ""
-"Lưu ý rằng đây là đơn báo cáo các vấn đề trong đề bài, không phải nơi để hỏi "
-"bài hay nộp bài."
+"Lưu ý rằng đây là hỗ trợ/ báo cáo các bài tập khi quá khó, nếu bạn hỏi trong phần bình luận "
+"không ai trả lời/ không hiểu thì hãy mở báo cáo."
 
 #: templates/ticket/ticket.html:178
 msgid "Post"
@@ -5978,11 +5978,11 @@ msgstr "Không ai được ủy thác."
 
 #: templates/ticket/ticket.html:203
 msgid "Close ticket"
-msgstr "Đóng báo cáo"
+msgstr "Đóng hỗ trợ"
 
 #: templates/ticket/ticket.html:205
 msgid "Reopen ticket"
-msgstr "Mở lại báo cáo"
+msgstr "Mở lại hỗ trợ"
 
 #: templates/ticket/ticket.html:209
 msgid "Assignee notes"
@@ -6558,7 +6558,7 @@ msgstr "Chọn tất cả"
 #~ msgstr "Xin chào, <b>%(username)s</b>."
 
 #~ msgid "Report an issue"
-#~ msgstr "Báo cáo một vấn đề"
+#~ msgstr "hỗ trợ một vấn đề"
 
 #~ msgid "Edit in %(org_slug)s"
 #~ msgstr "Chỉnh sửa trong %(org_slug)s"
@@ -6655,10 +6655,10 @@ msgstr "Chọn tất cả"
 #~ msgstr "đã đăng"
 
 #~ msgid "My open tickets"
-#~ msgstr "Báo cáo dành cho tôi"
+#~ msgstr "hỗ trợ dành cho tôi"
 
 #~ msgid "New tickets"
-#~ msgstr "Báo cáo mới"
+#~ msgstr "hỗ trợ mới"
 
 #~ msgid "New problems"
 #~ msgstr "Bài tập mới"

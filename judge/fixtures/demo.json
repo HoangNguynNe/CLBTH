@@ -53,10 +53,10 @@
             ],
             "creation_date": "2017-12-02T08:50:25.199Z",
             "is_open": true,
-            "slug": "dmoj",
-            "name": "DMOJ: Modern Online Judge",
+            "slug": "clbthoj",
+            "name": "CLBTHOJ: CLBTH Online Judge",
             "registrant": 1,
-            "short_name": "DMOJ",
+            "short_name": "CLBTH",
             "slots": null
         },
         "model": "judge.organization",
@@ -131,7 +131,7 @@
             "authors": [
                 1
             ],
-            "content": "Welcome to DMOJ!\n\n```python\nprint \"Hello, World!\"\n```\n\nYou can get started by checking out [this problem we've added for you](/problem/aplusb).",
+            "content": "Welcome to CLBTH!\n\n```python\nprint \"Hello, World!\"\n```\n\nYou can get started by checking out [this problem we've added for you](/problem/aplusb).",
             "og_image": "",
             "publish_on": "2017-12-02T05:00:00Z",
             "slug": "first-post",

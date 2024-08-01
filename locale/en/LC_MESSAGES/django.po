@@ -4621,9 +4621,9 @@ msgstr ""
 
 #: templates/ticket/new_problem.html:9
 msgid ""
-"Please keep in mind that this form is for reporting issues with a problem "
-"statement, and not for asking for help. If you require assistance on solving "
-"a problem, ask in the comments instead."
+"Please note that this form is for help with difficult "
+"issues, not for asking about easy ones. If you need help solving an "
+"easy assignment, please ask in the comments."
 msgstr ""
 
 #: templates/ticket/ticket.html:355
