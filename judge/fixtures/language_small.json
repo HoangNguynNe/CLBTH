@@ -1,6 +1,36 @@
 [
     {
         "fields": {
+            "ace": "python",
+            "common_name": "Python",
+            "description": "",
+            "extension": "",
+            "info": "python 2.7.9",
+            "key": "PY2",
+            "name": "Python 2",
+            "pygments": "python",
+            "short_name": ""
+        },
+        "model": "judge.language",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "ace": "c_cpp",
+            "common_name": "C",
+            "description": "Compile options: `gcc -std=c99 -Wall -O2 -lm -march=native -s`\r\n",
+            "extension": "",
+            "info": "gcc 4.9.2",
+            "key": "C",
+            "name": "C",
+            "pygments": "c",
+            "short_name": ""
+        },
+        "model": "judge.language",
+        "pk": 2
+    },
+    {
+        "fields": {
             "ace": "c_cpp",
             "common_name": "C++",
             "description": "Compile options: `g++ -Wall -O2 -lm -march=native -s`\r\n",
@@ -12,7 +42,7 @@
             "short_name": "C++03"
         },
         "model": "judge.language",
-        "pk": 1
+        "pk": 3
     },
     {
         "fields": {
@@ -27,49 +57,19 @@
             "short_name": "C++11"
         },
         "model": "judge.language",
-        "pk": 2
-    },
-    {
-        "fields": {
-            "ace": "c_cpp",
-            "common_name": "C++",
-            "description": "Compile options: `g++ -std=c++14 -Wall -O2 -lm -march=native -s`\r\n",
-            "extension": "",
-            "info": "g++-4.9.2 -std=c++14",
-            "key": "CPP14",
-            "name": "C++14",
-            "pygments": "cpp",
-            "short_name": "C++14"
-        },
-        "model": "judge.language",
-        "pk": 3
-    },
-    {
-        "fields": {
-            "ace": "c_cpp",
-            "common_name": "C++",
-            "description": "C++ 17\r\n",
-            "extension": "",
-            "info": "g++-4.9.2 -std=c++17",
-            "key": "CPP17",
-            "name": "C++17",
-            "pygments": "cpp",
-            "short_name": "C++17"
-        },
-        "model": "judge.language",
         "pk": 4
     },
     {
         "fields": {
-            "ace": "c_cpp",
-            "common_name": "C++",
-            "description": "C++ 20\r\n",
+            "ace": "python",
+            "common_name": "Python",
+            "description": "",
             "extension": "",
-            "info": "g++-4.9.2 -std=c++20",
-            "key": "CPP20",
-            "name": "C++20",
-            "pygments": "cpp",
-            "short_name": "C++20"
+            "info": "python 3.4.2",
+            "key": "PY3",
+            "name": "Python 3",
+            "pygments": "python3",
+            "short_name": ""
         },
         "model": "judge.language",
         "pk": 5
