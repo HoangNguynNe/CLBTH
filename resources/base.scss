@@ -291,11 +291,13 @@ nav {
 
 
                 li {
+                    & {
+                        display: block;
+                      }
+
                     &:hover {
                         background: lightgray;
                     }
-
-                    display: block;
 
                     a {
                         color: black !important;

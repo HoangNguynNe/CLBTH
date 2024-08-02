@@ -90,10 +90,13 @@ th.header.rank {
             background: #EAEAEA;
         }
 
-        &.highlight {
+        & {
+            padding-bottom: 96px;
+          }
+          
+          &.highlight {
             background: #fff897;
-        }
-        padding-bottom: 96px;
+          }          
 
         &:target {
             background: #fff897;
@@ -351,10 +354,14 @@ a.edit-profile {
         width: 80px;
     }
 
-    td.problem-category {
+    & {
+        width: 99%;
+      }
+      
+      td.problem-category {
         width: 100px;
-    }
-    width: 99%;
+      }
+      
 }
 
 #pp-load-link-wrapper {

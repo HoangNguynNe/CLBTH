@@ -227,11 +227,14 @@ form.contest-join-pseudotab {
         color: #444;
     }
 
-    a + a {
+    & {
+        padding-left: 5px;
+      }
+      
+      a + a {
         padding-left: 1px;
-    }
-
-    padding-left: 5px;
+      }
+      
 }
 
 #add-clarification {
