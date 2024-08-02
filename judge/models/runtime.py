@@ -139,7 +139,7 @@ class Language(models.Model):
     @classmethod
     def get_python3(cls):
         # We really need a default language, and this app is in Python 3
-        return Language.objects.get_or_create(key="PY3", defaults={"name": "Python 3"})[
+        return Language.objects.get_or_create(key="CPP03", defaults={"name": "C++03"})[
             0
         ]
 
