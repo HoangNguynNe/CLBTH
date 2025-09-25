@@ -1,6 +1,0 @@
-archive: bai1.zip
-checker: standard
-test_cases:
-- in: bai1.inp
-  out: bai1.out
-  points: 10
