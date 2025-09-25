@@ -19,7 +19,14 @@ descriptions = [
 
 
 def csv_to_dict(csv_file):
-    rows = csv.reader(csv_file.read().decode().split("\n"))
+    # Explicitly decode as UTF-8 to support Vietnamese characters
+    try:
+        csv_content = csv_file.read().decode('utf-8')
+    except UnicodeDecodeError:
+        # Fallback to utf-8-sig (BOM) if regular UTF-8 fails
+        csv_content = csv_file.read().decode('utf-8-sig')
+
+    rows = csv.reader(csv_content.split("\n"))
     header = next(rows)
     header = [i.lower() for i in header]
 
@@ -42,7 +49,7 @@ def csv_to_dict(csv_file):
 
 
 def is_valid_username(username):
-    match = re.match(r"\w+", username)
+    match = re.match(r"[\w\u00C0-\u1EF9]+", username)
     return match is not None and match.group() == username
 
 

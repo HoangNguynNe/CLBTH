@@ -6,7 +6,7 @@
     <div class="user-time">
       <span class="username {{ message.author.css_class }}">
         <a href="{{ url('user_page', message.author.username) }}">
-          {{ message.author.username }}
+          {{ message.author.first_name }}
         </a>
       </span>
       <span class="time">

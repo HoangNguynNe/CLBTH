@@ -5,6 +5,6 @@
     </span>
   {% endif %}
   <a href="{{ url('user_page', profile.username) }}">
-    {{ profile.username }}
+    {{ profile.first_name or profile.username }}
   </a>
 </span>

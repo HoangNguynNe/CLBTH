@@ -228,7 +228,7 @@ class ProblemAdmin(CompareVersionAdmin):
         ),
         (_("Taxonomy"), {"fields": ("types", "group")}),
         (_("Points"), {"fields": (("points", "partial"), "short_circuit")}),
-        (_("Limits"), {"fields": ("time_limit", ("memory_limit", "memory_unit"))}),
+        (_("Limits"), {"fields": ("time_limit", ("memory_limit", "memory_unit"), "show_testcases")}),
         (_("Language"), {"fields": ("allowed_languages",)}),
         (_("Justice"), {"fields": ("banned_users",)}),
         (_("History"), {"fields": ("change_message",)}),

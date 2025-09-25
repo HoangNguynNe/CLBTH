@@ -10,6 +10,7 @@ from django.dispatch import receiver
 
 import judge
 from judge.utils.problems import finished_submission
+from judge.utils import users
 from .models import (
     BlogPost,
     Comment,

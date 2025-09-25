@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.utils.html import format_html
 from django.utils.translation import gettext, gettext_lazy as _, ungettext
@@ -54,6 +55,27 @@ class TimezoneFilter(admin.SimpleListFilter):
         return queryset.filter(timezone=self.value())
 
 
+class LastNameFilter(admin.SimpleListFilter):
+    title = _("Last Name")  # Tiêu đề hiển thị trong admin
+    parameter_name = "last_name"
+
+    def lookups(self, request, model_admin):
+        # Lấy tất cả các họ khác nhau từ User model, loại bỏ giá trị rỗng
+        last_names = (
+            User.objects.exclude(last_name__isnull=True)
+            .exclude(last_name__exact='')
+            .values_list("last_name", "last_name")
+            .distinct()
+            .order_by("last_name")
+        )
+        return list(last_names)
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+        return queryset.filter(user__last_name=self.value())
+
+
 class ProfileInfoInline(admin.StackedInline):
     model = ProfileInfo
     can_delete = False
@@ -91,7 +113,7 @@ class ProfileAdmin(VersionAdmin):
     )
     ordering = ("user__username",)
     search_fields = ("user__username", "ip", "user__email")
-    list_filter = ("language", TimezoneFilter)
+    list_filter = ("language", TimezoneFilter, LastNameFilter)
     actions = ("recalculate_points",)
     actions_on_top = True
     actions_on_bottom = True
@@ -166,6 +188,27 @@ class ProfileAdmin(VersionAdmin):
     recalculate_points.short_description = _("Recalculate scores")
 
 
+class UserLastNameFilter(admin.SimpleListFilter):
+    title = _("Nhóm HT")  # Tiêu đề hiển thị trong admin
+    parameter_name = "last_name"
+
+    def lookups(self, request, model_admin):
+        # Lấy tất cả các họ khác nhau từ User model, loại bỏ giá trị rỗng
+        last_names = (
+            User.objects.exclude(last_name__isnull=True)
+            .exclude(last_name__exact='')
+            .values_list("last_name", "last_name")
+            .distinct()
+            .order_by("last_name")
+        )
+        return list(last_names)
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+        return queryset.filter(last_name=self.value())
+
+
 class UserAdmin(OldUserAdmin):
     # Customize the fieldsets for adding and editing users
     fieldsets = (
@@ -187,6 +230,14 @@ class UserAdmin(OldUserAdmin):
     )
 
     readonly_fields = ("last_login", "date_joined")
+    list_filter = OldUserAdmin.list_filter + (UserLastNameFilter,)
+    list_display = ("username", "email", "first_name", "nhom_ht", "is_staff")
+    
+    def nhom_ht(self, obj):
+        return obj.last_name
+    
+    nhom_ht.short_description = _("NHÓM HT")
+    nhom_ht.admin_order_field = "last_name"
 
     def get_readonly_fields(self, request, obj=None):
         fields = self.readonly_fields
@@ -199,3 +250,4 @@ class UserAdmin(OldUserAdmin):
                 "user_permissions",
             )
         return fields
+

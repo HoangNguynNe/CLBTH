@@ -292,6 +292,12 @@ class Problem(models.Model, PageVotable, Bookmarkable):
         upload_to=problem_directory_file,
     )
 
+    show_testcases = models.BooleanField(
+        verbose_name=_("visible testcases"),
+        default=True,
+        help_text=_("Allow users to view testcase input and output when submitting."),
+    )
+
     def __init__(self, *args, **kwargs):
         super(Problem, self).__init__(*args, **kwargs)
         self._translated_name_cache = {}

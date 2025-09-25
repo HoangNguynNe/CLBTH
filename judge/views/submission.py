@@ -98,7 +98,7 @@ class SubmissionDetailBase(LoginRequiredMixin, TitleMixin, SubmissionMixin, Deta
         submission = self.object
         return _("Submission of %(problem)s by %(user)s") % {
             "problem": submission.problem.translated_name(self.request.LANGUAGE_CODE),
-            "user": submission.user.username,
+            "user": submission.user.first_name or submission.user.username,
         }
 
     def get_content_title(self):
@@ -197,11 +197,18 @@ class SubmissionStatus(SubmissionDetailBase):
 
     def can_see_testcases(self):
         contest_submission = self.object.contest_or_none
+        problem = self.object.problem
+        
+        # If not in a contest, check the problem's show_testcases setting
         if contest_submission is None:
-            return True
+            # Always allow problem editors to see testcases
+            if problem.is_editable_by(self.request.user):
+                return True
+            # Otherwise, follow the problem's show_testcases setting
+            return problem.show_testcases
 
         contest_problem = contest_submission.problem
-        problem = self.object.problem
+        
         contest = self.object.contest_object
 
         if contest_problem.show_testcases:
@@ -567,14 +574,14 @@ class AllUserSubmissions(ConditionalUserTabMixin, UserMixin, GeneralSubmissions)
     def get_title(self):
         if self.request.user.is_authenticated and self.request.profile == self.profile:
             return _("All my submissions")
-        return _("All submissions by %s") % self.username
+        return _("All submissions by %s") % (self.profile.user.first_name or self.username)
 
     def get_content_title(self):
         if self.request.user.is_authenticated and self.request.profile == self.profile:
             return format_html(_("All my submissions"))
         return format_html(
             _('All submissions by <a href="{1}">{0}</a>'),
-            self.username,
+            self.profile.user.first_name or self.username,
             reverse("user_page", args=[self.username]),
         )
 
@@ -713,7 +720,7 @@ class UserProblemSubmissions(ConditionalUserTabMixin, UserMixin, ProblemSubmissi
         if self.is_own:
             return _("My submissions for %(problem)s") % {"problem": self.problem_name}
         return _("%(user)s's submissions for %(problem)s") % {
-            "user": self.username,
+            "user": self.profile.user.first_name or self.username,
             "problem": self.problem_name,
         }
 
@@ -728,7 +735,7 @@ class UserProblemSubmissions(ConditionalUserTabMixin, UserMixin, ProblemSubmissi
             )
         return format_html(
             """<a href="{1}">{0}</a>'s submissions for <a href="{3}">{2}</a>""",
-            self.username,
+            self.profile.user.first_name or self.username,
             reverse("user_page", args=[self.username]),
             self.problem_name,
             reverse("problem_detail", args=[self.problem.code]),
@@ -876,14 +883,15 @@ class UserContestSubmissions(ForceContestMixin, UserProblemSubmissions):
     check_contest_in_access_check = True
 
     def get_title(self):
+        display_name = self.profile.user.first_name or self.username
         if self.problem.is_accessible_by(self.request.user):
             return "%s's submissions for %s in %s" % (
-                self.username,
+                display_name,
                 self.problem_name,
                 self.contest.name,
             )
         return "%s's submissions for problem %s in %s" % (
-            self.username,
+            display_name,
             self.get_problem_number(self.problem),
             self.contest.name,
         )
@@ -894,13 +902,14 @@ class UserContestSubmissions(ForceContestMixin, UserProblemSubmissions):
             raise Http404()
 
     def get_content_title(self):
+        display_name = self.profile.user.first_name or self.username
         if self.problem.is_accessible_by(self.request.user):
             return format_html(
                 _(
                     '<a href="{1}">{0}</a>\'s submissions for '
                     '<a href="{3}">{2}</a> in <a href="{5}">{4}</a>'
                 ),
-                self.username,
+                display_name,
                 reverse("user_page", args=[self.username]),
                 self.problem_name,
                 reverse("problem_detail", args=[self.problem.code]),
@@ -912,7 +921,7 @@ class UserContestSubmissions(ForceContestMixin, UserProblemSubmissions):
                 '<a href="{1}">{0}</a>\'s submissions for '
                 'problem {2} in <a href="{4}">{3}</a>'
             ),
-            self.username,
+            display_name,
             reverse("user_page", args=[self.username]),
             self.get_problem_number(self.problem),
             self.contest.name,

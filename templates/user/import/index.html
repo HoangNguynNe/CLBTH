@@ -97,7 +97,7 @@
 {% block body %}
   {% csrf_token %}
   <center>
-    <label for="csv_file">{{_('User File')}}:</label>
+    <label for="csv_file">{{_('User File')}}  (UTF-8 encoding):</label>
     <input type="file" accept=".csv" id="csv_file">
     <a href="{{url('import_users_sample')}}">{{_('Sample')}}</a>
     <div style="display: inline-flex">
