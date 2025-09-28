@@ -478,6 +478,52 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, TitleMixin, ListVi
         context["users"] = ranker(
             context["users"], rank=self.paginate_by * (context["page_obj"].number - 1)
         )
+
+        # Add top 5 with proper ranking for first page
+        if context["page_obj"].number == 1:
+            top_5_queryset = Profile.objects.filter(is_unlisted=False).order_by(
+                "-performance_points", "id"
+            )[:5]
+
+            # Calculate ranks for top 5
+            top_5_with_ranks = []
+            current_rank = 1
+            prev_points = None
+
+            for i, profile in enumerate(top_5_queryset):
+                user_points = (
+                    float(profile.performance_points)
+                    if profile.performance_points
+                    else 0.0
+                )
+
+                if prev_points is not None and user_points != prev_points:
+                    current_rank = i + 1
+
+                rank_text = str(current_rank) + (
+                    "ST"
+                    if current_rank == 1
+                    else "ND"
+                    if current_rank == 2
+                    else "RD"
+                    if current_rank == 3
+                    else "TH"
+                )
+
+                top_5_with_ranks.append(
+                    {
+                        "user": profile,
+                        "rank": current_rank,
+                        "rank_text": rank_text,
+                        "position": i + 1,
+                        "points": user_points,
+                    }
+                )
+
+                prev_points = user_points
+
+            context["top_5_with_ranks"] = top_5_with_ranks
+
         context["first_page_href"] = "."
         context["page_type"] = "friends" if self.filter_friend else "list"
         context.update(self.get_sort_context())

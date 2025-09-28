@@ -9,6 +9,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 import judge
+from judge import template_context
 from judge.utils.problems import finished_submission
 from judge.utils import users
 from .models import (
@@ -171,7 +172,7 @@ def contest_submission_update(sender, instance, **kwargs):
 
 @receiver(post_save, sender=NavigationBar)
 def navbar_update(sender, instance, **kwargs):
-    judge.template_context._nav_bar.dirty()
+    template_context._nav_bar.dirty()
 
 
 @receiver(post_save, sender=Solution)
