@@ -16,10 +16,6 @@ Clone to [LQDOJ](https://lqdoj.edu.vn)
 
 ## Installation
 
-Most of the setup are the same as DMOJ installations. You can view the installation guide of DMOJ here: https://docs.dmoj.ca/#/site/installation.
-There is one minor change: Instead of `git clone https://github.com/DMOJ/site.git`, you clone this repo `git clone https://github.com/LQDJudge/online-judge.git`.
-
-
 - Bước 1: cài các thư viện cần thiết
     - $ ở đây nghĩa là sudo. Ví dụ dòng đầu nghĩa là chạy lệnh `sudo apt update`
 
@@ -55,16 +51,16 @@ mariadb> exit
     - Nếu `pip3 install mysqlclient` bị lỗi thì thử chạy `pip3 install mysqlclient==2.1.1`
 
 ```jsx
-$ python3 -m venv dmojsite
+$ python3 -m venv clbthoj
 $ . dmojsite/bin/activate
 
-(dmojsite) $ git clone https://github.com/LQDJudge/online-judge.git
-(dmojsite) $ cd online-judge
-(dmojsite) $ git submodule init
-(dmojsite) $ git submodule update
-(dmojsite) $ pip3 install -r requirements.txt
-(dmojsite) $ pip3 install mysqlclient
-(dmojsite) $ pre-commit install
+(clbthoj) $ git clone https://github.com/HoangNguynNe/CLBTH.git
+(clbthoj) $ cd online-judge
+(clbthoj) $ git submodule init
+(clbthoj) $ git submodule update
+(clbthoj) $ pip3 install -r requirements.txt
+(clbthoj) $ pip3 install mysqlclient
+(clbthoj) $ pre-commit install
 ```
 
 - Bước 5: tạo local_settings.py. Đây là file để custom setting cho Django. Các bạn tạo file vào `online-judge/dmoj/local_settings.py`
@@ -78,19 +74,19 @@ $ . dmojsite/bin/activate
     - Note: Sau khi chạy lệnh này, folder tương ứng với STATIC_ROOT trong local_settings phải được tạo. Nếu chưa được tạo thì mình cần tạo folder đó trước khi chạy 2 lệnh đầu.
 
 ```jsx
-(dmojsite) $ ./make_style.sh
-(dmojsite) $ python3 manage.py collectstatic
-(dmojsite) $ python3 manage.py compilemessages
-(dmojsite) $ python3 manage.py compilejsi18n
+(clbthoj) $ ./make_style.sh
+(clbthoj) $ python3 manage.py collectstatic
+(clbthoj) $ python3 manage.py compilemessages
+(clbthoj) $ python3 manage.py compilejsi18n
 ```
 
 - Bước 7: Thêm dữ liệu vào DB
 
 ```jsx
-(dmojsite) $ python3 manage.py migrate
-(dmojsite) $ python3 manage.py loaddata navbar
-(dmojsite) $ python3 manage.py loaddata language_small
-(dmojsite) $ python3 manage.py loaddata demo
+(clbthoj) $ python3 manage.py migrate
+(clbthoj) $ python3 manage.py loaddata navbar
+(clbthoj) $ python3 manage.py loaddata language_small
+(clbthoj) $ python3 manage.py loaddata demo
 ```
 
 - Bước 8: Chạy site. Đến đây thì cơ bản đã hoàn thành (chưa có judge, websocket, celery). Các bạn có thể truy cập tại `localhost:8000`
@@ -119,197 +115,3 @@ location /profile_images/ {
 6. Quy trình dev:
     1. Sau khi thay đổi code thì django tự build lại, các bạn chỉ cần F5
     2. Một số style nằm trong các file .scss. Các bạn cần recompile css thì mới thấy được thay đổi.
-
-**Optional:**
-
-************Alias:************ Các bạn có thể lưu các alias này để sau này dùng cho nhanh
-
-- mtrans: để generate translation khi các bạn add một string trong code
-- trans: compile translation (sau khi bạn đã dịch tiếng Việt)
-- cr: chuyển tới folder OJ
-- pr: chạy server
-- sm: restart service (chủ yếu dùng cho WSL)
-- sd: activate virtual env
-- css: compile các file css
-
-```jsx
-alias mtrans='python3 manage.py makemessages -l vi && python3 manage.py makedmojmessages -l vi'
-alias pr='python3 manage.py runserver'
-alias sd='source ~/LQDOJ/dmojsite/bin/activate'
-alias sm='sudo service mysql restart && sudo service redis-server start && sudo service memcached start'
-alias trans='python3 manage.py compilemessages -l vi && python3 manage.py compilejsi18n -l vi'
-alias cr='cd ~/LQDOJ/online-judge'
-alias css='./make_style.sh && python3 manage.py collectstatic --noinput'
-```
-
-**Memcached:** dùng cho in-memory cache
-
-```jsx
-$ sudo apt install memcached
-```
-
-**Websocket:** dùng để live update (như chat)
-
-- Tạo file online-judge/websocket/config.js
-
-```jsx
-module.exports = {
-    get_host: '127.0.0.1',
-    get_port: 15100,
-    post_host: '127.0.0.1',
-    post_port: 15101,
-    http_host: '127.0.0.1',
-    http_port: 15102,
-    long_poll_timeout: 29000,
-};
-```
-
-- Cài các thư viện
-
-```jsx
-(dmojsite) $ npm install qu ws simplesets
-(dmojsite) $ pip3 install websocket-client
-```
-
-- Khởi động (trong 1 tab riêng)
-
-```jsx
-(dmojsite) $ node websocket/daemon.js
-```
-
-**************Celery:************** (dùng cho một số task như batch rejudge_
-
-```jsx
-celery -A dmoj_celery worker
-```
-
-**************Judge:**************
-
-- Cài đặt ở 1 folder riêng bên ngoài site:
-
-```jsx
-$ apt install python3-dev python3-pip build-essential libseccomp-dev
-$ git clone https://github.com/LQDJudge/judge-server.git
-$ cd judge-server
-$ sudo pip3 install -e .
-```
-
-- Tạo một file judge.yml ở bên ngoài folder judge-server (file mẫu https://github.com/DMOJ/docs/blob/master/sample_files/judge_conf.yml)
-- Thêm judge vào site bằng UI: Admin → Judge → Thêm Judge → nhập id và key (chỉ cần thêm 1 lần) hoặc dùng lệnh `(dmojsite) $ python3 managed.py addjudge <id> <key>`.
-- Chạy Bridge (cầu nối giữa judge và site) trong 1 tab riêng trong folder online-judge:
-
-```jsx
-(dmojsite) $ python3 managed.py runbridged
-```
-
-- Khởi động Judge (trong 1 tab riêng):
-
-```jsx
-$ dmoj -c judge.yml localhost
-```
-
-- Lưu ý: mỗi lần sau này muốn chạy judge thì mở 1 tab cho bridge và n tab cho judge. Mỗi judge cần 1 file yml khác nhau (chứa authentication khác nhau)
-
-### Some frequent difficulties when installation:
-
-1. Missing the `local_settings.py`. You need to copy the `local_settings.py` in order to pass the check.
-2. Missing the problem folder in `local_settings.py`. You need to create a folder to contain all problem packages and configure in `local_settings.py`.
-3. Missing static folder in `local_settings.py`. Similar to problem folder, make sure to configure `STATIC_FILES` inside `local_settings.py`. 
-4. Missing configure file for judges. Each judge must have a seperate configure file. To create this file, you can run `python dmojauto-conf`. Checkout all sample files here https://github.com/DMOJ/docs/blob/master/sample_files.
-5. Missing timezone data for SQL. If you're using Ubuntu and you're following DMOJ's installation guide for the server, and you are getting the error mentioned in https://github.com/LQDJudge/online-judge/issues/45, then you can follow this method to fix:
-```
-mysql
--- You may have to do this if you haven't set root password for MySQL, replace mypass with your password
--- SET PASSWORD FOR 'root'@'localhost' = PASSWORD('mypass');
--- FLUSH PRIVILEGES;
-exit
-mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -D mysql -u root -p 
-mysql -u root -p -e "flush tables;" mysql
-```
-6. Missing the chat secret key, you must generate a Fernet key, and assign a variable in `local_settings.py` like this
-```python
-CHAT_SECRET_KEY = "81HqDtbqAywKSOumSxxxxxxxxxxxxxxxxx="
-```
-
-
-## Usage
-
-Suppose you finished all the installation. Everytime you want to run a local server, follow these steps:
-
-1. Activate virtualenv:
-```bash
-source dmojsite/bin/activate
-```
-
-2. Run server:
-```bash
-python3 manage.py runserver 0.0.0.0:8000
-```
-
-3. Create a bridge (this is opened in a different terminal with the second step if you are using the same machine)
-```bash
-python3 manage.py runbridged
-```
-
-4. Create a judge (another terminal)
-```bash
-dmoj 0.0.0.0 -p 9999 -c <path to yml configure file>
-```
-Here we suppose you use the default port 9999 for bridge in `settings.py`. You can create multiple judges, each should be in a seperate terminal.
-
-**Optional**
-
-5. Run celery worker (This is server's queue. It may be necessary in some functions)
-```bash
-celery -A dmoj_celery worker
-```
-
-6. Run a live event server (So everything is updated lively like in the production)
-```bash
-node websocket/daemon.js
-```
-
-7. To use subdomain for each organization, go to admin page -> navigation bar -> sites, add domain name (e.g, "localhost:8000"). Then go to add `USE_SUBDOMAIN = True` to local_settings.py.
-
-## Deploy
-Most of the steps are similar to Django tutorials. Here are two usual steps:
-
-1. Update vietnamese translation:
- - If you add any new phrases in the code, ```python3 manage.py makemessages```
- - go to `locale/vi`
- - modify `.po` file
- - ```python3 manage.py compilemessages```
- - ```python3 manage.py compilejsi18n```
-
-2. Update styles (using SASS)
- - Change .css/.scss files in `resources` folder
- - ```./make_style.sh && python3 manage.py collectstatic```
- - Sometimes you need to press `Ctrl + F5` to see the new user interface in browser.
- 
-## Screenshots
-
-### Leaderboard
-
-Leaderboard with information about contest rating, performance points and real name of all users.
-
-![](https://raw.githubusercontent.com/emladevops/LQDOJ-image/main/brave_SK67WA26FA.png#gh-light-mode-only)
-![](https://raw.githubusercontent.com/emladevops/LQDOJ-image/main/brave_cmqqCnwaFc.png#gh-dark-mode-only)
-
-### Admin dashboard
-
-Admin dashboard helps you easily managing problems, users, contests and blog posts.
-
-![](https://i.imgur.com/iccr3mh.png)
-
-### Statement editor
-
-You can write the problems' statement in Markdown with LaTeX figures and formulas supported.
-
-![](https://i.imgur.com/CQVC754.png)
-
-### Chat
-
-Users can communicate with each other and can see who's online.
-
-![](https://raw.githubusercontent.com/emladevops/LQDOJ-image/main/brave_kPsC5bJluc.png#gh-light-mode-only)
-![](https://raw.githubusercontent.com/emladevops/LQDOJ-image/main/brave_AtrEzXzEAx.png#gh-dark-mode-only)
