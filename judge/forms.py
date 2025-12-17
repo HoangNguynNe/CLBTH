@@ -9,8 +9,9 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, EmailValidator
 from django.db.models import Q
 from django.forms import (
     CharField,
@@ -423,16 +424,112 @@ class NewMessageForm(ModelForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
+    email_validator = EmailValidator(message=_("Định dạng email không hợp lệ."))
+    username_validator = UnicodeUsernameValidator(
+        message=("Username chỉ gồm chữ, số và @/./+/-/_ (tối đa 150 ký tự).")
+    )
+    error_messages = {
+        "invalid_login": _("Sai username hoặc mật khẩu."),
+        "inactive": _("Tài khoản của bạn hiện không hoạt động."),
+    }
+
     def __init__(self, *args, **kwargs):
         super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
         self.fields["username"].widget.attrs.update(
-            {"placeholder": _("Username/Email")}
+            {
+                "placeholder": _("Username/Email"),
+                "autocomplete": "username",
+                "required": "required",
+                "autofocus": "autofocus",
+                "class": "text-input",
+            }
         )
-        self.fields["password"].widget.attrs.update({"placeholder": _("Password")})
+        self.fields["password"].widget.attrs.update(
+            {
+                "placeholder": _("Password"),
+                "autocomplete": "current-password",
+                "required": "required",
+                "class": "text-input",
+            }
+        )
 
         self.has_google_auth = self._has_social_auth("GOOGLE_OAUTH2")
         self.has_facebook_auth = self._has_social_auth("FACEBOOK")
         self.has_github_auth = self._has_social_auth("GITHUB_SECURE")
+
+    def clean_username(self):
+        username = (self.cleaned_data.get("username") or "").strip()
+
+        if not username:
+            raise ValidationError(_("Vui lòng nhập username."), code="required")
+
+        if " " in username:
+            raise ValidationError(
+                _("Username không được chứa khoảng trắng."), code="invalid"
+            )
+
+        if "@" in username:
+            self.email_validator(username)
+        else:
+            if len(username) > 150:
+                raise ValidationError(
+                    _("Username tối đa 150 ký tự."), code="max_length"
+                )
+            self.username_validator(username)
+
+        return username
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password") or ""
+
+        if not password:
+            raise ValidationError(_("Vui lòng nhập password."), code="required")
+
+        if len(password) < 8:
+            raise ValidationError(
+                _("Password phải có tối thiểu 8 ký tự."), code="min_length"
+            )
+
+        return password
+
+    def clean(self):
+        cleaned_data = super(AuthenticationForm, self).clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        if username and password:
+            user_qs = User.objects.filter(Q(username=username) | Q(email=username))
+            user = user_qs.first()
+
+            if not user:
+                raise ValidationError(_("Sai username."), code="invalid_username")
+
+            is_admin = user.is_staff or user.is_superuser
+
+            if not user.is_active:
+                raise ValidationError(self.error_messages["inactive"], code="inactive")
+
+            if not user.check_password(password):
+                if is_admin:
+                    raise ValidationError(
+                        self.error_messages["invalid_login"], code="invalid_login"
+                    )
+                raise ValidationError(_("Sai mật khẩu."), code="invalid_password")
+
+            # Only if password is correct we continue to login
+            self.confirm_login_allowed(user)
+            self.user_cache = user
+            backend_path = next(
+                (
+                    b
+                    for b in settings.AUTHENTICATION_BACKENDS
+                    if "CustomModelBackend" in b
+                ),
+                settings.AUTHENTICATION_BACKENDS[0],
+            )
+            self.user_cache.backend = backend_path
+
+        return cleaned_data
 
     def _has_social_auth(self, key):
         return getattr(settings, "SOCIAL_AUTH_%s_KEY" % key, None) and getattr(

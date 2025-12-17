@@ -1,52 +1,252 @@
 {% extends "base.html" %}
 
 {% block body %}
-  <div id="login-panel">
-    <form action="" method="post" class="form-area" style="width: 150%;">
-      {% csrf_token %}
-      {% if form.errors %}
-        <div id="form-errors">
-          <p class="error">{{ _('Invalid username/email or password.') }}</p>
+  <div class="login-shell">
+    <div class="login-card">
+      <h2 class="login-title">{{ _('Đăng nhập') }}</h2>
+
+      {% set non_field_errors = form.non_field_errors() %}
+      {% if non_field_errors %}
+        <div class="alert alert-error" role="alert">
+          {% for error in non_field_errors %}
+            <div>{{ error }}</div>
+          {% endfor %}
         </div>
       {% endif %}
-        <tr>
-          <label style="display: block;padding: 8px 0px;font-family: 'Play',sans-serif;font-size: 18px;font-weight: bold;" for="username">
-            Tên truy cập
-        </label>
-          <td>{{ form.username }}
-          </td>
-        </tr>
-        <tr>
-          <label style="display: block;padding: 8px 2px;font-family: 'Play',sans-serif;font-size: 17px;font-weight: bold;" for="username">
-            Mật khẩu
-        </label>
-          <td>{{ form.password }}
-          </td>
-        </tr>
-      <hr>
-      <a href="{{ url('password_reset') }}" style="float: right;">{{ _('Forgot your password?') }}</a>
-      <button class="btn-donate" style="float:left; width: -webkit-fill-available;" type="submit">{{ _('Login!') }}</button>
-      <input type="hidden" name="next" value="{{ next }}">
-      </form>
-    <br>
 
-    {% if form.has_google_auth or form.has_facebook_auth or form.has_github_auth %}
-      <h4>{{ _('Or log in with...') }}</h4>
-      {% if form.has_google_auth %}
-        <a href="{{ url('social:begin', "google-oauth2") }}?next={{ next }}" class="social google-icon">
-          <i class="fab fa-square-google-plus"></i>
-        </a>
+      <div id="client-errors" class="alert alert-error hidden" role="alert"></div>
+
+      <form action="" method="post" class="form-area" id="login-form" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div class="field-row{% if form.username.errors %} has-error{% endif %}">
+          <label class="field-label" for="{{ form.username.id_for_label }}">Tên truy cập</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="field-errors">
+              {% for error in form.username.errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="field-row{% if form.password.errors %} has-error{% endif %}">
+          <label class="field-label" for="{{ form.password.id_for_label }}">Mật khẩu</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+            <div class="field-errors">
+              {% for error in form.password.errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-actions">
+          <a class="text-link" href="{{ url('password_reset') }}">{{ _('Forgot your password?') }}</a>
+          <button class="btn-donate" type="submit">{{ _('Login!') }}</button>
+        </div>
+      </form>
+
+      {% if form.has_google_auth or form.has_facebook_auth or form.has_github_auth %}
+        <div class="social-login">
+          <h4>{{ _('Or log in with...') }}</h4>
+          {% if form.has_google_auth %}
+            <a href="{{ url('social:begin', "google-oauth2") }}?next={{ next }}" class="social google-icon">
+              <i class="fab fa-square-google-plus"></i>
+            </a>
+          {% endif %}
+          {% if form.has_facebook_auth %}
+            <a href="{{ url('social:begin', "facebook") }}?next={{ next }}" class="social facebook-icon">
+              <i class="fab fa-facebook-square"></i>
+            </a>
+          {% endif %}
+          {% if form.has_github_auth %}
+            <a href="{{ url('social:begin', "github-secure") }}?next={{ next }}" class="social github-icon">
+              <i class="fab fa-github-square"></i>
+            </a>
+          {% endif %}
+        </div>
       {% endif %}
-      {% if form.has_facebook_auth %}
-        <a href="{{ url('social:begin', "facebook") }}?next={{ next }}" class="social facebook-icon">
-          <i class="fab fa-facebook-square"></i>
-        </a>
-      {% endif %}
-      {% if form.has_github_auth %}
-        <a href="{{ url('social:begin', "github-secure") }}?next={{ next }}" class="social github-icon">
-          <i class="fab fa-github-square"></i>
-        </a>
-      {% endif %}
-    {% endif %}
+    </div>
   </div>
+
+  <style>
+    .login-shell {
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+      padding: 28px;
+    }
+
+    .login-title {
+      margin: 0 0 8px 0;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .login-subtext {
+      margin: 0 0 16px 0;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .field-row {
+      margin-bottom: 18px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .field-row.has-error .text-input {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.2);
+    }
+
+    .field-hint {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .field-errors {
+      margin-top: 8px;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .alert {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .text-link {
+      color: #2563eb;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    .btn-donate {
+      padding: 12px 18px;
+      min-width: 150px;
+    }
+
+    .social-login {
+      margin-top: 22px;
+      text-align: center;
+    }
+
+    .social-login h4 {
+      margin-bottom: 12px;
+    }
+
+    .social-login .social {
+      margin: 0 6px;
+    }
+  </style>
+
+  <script>
+    (function () {
+      var form = document.getElementById('login-form');
+      var errorBox = document.getElementById('client-errors');
+      var usernameInput = form.querySelector('[name="username"]');
+      var passwordInput = form.querySelector('[name="password"]');
+      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var usernamePattern = /^[\w.@+-]+$/;
+
+      form.addEventListener('submit', function (evt) {
+        var messages = [];
+        var username = (usernameInput.value || '').trim();
+        var password = passwordInput.value || '';
+
+        if (!username) {
+          messages.push('Vui lòng nhập username.');
+        } else if (username.indexOf(' ') !== -1) {
+          messages.push('Username không được chứa khoảng trắng.');
+        } else if (username.indexOf('@') !== -1) {
+          if (!emailPattern.test(username)) {
+            messages.push('Định dạng email không hợp lệ.');
+          }
+        } else {
+          if (username.length > 150) {
+            messages.push('Username tối đa 150 ký tự.');
+          } else if (!usernamePattern.test(username)) {
+            messages.push('Username chỉ gồm chữ, số và @/./+/-/_ .');
+          }
+        }
+
+        if (!password) {
+          messages.push('Vui lòng nhập password.');
+        } else if (password.length < 8) {
+          messages.push('Password phải có tối thiểu 8 ký tự.');
+        }
+
+        if (messages.length) {
+          evt.preventDefault();
+          errorBox.innerHTML = messages.map(function (msg) {
+            return '<div>' + msg + '</div>';
+          }).join('');
+          errorBox.classList.remove('hidden');
+          return;
+        }
+
+        errorBox.classList.add('hidden');
+      });
+    })();
+  </script>
 {% endblock %}
