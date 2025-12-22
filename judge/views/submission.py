@@ -198,7 +198,7 @@ class SubmissionStatus(SubmissionDetailBase):
     def can_see_testcases(self):
         contest_submission = self.object.contest_or_none
         problem = self.object.problem
-        
+
         # If not in a contest, check the problem's show_testcases setting
         if contest_submission is None:
             # Always allow problem editors to see testcases
@@ -208,7 +208,7 @@ class SubmissionStatus(SubmissionDetailBase):
             return problem.show_testcases
 
         contest_problem = contest_submission.problem
-        
+
         contest = self.object.contest_object
 
         if contest_problem.show_testcases:
@@ -574,7 +574,9 @@ class AllUserSubmissions(ConditionalUserTabMixin, UserMixin, GeneralSubmissions)
     def get_title(self):
         if self.request.user.is_authenticated and self.request.profile == self.profile:
             return _("All my submissions")
-        return _("All submissions by %s") % (self.profile.user.first_name or self.username)
+        return _("All submissions by %s") % (
+            self.profile.user.first_name or self.username
+        )
 
     def get_content_title(self):
         if self.request.user.is_authenticated and self.request.profile == self.profile:

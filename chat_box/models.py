@@ -60,6 +60,7 @@ class Message(models.Model):
     room = models.ForeignKey(
         Room, verbose_name="room id", on_delete=CASCADE, default=None, null=True
     )
+
     def save(self, *args, **kwargs):
         self.body = self.body.strip()
         super(Message, self).save(*args, **kwargs)

@@ -525,11 +525,13 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, TitleMixin, ListVi
                 rank_text = str(current_rank) + (
                     "ST"
                     if current_rank == 1
-                    else "ND"
-                    if current_rank == 2
-                    else "RD"
-                    if current_rank == 3
-                    else "TH"
+                    else (
+                        "ND"
+                        if current_rank == 2
+                        else "RD"
+                        if current_rank == 3
+                        else "TH"
+                    )
                 )
 
                 top_5_with_ranks.append(

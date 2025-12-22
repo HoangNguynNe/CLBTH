@@ -21,10 +21,10 @@ descriptions = [
 def csv_to_dict(csv_file):
     # Explicitly decode as UTF-8 to support Vietnamese characters
     try:
-        csv_content = csv_file.read().decode('utf-8')
+        csv_content = csv_file.read().decode("utf-8")
     except UnicodeDecodeError:
         # Fallback to utf-8-sig (BOM) if regular UTF-8 fails
-        csv_content = csv_file.read().decode('utf-8-sig')
+        csv_content = csv_file.read().decode("utf-8-sig")
 
     rows = csv.reader(csv_content.split("\n"))
     header = next(rows)

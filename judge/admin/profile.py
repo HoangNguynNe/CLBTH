@@ -21,8 +21,8 @@ class ProfileForm(ModelForm):
             ].queryset = self.instance.contest_history.select_related("contest").only(
                 "contest__name", "user_id", "virtual"
             )
-            self.fields["current_contest"].label_from_instance = (
-                lambda obj: "%s v%d" % (obj.contest.name, obj.virtual)
+            self.fields["current_contest"].label_from_instance = lambda obj: (
+                "%s v%d" % (obj.contest.name, obj.virtual)
                 if obj.virtual
                 else obj.contest.name
             )
@@ -63,7 +63,7 @@ class LastNameFilter(admin.SimpleListFilter):
         # Lấy tất cả các họ khác nhau từ User model, loại bỏ giá trị rỗng
         last_names = (
             User.objects.exclude(last_name__isnull=True)
-            .exclude(last_name__exact='')
+            .exclude(last_name__exact="")
             .values_list("last_name", "last_name")
             .distinct()
             .order_by("last_name")
@@ -196,7 +196,7 @@ class UserLastNameFilter(admin.SimpleListFilter):
         # Lấy tất cả các họ khác nhau từ User model, loại bỏ giá trị rỗng
         last_names = (
             User.objects.exclude(last_name__isnull=True)
-            .exclude(last_name__exact='')
+            .exclude(last_name__exact="")
             .values_list("last_name", "last_name")
             .distinct()
             .order_by("last_name")
@@ -232,10 +232,10 @@ class UserAdmin(OldUserAdmin):
     readonly_fields = ("last_login", "date_joined")
     list_filter = OldUserAdmin.list_filter + (UserLastNameFilter,)
     list_display = ("username", "email", "first_name", "nhom_ht", "is_staff")
-    
+
     def nhom_ht(self, obj):
         return obj.last_name
-    
+
     nhom_ht.short_description = _("NHÓM HT")
     nhom_ht.admin_order_field = "last_name"
 
@@ -250,4 +250,3 @@ class UserAdmin(OldUserAdmin):
                 "user_permissions",
             )
         return fields
-

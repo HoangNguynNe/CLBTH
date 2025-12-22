@@ -1054,9 +1054,9 @@ def make_contest_ranking_profile(
         points=points,
         cumtime=cumtime,
         tiebreaker=participation.tiebreaker,
-        participation_rating=participation.rating.rating
-        if hasattr(participation, "rating")
-        else None,
+        participation_rating=(
+            participation.rating.rating if hasattr(participation, "rating") else None
+        ),
         problem_cells=[
             contest.format.display_user_problem(
                 participation, contest_problem, show_final
