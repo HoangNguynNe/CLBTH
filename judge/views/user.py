@@ -453,6 +453,15 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, TitleMixin, ListVi
         return ret
 
     def get_queryset(self):
+        # Check if leaderboard is hidden
+        from judge.models import LeaderboardConfig
+
+        leaderboard_config = LeaderboardConfig.objects.first()
+        if leaderboard_config and leaderboard_config.is_hidden:
+            # Check if user is allowed to view
+            if not leaderboard_config.can_view(self.request.user):
+                return Profile.objects.none()
+
         queryset = (
             Profile.objects.filter(is_unlisted=False)
             .order_by(self.order, "id")
@@ -474,6 +483,19 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, TitleMixin, ListVi
 
     def get_context_data(self, **kwargs):
         context = super(UserList, self).get_context_data(**kwargs)
+
+        # Check if leaderboard is hidden
+        from judge.models import LeaderboardConfig
+
+        leaderboard_config = LeaderboardConfig.objects.first()
+        if leaderboard_config and leaderboard_config.is_hidden:
+            # Check if user is allowed to view
+            if not leaderboard_config.can_view(self.request.user):
+                context["leaderboard_hidden"] = True
+                context["leaderboard_message"] = leaderboard_config.hidden_message
+                return context
+
+        context["leaderboard_hidden"] = False
         Profile.prefetch_profile_cache([u.id for u in context["users"]])
         context["users"] = ranker(
             context["users"], rank=self.paginate_by * (context["page_obj"].number - 1)
@@ -553,6 +575,15 @@ def users(request):
 
 
 def user_ranking_redirect(request):
+    # Check if leaderboard is hidden
+    from judge.models import LeaderboardConfig
+
+    leaderboard_config = LeaderboardConfig.objects.first()
+    if leaderboard_config and leaderboard_config.is_hidden:
+        # Check if user is allowed to view
+        if not leaderboard_config.can_view(request.user):
+            return HttpResponseRedirect(reverse("user_list"))
+
     try:
         username = request.GET["handle"]
     except KeyError:

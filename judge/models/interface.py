@@ -15,7 +15,13 @@ from judge.models.pagevote import PageVotable
 from judge.models.bookmark import Bookmarkable
 from judge.caching import cache_wrapper
 
-__all__ = ["MiscConfig", "validate_regex", "NavigationBar", "BlogPost"]
+__all__ = [
+    "MiscConfig",
+    "validate_regex",
+    "NavigationBar",
+    "BlogPost",
+    "LeaderboardConfig",
+]
 
 
 class MiscConfig(models.Model):
@@ -141,3 +147,41 @@ class BlogPost(models.Model, PageVotable, Bookmarkable):
         permissions = (("edit_all_post", _("Edit all posts")),)
         verbose_name = _("blog post")
         verbose_name_plural = _("blog posts")
+
+
+class LeaderboardConfig(models.Model):
+    is_hidden = models.BooleanField(
+        default=False,
+        verbose_name=_("Hide leaderboard"),
+        help_text=_("Hide the leaderboard from public view"),
+    )
+    hidden_message = models.TextField(
+        blank=True,
+        default=_("Bảng xếp hạng đang được ẩn, vui lòng quay lại sau"),
+        verbose_name=_("Hidden message"),
+    )
+    allowed_users = models.ManyToManyField(
+        Profile,
+        blank=True,
+        related_name="can_view_hidden_leaderboard",
+        verbose_name=_("Allowed users"),
+        help_text=_("Users who can view the leaderboard even when it's hidden"),
+    )
+
+    def __str__(self):
+        return "Leaderboard Configuration"
+
+    def can_view(self, user):
+        """Check if a user can view the leaderboard when it's hidden"""
+        if not self.is_hidden:
+            return True
+        if not user or not user.is_authenticated:
+            return False
+        # Staff and superuser must also be in allowed_users to view
+        if hasattr(user, "profile"):
+            return self.allowed_users.filter(id=user.profile.id).exists()
+        return False
+
+    class Meta:
+        verbose_name = _("leaderboard configuration")
+        verbose_name_plural = _("leaderboard configuration")

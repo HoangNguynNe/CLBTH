@@ -27,8 +27,15 @@
 {% endblock %}
 
 {% block users_table %}
-  {% if page_obj.number == 1 %}
-    {% include "user/top-rank.html" %}
+  {% if leaderboard_hidden %}
+    <div style="text-align: center; padding: 50px 20px; background-color: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+      <i class="fa fa-lock" style="font-size: 48px; color: #6c757d; margin-bottom: 20px;"></i>
+      <h2 style="color: #495057; margin-bottom: 10px;">{{ leaderboard_message }}</h2>
+    </div>
+  {% else %}
+    {% if page_obj.number == 1 %}
+      {% include "user/top-rank.html" %}
+    {% endif %}
+    {% include "user/users-table.html" %}
   {% endif %}
-  {% include "user/users-table.html" %}
 {% endblock %}

@@ -15,6 +15,7 @@ from judge.admin.interface import (
     LogEntryAdmin,
     NavigationBarAdmin,
 )
+from judge.admin.leaderboard import LeaderboardConfigAdmin
 from judge.admin.organization import OrganizationAdmin, OrganizationRequestAdmin
 from judge.admin.problem import ProblemAdmin, ProblemPointsVoteAdmin
 from judge.admin.profile import ProfileAdmin, UserAdmin
@@ -40,6 +41,7 @@ from judge.models import (
     Language,
     License,
     MiscConfig,
+    LeaderboardConfig,
     NavigationBar,
     Organization,
     OrganizationRequest,
@@ -69,6 +71,7 @@ admin.site.register(Language, LanguageAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(MiscConfig)
+admin.site.register(LeaderboardConfig, LeaderboardConfigAdmin)
 admin.site.register(NavigationBar, NavigationBarAdmin)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(OrganizationRequest, OrganizationRequestAdmin)
