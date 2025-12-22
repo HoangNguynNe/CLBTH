@@ -1,0 +1,587 @@
+@import "snow";
+
+/* Christmas 2025 Theme Overrides */
+
+$christmas-red: #D42426;
+$christmas-green: #165B33;
+$christmas-gold: #F8B229;
+$snow-white: #F0F8FF;
+
+body {
+    background-color: #eef2f3 !important;
+    background-image: radial-gradient(#ffffff 15%, transparent 16%),
+    radial-gradient(#ffffff 15%, transparent 16%);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+}
+
+#nav-container {
+    background: $christmas-red !important;
+    border-bottom: 4px solid $christmas-gold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#nav-list > li > a {
+    color: white !important;
+    &:hover {
+        background-color: darken($christmas-red, 10%) !important;
+    }
+}
+
+.btn-primary {
+    background-color: $christmas-green !important;
+    border-color: darken($christmas-green, 10%) !important;
+
+    &:hover {
+        background-color: lighten($christmas-green, 5%) !important;
+    }
+}
+
+#content a {
+    color: $christmas-red;
+}
+
+footer {
+    background: $christmas-green !important;
+    color: white !important;
+
+    a {
+        color: $christmas-gold !important;
+    }
+}
+
+h1, h2, h3 {
+    color: $christmas-green;
+}
+
+.box {
+    border-top: 3px solid $christmas-red !important;
+}
+
+/* Side Menu Icons Synchronization */
+.link-row i, .info-float i {
+    color: $christmas-red !important;
+}
+
+/* Ringing Animation */
+@keyframes ring {
+    0% { transform: rotate(15deg); }
+    10% { transform: rotate(-10deg); }
+    20% { transform: rotate(10deg); }
+    30% { transform: rotate(-10deg); }
+    40% { transform: rotate(10deg); }
+    50% { transform: rotate(-10deg); }
+    60% { transform: rotate(10deg); }
+    70% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+    90% { transform: rotate(-10deg); }
+    100% { transform: rotate(15deg); }
+}
+
+/* Christmas Bells on Buttons */
+.btn-NopBai, .btn-donate {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -15px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        background-image: url('images/bell.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        pointer-events: none;
+        transform: rotate(15deg);
+        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        z-index: 10;
+        transform-origin: top center;
+    }
+
+    &:hover::after {
+        animation: ring 1.5s ease-in-out infinite;
+    }
+}
+
+/* Adjust for specific button sizes if needed */
+.btn-donate::after {
+    top: -10px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+}
+
+/* Left Sidebar Buttons (News, Comment, Ticket) */
+.left-sidebar-item {
+    border-radius: 15px !important;
+    margin-bottom: 10px !important;
+    border: 2px solid $christmas-gold !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: visible !important; /* Allow shadow to spill out */
+    background: white; /* Default background */
+
+    /* Icon styling */
+    .sidebar-icon i {
+        color: $christmas-red !important;
+        font-size: 1.2em;
+    }
+
+    /* Text styling */
+    .sidebar-text {
+        color: $christmas-green !important;
+        font-weight: bold;
+    }
+
+    /* Hover effect */
+    &:hover {
+        transform: translateX(5px);
+        box-shadow: 3px 3px 0px $christmas-red;
+        background-color: #fff5f5 !important;
+        z-index: 100; /* Ensure it pops over other elements */
+    }
+
+    /* Active state */
+    &.active {
+        background: linear-gradient(135deg, $christmas-red, darken($christmas-red, 10%)) !important;
+        border-color: white !important;
+        box-shadow: 0 4px 15px rgba(212, 36, 38, 0.4);
+        overflow: hidden !important; /* Keep snowflake inside for active state */
+
+        .sidebar-icon i, .sidebar-text {
+            color: white !important;
+        }
+
+        /* Add a little snowflake decoration to active item */
+        &::after {
+            content: '❄';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.3);
+            font-size: 1.5em;
+        }
+    }
+}
+
+/* Specific colors for each button type if desired,
+   but keeping them unified for the theme is often cleaner. 
+   Let's add subtle differences on hover/active if needed, 
+   or stick to the main theme colors. */
+
+#blog-tab {
+    border-left: 5px solid $christmas-red !important;
+}
+
+#comment-tab {
+    border-left: 5px solid $christmas-green !important;
+}
+
+#ticket-tab {
+    border-left: 5px solid $christmas-gold !important;
+}
+
+/* Fix for sidebar container clipping */
+@media (min-width: 800px) {
+    .left-sidebar {
+        overflow: visible !important; /* Allow items to pop out */
+        padding-right: 10px; /* Add space for the hover effect */
+    }
+}
+
+/* Profile Box Customization */
+.blog-sidebox {
+    border: 2px solid $christmas-gold !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+    margin-bottom: 20px;
+
+    h3 {
+        background: linear-gradient(to right, $christmas-red, darken($christmas-red, 10%)) !important;
+        color: white !important;
+        padding: 12px !important;
+        margin: 0 !important;
+        border-bottom: 4px solid $christmas-gold !important;
+        text-align: center;
+        font-family: 'Mountains of Christmas', cursive, sans-serif; /* If available, else fallback */
+        font-size: 1.5em;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+
+        i {
+            color: $christmas-gold !important;
+            margin-right: 10px;
+        }
+    }
+
+    .sidebox-content {
+        padding: 15px;
+        background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        position: relative;
+
+        /* Corner decoration */
+        &::before {
+            content: '❄';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            color: rgba(22, 91, 51, 0.1);
+            font-size: 2em;
+            pointer-events: none;
+        }
+
+        &::after {
+            content: '❄';
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            color: rgba(212, 36, 38, 0.1);
+            font-size: 1.5em;
+            pointer-events: none;
+        }
+    }
+}
+
+.profile-card {
+    .card-header {
+        text-align: center;
+        margin-bottom: 15px;
+        position: relative;
+
+        .avatar {
+            border: 3px solid $christmas-green;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 0 10px rgba(22, 91, 51, 0.3);
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05) rotate(5deg);
+            }
+        }
+
+        h4 {
+            margin-top: 10px;
+
+            a {
+                color: $christmas-red !important;
+                font-weight: bold;
+                text-decoration: none;
+                font-size: 1.2em;
+
+                &:hover {
+                    color: $christmas-green !important;
+                    text-shadow: 0 0 5px $christmas-gold;
+                }
+            }
+        }
+    }
+
+    .card-body {
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(22, 91, 51, 0.3);
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: rgba(248, 178, 41, 0.1);
+                padding-left: 5px;
+                padding-right: 5px;
+                border-radius: 5px;
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            /* Label column */
+            div:first-child {
+                color: $christmas-green;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+
+                i {
+                    color: $christmas-red !important;
+                    width: 24px;
+                    text-align: center;
+                    margin-right: 5px;
+                }
+            }
+
+            /* Value column */
+            .user-info-body, div:last-child:not(:first-child) {
+                color: $christmas-red;
+                font-weight: bold;
+                font-family: monospace;
+                font-size: 1.1em;
+            }
+        }
+    }
+}
+
+/* Login Page Customization */
+.login-card {
+    border: 3px solid $christmas-gold !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 25px rgba(22, 91, 51, 0.2) !important;
+    background: linear-gradient(to bottom right, #ffffff, #fff0f0) !important;
+    position: relative;
+    overflow: hidden;
+
+    /* Decorative corner ribbons */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: repeating-linear-gradient(
+            45deg,
+            $christmas-red,
+            $christmas-red 10px,
+            $snow-white 10px,
+            $snow-white 20px,
+            $christmas-green 20px,
+            $christmas-green 30px,
+            $snow-white 30px,
+            $snow-white 40px
+        );
+    }
+
+    .login-title {
+        color: $christmas-red !important;
+        font-family: 'Mountains of Christmas', cursive, sans-serif;
+        text-align: center;
+        font-size: 2.5em !important;
+        margin-bottom: 20px !important;
+        text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+
+        &::after {
+            content: ' 🎄';
+        }
+        &::before {
+            content: '🎄 ';
+        }
+    }
+
+    .field-row {
+        label {
+            color: $christmas-green !important;
+            font-weight: bold;
+        }
+
+        input {
+            border: 2px solid #ddd !important;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            transition: all 0.3s ease;
+
+            &:focus {
+                border-color: $christmas-red !important;
+                box-shadow: 0 0 8px rgba(212, 36, 38, 0.3) !important;
+            }
+        }
+    }
+
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .text-link {
+            color: $christmas-green !important;
+            text-decoration: none;
+            font-style: italic;
+
+            &:hover {
+                color: $christmas-red !important;
+                text-decoration: underline;
+            }
+        }
+
+        button[type="submit"], .btn-donate {
+            background: linear-gradient(to bottom, $christmas-red, darken($christmas-red, 10%)) !important;
+            border: 2px solid $christmas-gold !important;
+            color: white !important;
+            border-radius: 25px !important;
+            padding: 10px 30px !important;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+                background: linear-gradient(to bottom, lighten($christmas-red, 5%), $christmas-red) !important;
+            }
+
+            /* Add a bell icon via CSS if possible, or just rely on the text */
+            &::after {
+                content: ' 🔔';
+                display: inline-block;
+                animation: ring-bell 2s infinite ease-in-out;
+                transform-origin: top center;
+            }
+        }
+    }
+}
+
+/* Keyframes for bell animation */
+@keyframes ring-bell {
+    0% { transform: rotate(0); }
+    10% { transform: rotate(15deg); }
+    20% { transform: rotate(-15deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-10deg); }
+    50% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    70% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+
+/* Dark Mode Overrides */
+body.christmas-dark-mode {
+    .blog-sidebox {
+        background: #181a1b !important;
+        border-color: darken($christmas-gold, 20%) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+
+        h3 {
+            background: linear-gradient(to right, darken($christmas-red, 20%), darken($christmas-red, 30%)) !important;
+            border-bottom-color: darken($christmas-gold, 20%) !important;
+        }
+
+        .sidebox-content {
+            background: linear-gradient(to bottom, #181a1b, #202324) !important;
+
+            &::before, &::after {
+                opacity: 0.3;
+            }
+        }
+    }
+
+    .profile-card {
+        .card-header {
+            .avatar {
+                border-color: darken($christmas-green, 10%);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            }
+
+            h4 a {
+                color: lighten($christmas-red, 10%) !important;
+
+                &:hover {
+                    color: lighten($christmas-green, 10%) !important;
+                }
+            }
+        }
+
+        .card-body {
+            .user-info {
+                border-bottom-color: rgba(255, 255, 255, 0.1);
+
+                &:hover {
+                    background-color: rgba(248, 178, 41, 0.05);
+                }
+
+                div:first-child {
+                    color: lighten($christmas-green, 10%);
+
+                    i {
+                        color: lighten($christmas-red, 10%) !important;
+                    }
+                }
+
+                .user-info-body, div:last-child:not(:first-child) {
+                    color: lighten($christmas-red, 10%);
+                }
+            }
+        }
+    }
+
+    .login-card {
+        background: linear-gradient(to bottom right, #181a1b, #2a1a1a) !important;
+        border-color: darken($christmas-gold, 20%) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+
+        &::before {
+            opacity: 0.5;
+        }
+
+        .login-title {
+            color: lighten($christmas-red, 10%) !important;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+        }
+
+        .field-row {
+            label {
+                color: lighten($christmas-green, 10%) !important;
+            }
+
+            input {
+                background-color: #202324 !important;
+                border-color: #454a4d !important;
+                color: #e8e6e3 !important;
+
+                &:focus {
+                    border-color: $christmas-red !important;
+                    box-shadow: 0 0 8px rgba(212, 36, 38, 0.2) !important;
+                }
+            }
+        }
+
+        .form-actions {
+            .text-link {
+                color: lighten($christmas-green, 10%) !important;
+
+                &:hover {
+                    color: lighten($christmas-red, 10%) !important;
+                }
+            }
+        }
+    }
+}
+
+/* Enhanced Dark Mode Support */
+html.christmas-dark-mode body, body.christmas-dark-mode {
+    .blog-sidebox {
+        background: #181a1b !important;
+        border-color: darken($christmas-gold, 20%) !important;
+
+        h3 {
+            background: linear-gradient(to right, darken($christmas-red, 20%), darken($christmas-red, 30%)) !important;
+        }
+
+        .sidebox-content {
+            background: linear-gradient(to bottom, #181a1b, #202324) !important;
+        }
+    }
+
+    .login-card {
+        background: linear-gradient(to bottom right, #181a1b, #2a1a1a) !important;
+
+        .field-row input {
+            background-color: #202324 !important;
+            border-color: #454a4d !important;
+            color: #e8e6e3 !important;
+
+            &::placeholder {
+                color: #b2aba1 !important;
+            }
+        }
+
+        .login-title {
+            color: lighten($christmas-red, 10%) !important;
+        }
+    }
+}

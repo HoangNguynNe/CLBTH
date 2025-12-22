@@ -51,6 +51,9 @@
     <link rel="stylesheet" type="text/css" href="{{ static('markdown.css') }}">
     {% compress css %}
       <link rel="stylesheet" href="{{ static('style.css') }}">
+      {% if misc_config.christmas_theme %}
+        <link rel="stylesheet" href="{{ static('christmas.css') }}">
+      {% endif %}
       {% if INLINE_FONTAWESOME %}
         <link rel="stylesheet" href="{{ static('fontawesome/css/all.min.css') }}">
       {% endif %}
@@ -390,6 +393,12 @@
       <div id="bodyend">
         {% block bodyend %}{% endblock %}
       </div>
+      {% if misc_config.christmas_theme %}
+        <script>
+          window.use_darkmode = {{ 'true' if use_darkmode else 'false' }};
+        </script>
+        <script src="{{ static('christmas.js') }}"></script>
+      {% endif %}
       <script src="{{ static('katex_config.js') }}"></script>
       {% include "katex-load.html" %}
       {% block footer %}
@@ -401,8 +410,8 @@
               position: absolute;
               width: 100%;
             }
-    
-    
+
+
             #one
             {
               /*animation*/
@@ -412,36 +421,36 @@
               -o-animation: one 5s ease-in-out infinite alternate;
               animation: one 5s ease-in-out infinite alternate;
             }
-            @-webkit-keyframes 
+            @-webkit-keyframes
             one { from {
-            -webkit-box-shadow: 0 0 250px 20px #473C78;
+              -webkit-box-shadow: 0 0 250px 20px #473C78;
             }
-    
-            to { -webkit-box-shadow: 0 0 100px 15px #F72A3B; }
+
+              to { -webkit-box-shadow: 0 0 100px 15px #F72A3B; }
             }
-            @-moz-keyframes 
+            @-moz-keyframes
             one { from {
-            -moz-box-shadow: 0 0 250px 20px #473C78;
+              -moz-box-shadow: 0 0 250px 20px #473C78;
             }
-    
-            to { -moz-box-shadow: 0 0 100px 15px #F72A3B; }
+
+              to { -moz-box-shadow: 0 0 100px 15px #F72A3B; }
             }
-            @-o-keyframes 
+            @-o-keyframes
             one { from {
-            -o-box-shadow: 0 0 250px 20px #473C78;
+              -o-box-shadow: 0 0 250px 20px #473C78;
             }
-    
-            to { -o-box-shadow: 0 0 100px 15px #F72A3B; }
+
+              to { -o-box-shadow: 0 0 100px 15px #F72A3B; }
             }
-    
-            @keyframes 
+
+            @keyframes
             one { from {
-            box-shadow: 0 0 250px 20px #473C78;
+              box-shadow: 0 0 250px 20px #473C78;
             }
-    
-            to {box-shadow: 0 0 100px 15px #F72A3B; }
+
+              to {box-shadow: 0 0 100px 15px #F72A3B; }
             }
-    
+
             #two
             {
               width: 90%;
@@ -452,36 +461,36 @@
               -o-animation: two 4s ease-in-out infinite alternate;
               animation: two 4s ease-in-out infinite alternate;
             }
-            @-webkit-keyframes 
+            @-webkit-keyframes
             two { from {
-            -webkit-box-shadow: 0 0 250px 20px #18C499;
+              -webkit-box-shadow: 0 0 250px 20px #18C499;
             }
-    
-            to { -webkit-box-shadow: 0 0 100px 15px #D8F05E; }
+
+              to { -webkit-box-shadow: 0 0 100px 15px #D8F05E; }
             }
-            @-moz-keyframes 
+            @-moz-keyframes
             two { from {
-            -moz-box-shadow: 0 0 250px 20px #18C499;
+              -moz-box-shadow: 0 0 250px 20px #18C499;
             }
-    
-            to { -moz-box-shadow: 0 0 100px 15px #D8F05E; }
+
+              to { -moz-box-shadow: 0 0 100px 15px #D8F05E; }
             }
-            @-o-keyframes 
+            @-o-keyframes
             two { from {
-            -o-box-shadow: 0 0 250px 20px #18C499;
+              -o-box-shadow: 0 0 250px 20px #18C499;
             }
-    
-            to { -o-box-shadow: 0 0 100px 15px #D8F05E; }
+
+              to { -o-box-shadow: 0 0 100px 15px #D8F05E; }
             }
-    
-            @keyframes 
+
+            @keyframes
             two { from {
-            box-shadow: 0 0 250px 20px #18C499;
+              box-shadow: 0 0 250px 20px #18C499;
             }
-    
-            to { box-shadow: 0 0 100px 15px #D8F05E; }
+
+              to { box-shadow: 0 0 100px 15px #D8F05E; }
             }
-    
+
             #three
             {
               width: 80%;
@@ -492,36 +501,36 @@
               -o-animation: three 3s ease-in-out infinite alternate;
               animation: three 3s ease-in-out infinite alternate;
             }
-            @-webkit-keyframes 
+            @-webkit-keyframes
             three { from {
-            -webkit-box-shadow: 0 0 250px 20px #FFDD00;
+              -webkit-box-shadow: 0 0 250px 20px #FFDD00;
             }
-    
-            to { -webkit-box-shadow: 0 0 100px 15px #3E33FF; }
+
+              to { -webkit-box-shadow: 0 0 100px 15px #3E33FF; }
             }
-            @-moz-keyframes 
+            @-moz-keyframes
             three { from {
-            -moz-box-shadow: 0 0 250px 20px #FFDD00;
+              -moz-box-shadow: 0 0 250px 20px #FFDD00;
             }
-    
-            to { -moz-box-shadow: 0 0 100px 15px #3E33FF }
+
+              to { -moz-box-shadow: 0 0 100px 15px #3E33FF }
             }
-            @-o-keyframes 
+            @-o-keyframes
             three { from {
-            -o-box-shadow: 0 0 250px 20px #FFDD00;
+              -o-box-shadow: 0 0 250px 20px #FFDD00;
             }
-    
-            to { -o-box-shadow: 0 0 100px 15px #3E33FF }
+
+              to { -o-box-shadow: 0 0 100px 15px #3E33FF }
             }
-    
-            @keyframes 
+
+            @keyframes
             three { from {
-            box-shadow: 0 0 250px 20px #FFDD00;
+              box-shadow: 0 0 250px 20px #FFDD00;
             }
-    
-            to { box-shadow: 0 0 100px 15px #3E33FF }
+
+              to { box-shadow: 0 0 100px 15px #3E33FF }
             }
-    
+
             #four
             {
               width: 70%;
@@ -532,36 +541,36 @@
               -o-animation: four 2s ease-in-out infinite alternate;
               animation: four 2s ease-in-out infinite alternate;
             }
-            @-webkit-keyframes 
+            @-webkit-keyframes
             four { from {
-            -webkit-box-shadow: 0 0 250px 20px #781848;
+              -webkit-box-shadow: 0 0 250px 20px #781848;
             }
-    
-            to { -webkit-box-shadow: 0 0 100px 15px #F2BBE9; }
+
+              to { -webkit-box-shadow: 0 0 100px 15px #F2BBE9; }
             }
-            @-moz-keyframes 
+            @-moz-keyframes
             four { from {
-            -moz-box-shadow: 0 0 250px 20px #781848;
+              -moz-box-shadow: 0 0 250px 20px #781848;
             }
-    
-            to { -moz-box-shadow: 0 0 100px 15px #F2BBE9; }
+
+              to { -moz-box-shadow: 0 0 100px 15px #F2BBE9; }
             }
-            @-o-keyframes 
+            @-o-keyframes
             four { from {
-            -o-box-shadow: 0 0 250px 20px #781848;
+              -o-box-shadow: 0 0 250px 20px #781848;
             }
-    
-            to { -o-box-shadow: 0 0 100px 15px #F2BBE9; }
+
+              to { -o-box-shadow: 0 0 100px 15px #F2BBE9; }
             }
-    
-            @keyframes 
+
+            @keyframes
             four { from {
-            shadow: 0 0 250px 20px #781848;
+              shadow: 0 0 250px 20px #781848;
             }
-    
-            to { shadow: 0 0 100px 15px #F2BBE9; }
+
+              to { shadow: 0 0 100px 15px #F2BBE9; }
             }
-    
+
             #five
             {
               width: 60%;
@@ -572,34 +581,34 @@
               -o-animation: five 1s ease-in-out infinite alternate;
               animation: five 1s ease-in-out infinite alternate;
             }
-            @-webkit-keyframes 
+            @-webkit-keyframes
             five { from {
-            -webkit-box-shadow: 0 0 250px 20px #42F2A1;
+              -webkit-box-shadow: 0 0 250px 20px #42F2A1;
             }
-    
-            to { -webkit-box-shadow: 0 0 100px 15px #F4F6AD; }
+
+              to { -webkit-box-shadow: 0 0 100px 15px #F4F6AD; }
             }
-            @-moz-keyframes 
+            @-moz-keyframes
             five { from {
-            -moz-box-shadow: 0 0 250px 20px #42F2A1;
+              -moz-box-shadow: 0 0 250px 20px #42F2A1;
             }
-    
-            to { -moz-box-shadow: 0 0 100px 15px #F4F6AD; }
+
+              to { -moz-box-shadow: 0 0 100px 15px #F4F6AD; }
             }
-            @-o-keyframes 
+            @-o-keyframes
             five { from {
-            -o-box-shadow: 0 0 250px 20px #42F2A1;
+              -o-box-shadow: 0 0 250px 20px #42F2A1;
             }
-    
-            to { -o-box-shadow: 0 0 100px 15px #F4F6AD; }
+
+              to { -o-box-shadow: 0 0 100px 15px #F4F6AD; }
             }
-    
-            @keyframes 
+
+            @keyframes
             five { from {
-            box-shadow: 0 0 250px 20px #42F2A1;
+              box-shadow: 0 0 250px 20px #42F2A1;
             }
-    
-            to { box-shadow: 0 0 100px 15px #F4F6AD; }
+
+              to { box-shadow: 0 0 100px 15px #F4F6AD; }
             }
           </style>
 
@@ -620,18 +629,20 @@
                   {% endfor %}
                 </select>
               </form>
+              {% if misc_config.christmas_theme %}
                 <section id="one">
-                      <section id="two">
-                          <section id="three">
-                              <section id="four">
-                                  <section id="five">
-                                </section>
-                              </section>
-                          </section>
+                  <section id="two">
+                    <section id="three">
+                      <section id="four">
+                        <section id="five">
+                        </section>
                       </section>
                     </section>
-              </article>
+                  </section>
+                </section>
+              {% endif %}
             </article>
+          </article>
         </footer>
       {% endblock %}
     </div>
