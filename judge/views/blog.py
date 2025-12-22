@@ -83,9 +83,23 @@ class HomeFeedView(FeedView):
         Profile.prefetch_profile_cache([p.id for p in context["top_rated"]])
         Profile.prefetch_profile_cache([p.id for p in context["top_scorer"]])
 
+        # Check if leaderboard is hidden and user can view it
+        from judge.models import LeaderboardConfig
+
+        leaderboard_config = LeaderboardConfig.objects.first()
+        can_view_leaderboard = True
+        if leaderboard_config and leaderboard_config.is_hidden:
+            can_view_leaderboard = leaderboard_config.can_view(self.request.user)
+
+        context["can_view_leaderboard"] = can_view_leaderboard
+
         if self.request.user.is_authenticated:
-            context["rating_rank"] = get_rating_rank(self.request.profile)
-            context["points_rank"] = get_points_rank(self.request.profile)
+            if can_view_leaderboard:
+                context["rating_rank"] = get_rating_rank(self.request.profile)
+                context["points_rank"] = get_points_rank(self.request.profile)
+            else:
+                context["rating_rank"] = None
+                context["points_rank"] = None
 
             medals_list = get_awards(self.request.profile)
             context["awards"] = {
