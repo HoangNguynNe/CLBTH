@@ -212,32 +212,32 @@ button.btn-NopBai {
     border-radius: 5px;
     box-shadow: 0px 0 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s;
-  }
-  
-  button.btn-NopBai:hover {
+}
+
+button.btn-NopBai:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 20px rgb(97 173 247);
-  }
-  
-  button.btn-NopBai:active {
+}
+
+button.btn-NopBai:active {
     transform: scale(0.95);
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  button.btn-NopBai span {
+}
+
+button.btn-NopBai span {
     display: block;
     margin-left: 0.4em;
     transition: all 0.3s;
-  }
-  
-  button.btn-NopBai svg {
+}
+
+button.btn-NopBai svg {
     width: 34px;
     height: 34px;
     fill: white;
     transition: all 0.3s;
-  }
-  
-  button.btn-NopBai .svg-wrapper {
+}
+
+button.btn-NopBai .svg-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -246,13 +246,13 @@ button.btn-NopBai {
     border-radius: 50%;
     margin-right: 0.5em;
     transition: all 0.3s;
-  }
-  
-  
-  button.btn-NopBai:hover svg {
+}
+
+
+button.btn-NopBai:hover svg {
     transform: rotate(45deg);
-  }
-    
+}
+
 
 // Bootstrap-y copy button
 .btn-clipboard {
@@ -979,19 +979,19 @@ button:hover, button:focus {
     border-radius: var(--radii);
     color: var(--btn-bg-color);
     box-shadow: 0px 0px 20px rgba(71, 184, 255, 0.5), 0px 5px 5px -1px rgba(58, 125, 233, 0.25), inset 4px 4px 8px rgba(175, 230, 255, 0.5), inset -4px -4px 8px rgba(19, 95, 216, 0.35);
-  }
-  
-  .btn-donate:hover {
+}
+
+.btn-donate:hover {
     background-position: right top;
-  }
-  
-  .btn-donate:is(:focus, :focus-visible, :active) {
+}
+
+.btn-donate:is(:focus, :focus-visible, :active) {
     outline: none;
     box-shadow: 0 0 0 3px var(--btn-bg-color), 0 0 0 6px var(--btn-bg-2);
-  }
-  
-  @media (prefers-reduced-motion: reduce) {
+}
+
+@media (prefers-reduced-motion: reduce) {
     .btn-donate {
-      transition: linear;
+        transition: linear;
     }
-  }  
+}
