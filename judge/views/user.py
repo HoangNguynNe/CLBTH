@@ -161,10 +161,25 @@ class UserPage(TitleMixin, UserMixin, DetailView):
         rating = self.object.ratings.order_by("-contest__end_time")[:1]
         context["rating"] = rating[0] if rating else None
 
-        context["points_rank"] = get_points_rank(self.object)
+        # Check if leaderboard is hidden and user can view it
+        from judge.models import LeaderboardConfig
+
+        leaderboard_config = LeaderboardConfig.objects.first()
+        can_view_leaderboard = True
+        if leaderboard_config and leaderboard_config.is_hidden:
+            can_view_leaderboard = leaderboard_config.can_view(self.request.user)
+
+        context["can_view_leaderboard"] = can_view_leaderboard
+
+        if can_view_leaderboard:
+            context["points_rank"] = get_points_rank(self.object)
+            if rating:
+                context["rating_rank"] = get_rating_rank(self.object)
+        else:
+            context["points_rank"] = None
+            context["rating_rank"] = None
 
         if rating:
-            context["rating_rank"] = get_rating_rank(self.object)
             context["rated_users"] = Profile.objects.filter(
                 is_unlisted=False, rating__isnull=False
             ).count()
