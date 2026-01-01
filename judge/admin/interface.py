@@ -234,3 +234,63 @@ class LogEntryAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         return super().queryset(request).prefetch_related("content_type")
+
+
+class SiteMaintenanceForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SiteMaintenanceForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        widgets = {
+            "allowed_users": AdminHeavySelect2MultipleWidget(
+                data_view="profile_select2", attrs={"style": "width: 100%"}
+            ),
+        }
+
+
+class SiteMaintenanceAdmin(admin.ModelAdmin):
+    form = SiteMaintenanceForm
+    fieldsets = (
+        (
+            _("Trạng thái Website"),
+            {
+                "fields": ("is_closed", "closure_message"),
+            },
+        ),
+        (
+            _("Người dùng và nhóm được phép truy cập"),
+            {
+                "fields": ("allowed_users", "allowed_groups"),
+                "description": _(
+                    "Superuser luôn có quyền truy cập, không cần thêm vào đây."
+                ),
+            },
+        ),
+    )
+    filter_horizontal = ("allowed_groups",)
+    list_display = (
+        "__str__",
+        "is_closed",
+        "allowed_users_count",
+        "allowed_groups_count",
+    )
+
+    def allowed_users_count(self, obj):
+        return obj.allowed_users.count()
+
+    allowed_users_count.short_description = _("Số người dùng được phép")
+
+    def allowed_groups_count(self, obj):
+        return obj.allowed_groups.count()
+
+    allowed_groups_count.short_description = _("Số nhóm được phép")
+
+    def has_add_permission(self, request):
+        from judge.models import SiteMaintenance
+
+        if SiteMaintenance.objects.exists():
+            return False
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return False

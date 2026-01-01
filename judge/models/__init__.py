@@ -24,6 +24,7 @@ from judge.models.interface import (
     MiscConfig,
     NavigationBar,
     LeaderboardConfig,
+    SiteMaintenance,
     validate_regex,
 )
 from judge.models.message import PrivateMessage, PrivateMessageThread

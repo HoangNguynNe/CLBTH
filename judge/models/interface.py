@@ -10,6 +10,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+from django.contrib.auth.models import Group
+
 from judge.models.profile import Organization, Profile
 from judge.models.pagevote import PageVotable
 from judge.models.bookmark import Bookmarkable
@@ -21,6 +23,7 @@ __all__ = [
     "NavigationBar",
     "BlogPost",
     "LeaderboardConfig",
+    "SiteMaintenance",
 ]
 
 
@@ -185,3 +188,73 @@ class LeaderboardConfig(models.Model):
     class Meta:
         verbose_name = _("leaderboard configuration")
         verbose_name_plural = _("leaderboard configuration")
+
+
+class SiteMaintenance(models.Model):
+    """Model to manage site maintenance/closure mode"""
+
+    is_closed = models.BooleanField(
+        default=False,
+        verbose_name=_("Đóng website"),
+        help_text=_(
+            "Khi bật, website sẽ hiển thị trang đóng cửa cho người dùng không được phép"
+        ),
+    )
+    closure_message = models.TextField(
+        blank=True,
+        default=_("Website đang được bảo trì. Vui lòng quay lại sau."),
+        verbose_name=_("Thông báo đóng cửa"),
+        help_text=_("Thông báo hiển thị khi website đóng cửa"),
+    )
+    allowed_users = models.ManyToManyField(
+        Profile,
+        blank=True,
+        related_name="can_access_closed_site",
+        verbose_name=_("Người dùng được phép"),
+        help_text=_(
+            "Những người dùng có thể truy cập website khi đóng cửa (ngoài superuser)"
+        ),
+    )
+    allowed_groups = models.ManyToManyField(
+        Group,
+        blank=True,
+        related_name="can_access_closed_site",
+        verbose_name=_("Nhóm được phép"),
+        help_text=_("Các nhóm (roles) có thể truy cập website khi đóng cửa"),
+    )
+
+    def __str__(self):
+        status = _("Đang đóng") if self.is_closed else _("Đang mở")
+        return f"Trạng thái Website: {status}"
+
+    def can_access(self, user):
+        """Check if a user can access the site when it's closed"""
+        if not self.is_closed:
+            return True
+
+        if not user or not user.is_authenticated:
+            return False
+
+        if user.is_superuser:
+            return True
+
+        if (
+            hasattr(user, "profile")
+            and self.allowed_users.filter(id=user.profile.id).exists()
+        ):
+            return True
+
+        if self.allowed_groups.filter(id__in=user.groups.all()).exists():
+            return True
+
+        return False
+
+    @classmethod
+    def get_instance(cls):
+        """Get or create the singleton instance"""
+        instance, created = cls.objects.get_or_create(pk=1)
+        return instance
+
+    class Meta:
+        verbose_name = _("cấu hình bảo trì website")
+        verbose_name_plural = _("cấu hình bảo trì website")
