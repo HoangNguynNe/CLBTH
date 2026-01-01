@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <title>{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        /* Bảng màu Tết 2025 */
+        --primary-color: #d40000; /* Đỏ Tết */
+        --primary-hover: #a80000;
+        --gold-color: #ffd700; /* Vàng kim */
+        --text-main: #2c0a0a; /* Màu chữ nâu đỏ đậm */
+        --text-sub: #5c2b2b;
+        --glass-bg: rgba(255, 245, 230, 0.9); /* Nền kính ngả vàng ấm */
+        --glass-border: rgba(255, 215, 0, 0.5); /* Viền vàng */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Goldman', sans-serif;
+        background-color: #2c0a0a;
+        /* Nền gradient đỏ vàng rực rỡ */
+        background-image:
+        radial-gradient(at 0% 0%, hsla(359, 86%, 23%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 50%, hsla(45, 100%, 34%, 1) 0, transparent 60%),
+        radial-gradient(at 100% 100%, hsla(359, 86%, 28%, 1) 0, transparent 50%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* --- HIỆU ỨNG HOA RƠI SINH ĐỘNG --- */
+      .falling-petals {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .petal {
+        position: absolute;
+        top: -20px;
+        width: 15px;
+        height: 15px;
+        background-color: #ffb7c5; /* Màu hoa đào */
+        border-radius: 50% 0 50% 50%;
+        animation: falling linear infinite;
+      }
+      /* Hoa mai vàng xen kẽ */
+      .petal:nth-child(even) {
+        background-color: var(--gold-color);
+        border-radius: 50%;
+      }
+
+      /* Tạo ngẫu nhiên vị trí và thời gian rơi */
+      .petal:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+      .petal:nth-child(2) { left: 25%; animation-duration: 12s; animation-delay: 2s; }
+      .petal:nth-child(3) { left: 40%; animation-duration: 10s; animation-delay: 4s; }
+      .petal:nth-child(4) { left: 55%; animation-duration: 14s; animation-delay: 1s; }
+      .petal:nth-child(5) { left: 70%; animation-duration: 9s; animation-delay: 3s; }
+      .petal:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; }
+      .petal:nth-child(7) { left: 95%; animation-duration: 13s; animation-delay: 0.5s; }
+
+      @keyframes falling {
+        0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg) translateX(20px); opacity: 0; }
+      }
+
+      /* --- TRANG TRÍ LỒNG ĐÈN GÓC --- */
+      .lantern-decor {
+        position: absolute;
+        top: -20px;
+        width: 120px;
+        height: auto;
+        z-index: 2;
+        pointer-events: none;
+        animation: swing 3s ease-in-out infinite alternate;
+      }
+      .lantern-left { left: 20px; }
+      .lantern-right { right: 20px; animation-delay: -1.5s; }
+
+      @keyframes swing {
+        from { transform: rotate(-5deg); }
+        to { transform: rotate(5deg); }
+      }
+      /* Sử dụng SVG inline cho lồng đèn để không cần file ngoài */
+      .lantern-svg {
+        filter: drop-shadow(0 10px 10px rgba(255, 215, 0, 0.3));
+      }
+
+
+      /* --- CÁC ĐỐM SÁNG NỀN ẤM ÁP --- */
+      .ambient-light {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        /* Đổi sang ánh sáng vàng/cam ấm */
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, rgba(0,0,0,0) 70%);
+        border-radius: 50%;
+        animation: float 10s infinite ease-in-out;
+        z-index: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+      }
+      .ambient-light:nth-child(1) { top: -150px; left: -150px; }
+      /* Đốm thứ 2 màu đỏ cam */
+      .ambient-light:nth-child(2) {
+        bottom: -150px;
+        right: -150px;
+        animation-delay: -5s;
+        background: radial-gradient(circle, rgba(255, 69, 0, 0.25) 0%, rgba(0,0,0,0) 70%);
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, 50px) scale(1.1); }
+      }
+
+      /* --- CONTAINER CHÍNH --- */
+      .maintenance-container {
+        position: relative;
+        z-index: 10;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 2px solid var(--glass-border); /* Viền vàng đậm hơn */
+        border-radius: 32px;
+        padding: 50px 50px;
+        max-width: 550px;
+        width: 100%;
+        text-align: center;
+        box-shadow:
+        0 30px 60px -12px rgba(139, 0, 0, 0.5), /* Bóng đỏ */
+        0 0 0 2px rgba(255, 215, 0, 0.3) inset;
+        animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Thêm họa tiết vân mây chìm nhẹ */
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d40000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Header Tết 2025 */
+      .tet-header {
+        font-family: 'Great Vibes', cursive;
+        color: var(--primary-color);
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+      }
+
+      .icon-wrapper {
+        width: 100px;
+        height: 100px;
+        /* Gradient Vàng Đỏ */
+        background: linear-gradient(135deg, #fff7cc 0%, #ffcccc 100%);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px auto;
+        box-shadow:
+        0 15px 35px -10px rgba(212, 0, 0, 0.5),
+        0 0 0 4px rgba(255, 255, 255, 0.9) inset;
+        transform: rotate(-5deg);
+        transition: transform 0.3s ease;
+        border: 2px solid var(--gold-color);
+      }
+
+      .maintenance-container:hover .icon-wrapper {
+        transform: rotate(0deg) scale(1.05);
+      }
+
+      .maintenance-title {
+        font-family: 'Goldman', sans-serif;
+        font-size: 2.25rem;
+        color: var(--text-main);
+        margin-bottom: 16px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        /* Hiệu ứng chữ vàng viền đỏ */
+        background: linear-gradient(to right, var(--text-main), var(--primary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+      }
+
+      .maintenance-message {
+        font-size: 1.05rem;
+        color: var(--text-sub);
+        line-height: 1.7;
+        margin-bottom: 40px;
+        white-space: pre-line;
+        padding: 0 10px;
+        font-weight: 500;
+      }
+
+      /* Nút Đăng nhập phong cách Lì xì */
+      .login-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--primary-color); /* Nền đỏ */
+        color: var(--gold-color); /* Chữ vàng */
+        padding: 16px 40px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow:
+        0 10px 20px -5px rgba(212, 0, 0, 0.5),
+        0 0 0 2px var(--gold-color) inset; /* Viền vàng bên trong */
+        border: 1px solid transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Hiệu ứng bóng sáng quét qua nút */
+      .login-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), transparent);
+        transition: 0.5s;
+      }
+
+      .login-btn:hover {
+        transform: translateY(-3px);
+        background: var(--primary-hover);
+        box-shadow: 0 20px 35px -10px rgba(212, 0, 0, 0.6);
+        color: #fff;
+      }
+
+      .login-btn:hover::before {
+        left: 100%;
+      }
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      .site-name {
+        margin-top: 40px;
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.9;
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 480px) {
+        .maintenance-container {
+          padding: 40px 24px;
+          border-radius: 24px;
+        }
+        .maintenance-title {
+          font-size: 1.75rem;
+        }
+        .icon-wrapper {
+          width: 80px;
+          height: 80px;
+        }
+        .lantern-decor {
+          width: 80px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="falling-petals">
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+    </div>
+
+    <div class="lantern-decor lantern-left">
+      <svg class="lantern-svg" viewBox="0 0 155 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M77.5 0V40" stroke="#FFD700" stroke-width="4"/>
+        <rect x="60" y="40" width="35" height="10" rx="2" fill="#d40000"/>
+        <path d="M10 70C10 70 10 220 77.5 220C145 220 145 70 145 70" fill="#FF0000" stroke="#FFD700" stroke-width="4"/>
+        <path d="M10 70C10 70 77.5 50 145 70" fill="#d40000" stroke="#FFD700" stroke-width="4"/>
+        <rect x="60" y="220" width="35" height="10" rx="2" fill="#d40000"/>
+        <path d="M70 230V280" stroke="#FFD700" stroke-width="3"/>
+        <path d="M85 230V280" stroke="#FFD700" stroke-width="3"/>
+        <circle cx="70" cy="285" r="5" fill="#FFD700"/>
+        <circle cx="85" cy="285" r="5" fill="#FFD700"/>
+        <path d="M40 70C40 70 45 210 77.5 210" stroke="#FFD700" stroke-width="2" stroke-opacity="0.5"/>
+        <path d="M115 70C115 70 110 210 77.5 210" stroke="#FFD700" stroke-width="2" stroke-opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="lantern-decor lantern-right">
+      <svg class="lantern-svg" viewBox="0 0 155 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M77.5 0V40" stroke="#FFD700" stroke-width="4"/>
+        <rect x="60" y="40" width="35" height="10" rx="2" fill="#d40000"/>
+        <path d="M10 70C10 70 10 220 77.5 220C145 220 145 70 145 70" fill="#FF0000" stroke="#FFD700" stroke-width="4"/>
+        <path d="M10 70C10 70 77.5 50 145 70" fill="#d40000" stroke="#FFD700" stroke-width="4"/>
+        <rect x="60" y="220" width="35" height="10" rx="2" fill="#d40000"/>
+        <path d="M70 230V280" stroke="#FFD700" stroke-width="3"/>
+        <path d="M85 230V280" stroke="#FFD700" stroke-width="3"/>
+        <circle cx="70" cy="285" r="5" fill="#FFD700"/>
+        <circle cx="85" cy="285" r="5" fill="#FFD700"/>
+        <path d="M40 70C40 70 45 210 77.5 210" stroke="#FFD700" stroke-width="2" stroke-opacity="0.5"/>
+        <path d="M115 70C115 70 110 210 77.5 210" stroke="#FFD700" stroke-width="2" stroke-opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="ambient-light"></div>
+    <div class="ambient-light"></div>
+
+    <div class="maintenance-container">
+      <div class="tet-header">Chúc mừng năm mới 2026</div>
+
+      <div class="icon-wrapper">
+        <img src="{{ static('icons/logo.svg') }}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain;">
+      </div>
+
+      <h2 class="maintenance-title">{{ title }}</h2>
+      <p class="maintenance-message">{{ message }}</p>
+
+      <a href="{{ url('auth_login') }}" class="login-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>Đăng nhập</span>
+      </a>
+
+      <p class="site-name">{{ SITE_LONG_NAME }}</p>
+    </div>
+  </body>
+</html>

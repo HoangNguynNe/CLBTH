@@ -178,3 +178,68 @@ class SlowRequestMiddleware(object):
             except Exception:
                 pass
         return response
+
+
+class SiteMaintenanceMiddleware(object):
+    """Middleware to handle site maintenance/closure mode"""
+
+    ALLOWED_URL_NAMES = [
+        "auth_login",
+        "auth_logout",
+        "login_2fa",
+        "registration_register",
+        "password_reset",
+        "password_reset_done",
+        "password_reset_confirm",
+        "password_reset_complete",
+        "site_closed",
+    ]
+
+    ALLOWED_URL_PREFIXES = [
+        "/admin/",
+        "/static/",
+        "/media/",
+        "/favicon",
+        "/apple-touch-icon",
+        "/manifest.json",
+        "/robots.txt",
+        "/site-closed/",
+    ]
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        from judge.models import SiteMaintenance
+
+        if self._is_allowed_url(request):
+            return self.get_response(request)
+
+        try:
+            maintenance = SiteMaintenance.get_instance()
+
+            if not maintenance.is_closed:
+                return self.get_response(request)
+
+            if maintenance.can_access(request.user):
+                return self.get_response(request)
+
+            return HttpResponseRedirect(reverse("site_closed"))
+
+        except Exception:
+            return self.get_response(request)
+
+    def _is_allowed_url(self, request):
+        """Check if the URL should always be accessible"""
+        for prefix in self.ALLOWED_URL_PREFIXES:
+            if request.path.startswith(prefix):
+                return True
+
+        try:
+            url_name = resolve(request.path).url_name
+            if url_name in self.ALLOWED_URL_NAMES:
+                return True
+        except Resolver404:
+            pass
+
+        return False

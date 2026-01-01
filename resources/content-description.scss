@@ -39,15 +39,15 @@
             background: transparent;
             font-size: 1em;
             color: var(--md-code-fg-color);
-          
+
             & {
-              white-space: pre-wrap;
-              word-wrap: break-word;
-              padding: 0.5em 1em;
-              background-color: var(--md-code-bg-color);
-              color: var(--md-code-fg-color);
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                padding: 0.5em 1em;
+                background-color: var(--md-code-bg-color);
+                color: var(--md-code-fg-color);
             }
-          }
+        }
     }
 
     pre.no-border {

@@ -62,6 +62,7 @@ from judge.views import (
     email,
     custom_file_upload,
 )
+from judge.views import maintenance
 from judge import authentication
 
 from judge.views.test_formatter import test_formatter
@@ -1075,6 +1076,7 @@ urlpatterns = [
         ),
     ),
     url(r"^about/", about.about, name="about"),
+    url(r"^site-closed/$", maintenance.site_closed, name="site_closed"),
     url(
         r"^custom_checker_sample/",
         about.custom_checker_sample,

@@ -14,6 +14,7 @@ from judge.admin.interface import (
     LicenseAdmin,
     LogEntryAdmin,
     NavigationBarAdmin,
+    SiteMaintenanceAdmin,
 )
 from judge.admin.leaderboard import LeaderboardConfigAdmin
 from judge.admin.organization import OrganizationAdmin, OrganizationRequestAdmin
@@ -57,6 +58,7 @@ from judge.models import (
     ContestsSummary,
     OfficialContestCategory,
     OfficialContestLocation,
+    SiteMaintenance,
 )
 
 
@@ -89,3 +91,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(ContestsSummary, ContestsSummaryAdmin)
 admin.site.register(OfficialContestCategory, OfficialContestCategoryAdmin)
 admin.site.register(OfficialContestLocation, OfficialContestLocationAdmin)
+admin.site.register(SiteMaintenance, SiteMaintenanceAdmin)
