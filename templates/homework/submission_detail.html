@@ -1,0 +1,370 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ assignment.get_absolute_url() }}">{{ assignment.title }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Bài nộp</span>
+    </nav>
+
+    <div class="submission-header">
+      <h2><i class="fa fa-file-alt"></i> Chi tiết bài nộp</h2>
+      <div class="submission-meta">
+        <span class="student-info">
+          <i class="fa fa-user"></i> {{ link_user(submission.student) }}
+        </span>
+        <span class="date-info">
+          <i class="fa fa-clock"></i> {{ submission.submission_date|date("N j, Y, H:i") }}
+          {% if submission.is_late %}
+            <span class="badge-small late">Muộn</span>
+          {% endif %}
+        </span>
+        {% if submission.edit_count > 1 %}
+          <span class="edit-info">
+            <i class="fa fa-edit"></i> Chỉnh sửa {{ submission.edit_count - 1 }} lần
+          </span>
+        {% endif %}
+        <span class="status-info">
+          {% if submission.status == 'GR' %}
+            <span class="badge graded">Đã chấm</span>
+          {% else %}
+            <span class="badge pending">Chờ chấm</span>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="submission-content">
+      {% if assignment.category == 'CODE' %}
+        <div class="content-section">
+          <h3><i class="fa fa-code"></i> Mã nguồn đã nộp {% if submission.edit_count > 0 %}(Phiên bản {{ submission.edit_count }}){% endif %}</h3>
+
+          {% if current_code_files %}
+            <div class="code-files-display">
+              {% for cf in current_code_files %}
+                <div class="code-file-block">
+                  <div class="code-file-header">
+                    <span class="code-filename"><i class="fa fa-file-code"></i> {{ cf.filename }}</span>
+                    <span class="language-badge">{{ cf.language }}</span>
+                  </div>
+                  <pre class="code-block"><code class="language-{{ cf.language }}">{{ cf.content }}</code></pre>
+                </div>
+              {% endfor %}
+            </div>
+          {% elif submission.code_content %}
+            {# Fallback to legacy single-file format #}
+            <div class="code-info">
+              <span class="language-badge">{{ submission.code_language }}</span>
+            </div>
+            <pre class="code-block"><code class="language-{{ submission.code_language }}">{{ submission.code_content }}</code></pre>
+          {% else %}
+            <p class="text-muted">Không có mã nguồn.</p>
+          {% endif %}
+
+          {# Code Edit History #}
+          {% if submission.edit_count > 1 and code_files_history %}
+            <div class="edit-history-section">
+              <button type="button" class="btn-toggle-history" onclick="toggleCodeHistory()">
+                <i class="fa fa-history"></i> Xem lịch sử chỉnh sửa ({{ submission.edit_count - 1 }} lần)
+              </button>
+              <div class="edit-history" id="code-edit-history" style="display: none;">
+                {% for version, files in code_files_history.items()|sort(reverse=true) %}
+                  <div class="history-item">
+                    <div class="history-header">
+                      <span class="history-version">Phiên bản {{ version }}</span>
+                    </div>
+                    <div class="history-code-files">
+                      {% for cf in files %}
+                        <div class="history-code-file">
+                          <div class="history-code-file-header" onclick="toggleCodeContent(this)">
+                            <i class="fa fa-file-code"></i>
+                            <span class="filename">{{ cf.filename }}</span>
+                            <span class="lang-badge">{{ cf.language }}</span>
+                            <i class="fa fa-chevron-down toggle-icon"></i>
+                          </div>
+                          <div class="history-code-content" style="display: none;">
+                            <pre class="code-block"><code class="language-{{ cf.language }}">{{ cf.content }}</code></pre>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="content-section">
+          <h3><i class="fa fa-file"></i> Tệp đã nộp {% if submission.edit_count > 0 %}(Phiên bản {{ submission.edit_count }}){% endif %}</h3>
+
+          {% if current_files %}
+            <div class="submitted-files-list">
+              {% for file in current_files %}
+                <div class="file-info-card">
+                  {% if file.is_deleted %}
+                    <i class="fa fa-ban text-muted"></i>
+                    <div class="file-details">
+                      <span class="file-name text-muted">{{ file.original_filename }} (đã được hệ thống xóa)</span>
+                    </div>
+                  {% else %}
+                    <i class="fa {% if file.is_image() %}fa-image{% else %}fa-file-alt{% endif %}"></i>
+                    <div class="file-details">
+                      <span class="file-name">{{ file.original_filename }}</span>
+                      <a href="{{ file.file.url }}" class="btn-download" download>
+                        <i class="fa fa-download"></i> Tải xuống
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
+                {% if file.is_image() and not file.is_deleted %}
+                  <div class="image-preview">
+                    <img src="{{ file.file.url }}" alt="{{ file.original_filename }}" class="submission-image" onclick="openImageLightbox(this.src)">
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% elif all_files %}
+            {# Files exist but not for current version - show all #}
+            <div class="submitted-files-list">
+              {% for file in all_files %}
+                <div class="file-info-card">
+                  {% if file.is_deleted %}
+                    <i class="fa fa-ban text-muted"></i>
+                    <div class="file-details">
+                      <span class="file-name text-muted">{{ file.original_filename }} (đã được hệ thống xóa)</span>
+                    </div>
+                  {% else %}
+                    <i class="fa {% if file.is_image() %}fa-image{% else %}fa-file-alt{% endif %}"></i>
+                    <div class="file-details">
+                      <span class="file-name">{{ file.original_filename }}</span>
+                      <a href="{{ file.file.url }}" class="btn-download" download>
+                        <i class="fa fa-download"></i> Tải xuống
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
+                {% if file.is_image() and not file.is_deleted %}
+                  <div class="image-preview">
+                    <img src="{{ file.file.url }}" alt="{{ file.original_filename }}" class="submission-image" onclick="openImageLightbox(this.src)">
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% elif submission.submission_file %}
+            {# Legacy single file #}
+            <div class="file-info-card">
+              <i class="fa fa-file-alt"></i>
+              <div class="file-details">
+                <span class="file-name">{{ submission.original_filename or submission.submission_file.name }}</span>
+                <a href="{{ submission.submission_file.url }}" class="btn-download" download>
+                  <i class="fa fa-download"></i> Tải xuống
+                </a>
+              </div>
+            </div>
+            {% set ext = (submission.original_filename or submission.submission_file.name).split('.')[-1].lower() %}
+            {% if ext in ['png', 'jpg', 'jpeg', 'gif', 'webp'] %}
+              <div class="image-preview">
+                <img src="{{ submission.submission_file.url }}" alt="Submission" class="submission-image" onclick="openImageLightbox(this.src)">
+              </div>
+            {% endif %}
+          {% else %}
+            <p class="no-files">Chưa có file nào được nộp.</p>
+          {% endif %}
+
+          {# Edit History #}
+          {% if submission.edit_count > 1 %}
+            <div class="edit-history-section">
+              <button type="button" class="btn-toggle-history" onclick="toggleHistory()">
+                <i class="fa fa-history"></i> Xem lịch sử chỉnh sửa ({{ submission.edit_count - 1 }} lần)
+              </button>
+              <div class="edit-history" id="edit-history" style="display: none;">
+                {% for history in submission.history.all() %}
+                  <div class="history-item">
+                    <div class="history-header">
+                      <span class="history-version">Phiên bản {{ history.edit_version }}</span>
+                      <span class="history-date">{{ history.edited_date|date("d/m/Y H:i") }}</span>
+                    </div>
+                    {% if history.submission_notes %}
+                      <div class="history-notes">
+                        <small>Ghi chú: {{ history.submission_notes }}</small>
+                      </div>
+                    {% endif %}
+                    {% set history_files = history.get_files() %}
+                    {% if history_files %}
+                      <div class="history-files">
+                        {% for file in history_files %}
+                          <div class="history-file">
+                            {% if file.is_deleted %}
+                              <i class="fa fa-ban text-muted"></i>
+                              <span class="text-muted">{{ file.original_filename }} (đã xóa)</span>
+                            {% else %}
+                              <i class="fa fa-file"></i>
+                              <a href="{{ file.file.url }}" target="_blank">{{ file.original_filename }}</a>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if submission.submission_notes %}
+        <div class="content-section">
+          <h3><i class="fa fa-comment"></i> Ghi chú của học viên</h3>
+          <div class="student-notes">
+            {{ submission.submission_notes }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if assignment.is_graded %}
+        {% if all_grades %}
+          <div class="content-section">
+            <h3><i class="fa fa-star"></i> Điểm</h3>
+            <div class="grades-list">
+              {% for grade in all_grades %}
+                <div class="grade-card">
+                  <div class="grade-header">
+                    <span class="grader">
+                      <i class="fa fa-user"></i> {{ link_user(grade.grader) }}
+                    </span>
+                    <span class="grade-date">{{ grade.graded_date|date("N j, Y, H:i") }}</span>
+                  </div>
+                  <div class="grade-score">
+                    <span class="score-value">{{ grade.score }}/10</span>
+                  </div>
+                  {% if grade.feedback %}
+                    <div class="grade-feedback">
+                      <h4>Nhận xét:</h4>
+                      <div class="feedback-text">{{ grade.feedback|markdown|reference|str|safe }}</div>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            {% set final_grade = submission.get_final_grade() %}
+            {% if final_grade is not none and all_grades|length > 1 %}
+              <div class="final-grade">
+                <span class="label">Điểm cuối (Trung bình):</span>
+                <span class="value">{{ final_grade }}/10</span>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if is_manager and can_grade %}
+          <div class="content-section grade-section">
+            <h3><i class="fa fa-pencil-alt"></i>
+              {% if existing_grade %}
+                Cập nhật điểm
+              {% else %}
+                Chấm điểm bài này
+              {% endif %}
+            </h3>
+            <form method="post" action="{{ url('homework_grade', homework_class.slug, assignment.id, submission.id) }}" class="grade-form">
+              {% csrf_token %}
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="id_score">Điểm (0-10)</label>
+                  {{ grade_form.score }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_feedback">Nhận xét</label>
+                {{ grade_form.feedback }}
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                  <i class="fa fa-save"></i> Lưu điểm
+                </button>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="content-section">
+          <div class="no-grade-notice">
+            <i class="fa fa-info-circle"></i>
+            <span>Bài tập này không cần chấm điểm.</span>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="page-actions">
+      <a href="{{ url('homework_all_submissions', homework_class.slug, assignment.id) }}" class="btn-secondary">
+        <i class="fa fa-arrow-left"></i> Quay lại tất cả bài nộp
+      </a>
+    </div>
+  </div>
+
+  {# Image Lightbox #}
+  <div id="image-lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-image" src="" alt="Full size">
+  </div>
+
+  <script>
+    function openImageLightbox(src) {
+      document.getElementById('lightbox-image').src = src;
+      document.getElementById('image-lightbox').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('image-lightbox').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function toggleHistory() {
+      var history = document.getElementById('edit-history');
+      if (history) {
+        history.style.display = history.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    function toggleCodeHistory() {
+      var history = document.getElementById('code-edit-history');
+      if (history) {
+        history.style.display = history.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    function toggleCodeContent(header) {
+      var content = header.nextElementSibling;
+      var icon = header.querySelector('.toggle-icon');
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      } else {
+        content.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
+{% endblock %}

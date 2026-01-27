@@ -240,6 +240,7 @@ INSTALLED_APPS += (
     "impersonate",
     "django_jinja",
     "chat_box",
+    "homework",
     "django.forms",
 )
 

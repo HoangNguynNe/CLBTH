@@ -1,0 +1,112 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ url('homework_class_students', homework_class.slug) }}">Học viên</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>{{ student.user.username }}</span>
+    </nav>
+
+    <div class="page-header">
+      <h2><i class="fa fa-user"></i> {{ student.user.username }}</h2>
+    </div>
+
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.submitted_count }}/{{ stats.total_assignments }}</div>
+        <div class="stat-label">Bài đã nộp</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.graded_count }}</div>
+        <div class="stat-label">Bài đã chấm</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.avg_score if stats.avg_score is not none else '-' }}</div>
+        <div class="stat-label">Điểm trung bình</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.total_score }}</div>
+        <div class="stat-label">Tổng điểm</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3><i class="fa fa-file-alt"></i> Chi tiết bài nộp</h3>
+
+      {% if submissions_data %}
+        <div class="student-submissions-table">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Bài tập</th>
+                <th>Ngày nộp</th>
+                <th>Điểm</th>
+                <th>Người chấm</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in submissions_data %}
+                <tr>
+                  <td>
+                    <a href="{{ data.assignment.get_absolute_url() }}">{{ data.assignment.title }}</a>
+                    {% if data.submission.is_late %}
+                      <span class="badge-small late">Muộn</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ data.submission.submission_date|date("d/m/Y H:i") }}</td>
+                  <td>
+                    {% if data.final_grade is not none %}
+                      <span class="score-badge">{{ data.final_grade }}/10</span>
+                    {% else %}
+                      <span class="badge pending">Chờ chấm</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if data.grades %}
+                      {% for grade in data.grades %}
+                        <div class="grader-info">
+                          {{ link_user(grade.grader.user) }}
+                          <small>({{ grade.score }}/10)</small>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <span class="text-muted">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url('homework_submission_detail', homework_class.slug, data.assignment.id, data.submission.id) }}" class="btn-small btn-info">
+                      <i class="fa fa-eye"></i> Xem
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state small">
+          <i class="fa fa-file-alt"></i>
+          <p>Học viên chưa nộp bài nào.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="page-actions">
+      <a href="{{ url('homework_class_students', homework_class.slug) }}" class="btn-secondary">
+        <i class="fa fa-arrow-left"></i> Quay lại danh sách
+      </a>
+    </div>
+  </div>
+{% endblock %}

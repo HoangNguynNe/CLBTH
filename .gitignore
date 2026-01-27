@@ -16,7 +16,7 @@ sass_processed
 node_modules/
 package-lock.json
 /src
-problems/
-profile_images/
-*.ini
-*.json
+/homework_submissions
+/assignment_images
+
+

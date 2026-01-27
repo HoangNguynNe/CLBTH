@@ -1,0 +1,71 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Duyệt yêu cầu</span>
+    </nav>
+
+    <div class="homework-header">
+      <h2><i class="fa fa-user-plus"></i> Yêu cầu tham gia lớp</h2>
+      <a href="{{ homework_class.get_absolute_url() }}" class="btn-secondary">
+        <i class="fa fa-arrow-left"></i> Quay lại
+      </a>
+    </div>
+
+    <div class="class-info-box">
+      <h3>{{ homework_class.name }}</h3>
+      {% if homework_class.description %}
+        <p>{{ homework_class.description }}</p>
+      {% endif %}
+    </div>
+
+    {% if join_requests %}
+      <div class="requests-list">
+        {% for req in join_requests %}
+          <div class="request-card">
+            <div class="request-user">
+              <img src="{{ gravatar(req.requester, 48) }}" alt="{{ req.requester.user.username }}" class="user-avatar">
+              <div class="user-info">
+                {{ link_user(req.requester.user) }}
+                <span class="request-date">
+                  <i class="fa fa-clock"></i> {{ req.request_date|date('d/m/Y H:i') }}
+                </span>
+              </div>
+            </div>
+            <div class="request-actions">
+              <form method="post" action="{{ url('homework_approve_join', homework_class.slug, req.id) }}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-approve">
+                  <i class="fa fa-check"></i> Duyệt
+                </button>
+              </form>
+              <form method="post" action="{{ url('homework_reject_join', homework_class.slug, req.id) }}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-reject">
+                  <i class="fa fa-times"></i> Từ chối
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fa fa-inbox"></i>
+        <h3>Không có yêu cầu nào</h3>
+        <p>Hiện tại không có yêu cầu tham gia lớp nào đang chờ duyệt.</p>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

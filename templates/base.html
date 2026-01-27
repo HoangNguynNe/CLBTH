@@ -132,6 +132,7 @@
                   {% if node.key == "contest" %} <i class="fa fa-ranking-star" style="color:#026599"></i> {% endif %}
                   {% if node.key == "group" %} <i class="fa fa-building-columns" style="color:#026599"></i> {% endif %}
                   {% if node.key == "about" %} <i class="fa fa-at" style="color:#026599"></i> {% endif %}
+                  {% if node.key == "homework" %} <i class="fa fa-book" style="color:#026599"></i> {% endif %}
                 </span>
                 {{ user_trans(node.label) }}
                 {% if not node.is_leaf_node %}

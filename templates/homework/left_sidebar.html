@@ -1,0 +1,25 @@
+<div class="left-sidebar">
+  {{ make_tab_item('list', 'fa fa-list', url('homework_class_list'), 'Tất cả lớp') }}
+  {% if homework_class is defined and homework_class %}
+    {{ make_tab_item('home', 'fa fa-home', homework_class.get_absolute_url(), 'Trang lớp') }}
+    {% if is_manager %}
+      {{ make_tab_item('edit', 'fa fa-edit', url('homework_class_edit', homework_class.slug), 'Sửa lớp') }}
+      {{ make_tab_item('students', 'fa fa-users', url('homework_class_students', homework_class.slug), 'Học viên') }}
+      <div class="tab-item-wrapper">
+        {{ make_tab_item('join_requests', 'fa fa-user-plus', url('homework_join_requests', homework_class.slug), 'Duyệt yêu cầu') }}
+        {% set pending_count = homework_class.pending_join_requests_count() %}
+        {% if pending_count > 0 %}
+          <span class="sidebar-badge">{{ pending_count }}</span>
+        {% endif %}
+      </div>
+      {{ make_tab_item('create_assignment', 'fa fa-plus', url('homework_assignment_create', homework_class.slug), 'Tạo bài tập') }}
+      {{ make_tab_item('delete', 'fa fa-trash', url('homework_class_delete', homework_class.slug), 'Xóa lớp') }}
+    {% endif %}
+    {% if is_student %}
+      {{ make_tab_item('my_submissions', 'fa fa-file-alt', url('homework_my_submissions', homework_class.slug), 'Bài nộp của tôi') }}
+    {% endif %}
+  {% endif %}
+  {% if can_create_class is defined and can_create_class %}
+    {{ make_tab_item('create', 'fa fa-plus-circle', url('homework_class_create'), 'Tạo lớp') }}
+  {% endif %}
+</div>
