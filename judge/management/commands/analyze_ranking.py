@@ -403,12 +403,12 @@ class Command(BaseCommand):
             user_data[user_id]["problems_copied_form"] = form_copied.get(user_id, set())
 
             ac_problems = user_data[user_id]["problems_ac"]
-            user_data[user_id][
-                "problems_valid_after_exact"
-            ] = ac_problems - exact_copied.get(user_id, set())
-            user_data[user_id][
-                "problems_valid_after_form"
-            ] = ac_problems - form_copied.get(user_id, set())
+            user_data[user_id]["problems_valid_after_exact"] = (
+                ac_problems - exact_copied.get(user_id, set())
+            )
+            user_data[user_id]["problems_valid_after_form"] = (
+                ac_problems - form_copied.get(user_id, set())
+            )
 
         # Sắp xếp copy_details theo thời gian
         copy_details.sort(key=lambda x: x["copier_date"])
@@ -508,12 +508,12 @@ class Command(BaseCommand):
                 ws.cell(row=row, column=1, value=row - 1).border = thin_border
                 ws.cell(row=row, column=2, value=data["username"]).border = thin_border
                 ws.cell(row=row, column=3, value=data["last_name"]).border = thin_border
-                ws.cell(
-                    row=row, column=4, value=data["first_name"]
-                ).border = thin_border
-                ws.cell(
-                    row=row, column=5, value=data["total_attempted"]
-                ).border = thin_border
+                ws.cell(row=row, column=4, value=data["first_name"]).border = (
+                    thin_border
+                )
+                ws.cell(row=row, column=5, value=data["total_attempted"]).border = (
+                    thin_border
+                )
                 ws.cell(row=row, column=6, value=data["total_ac"]).border = thin_border
                 ws.cell(row=row, column=7, value=data["total_wa"]).border = thin_border
                 ws.cell(row=row, column=8, value=data["copied"]).border = thin_border
@@ -555,27 +555,27 @@ class Command(BaseCommand):
             # Write data
             for row, detail in enumerate(details, 2):
                 ws.cell(row=row, column=1, value=row - 1).border = thin_border
-                ws.cell(
-                    row=row, column=2, value=detail["copy_type"]
-                ).border = thin_border
-                ws.cell(
-                    row=row, column=3, value=detail["problem_code"]
-                ).border = thin_border
-                ws.cell(
-                    row=row, column=4, value=detail["copier_username"]
-                ).border = thin_border
-                ws.cell(
-                    row=row, column=5, value=detail["copier_fullname"]
-                ).border = thin_border
+                ws.cell(row=row, column=2, value=detail["copy_type"]).border = (
+                    thin_border
+                )
+                ws.cell(row=row, column=3, value=detail["problem_code"]).border = (
+                    thin_border
+                )
+                ws.cell(row=row, column=4, value=detail["copier_username"]).border = (
+                    thin_border
+                )
+                ws.cell(row=row, column=5, value=detail["copier_fullname"]).border = (
+                    thin_border
+                )
                 ws.cell(
                     row=row, column=6, value=detail["copier_submission_id"]
                 ).border = thin_border
-                ws.cell(
-                    row=row, column=7, value=detail["original_username"]
-                ).border = thin_border
-                ws.cell(
-                    row=row, column=8, value=detail["original_fullname"]
-                ).border = thin_border
+                ws.cell(row=row, column=7, value=detail["original_username"]).border = (
+                    thin_border
+                )
+                ws.cell(row=row, column=8, value=detail["original_fullname"]).border = (
+                    thin_border
+                )
                 ws.cell(
                     row=row, column=9, value=detail["original_submission_id"]
                 ).border = thin_border
