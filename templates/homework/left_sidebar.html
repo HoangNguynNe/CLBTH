@@ -14,7 +14,6 @@
           <span class="sidebar-badge">{{ pending_count }}</span>
         {% endif %}
       </div>
-      {{ make_tab_item('create_assignment', 'fa fa-plus', url('homework_assignment_create', homework_class.slug), 'Tạo bài tập') }}
       {% if is_creator %}
         {{ make_tab_item('delete', 'fa fa-trash', url('homework_class_delete', homework_class.slug), 'Xóa lớp') }}
       {% endif %}
