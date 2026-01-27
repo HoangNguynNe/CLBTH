@@ -92,9 +92,10 @@ class HomeworkClassListView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["available_classes"] = available_classes
         context["title"] = "Lớp học"
         context["page_type"] = "list"
-        context["can_create_class"] = (
-            self.request.user.is_staff
-            or self.request.user.has_perm("homework.add_homeworkclass")
+        context[
+            "can_create_class"
+        ] = self.request.user.is_staff or self.request.user.has_perm(
+            "homework.add_homeworkclass"
         )
         return context
 
@@ -145,6 +146,7 @@ class HomeworkClassDetailView(LoginRequiredMixin, HomeworkMixin, DetailView):
         context["title"] = self.object.name
         context["page_type"] = "home"
         context["is_manager"] = is_manager
+        context["is_creator"] = self.object.creator == profile
         context["is_student"] = self.object.is_student(profile)
         context["assignment_data"] = assignment_data
         return context
@@ -201,6 +203,7 @@ class HomeworkClassEditView(LoginRequiredMixin, HomeworkMixin, UpdateView):
         context["action"] = "Lưu thay đổi"
         context["homework_class"] = self.object
         context["is_manager"] = True
+        context["is_creator"] = self.object.creator == self.get_profile()
         context["profile"] = self.get_profile()
         return context
 
@@ -232,9 +235,10 @@ class HomeworkAssignmentDetailView(LoginRequiredMixin, HomeworkMixin, DetailView
         context["page_type"] = "assignment"
         context["homework_class"] = self.homework_class
         context["is_manager"] = is_manager
-        context["can_submit"] = (
-            self.object.can_submit() and self.homework_class.is_student(profile)
-        )
+        context["is_creator"] = self.homework_class.creator == profile
+        context[
+            "can_submit"
+        ] = self.object.can_submit() and self.homework_class.is_student(profile)
         context["is_past_deadline"] = self.object.is_past_deadline()
 
         if not is_manager:
@@ -297,6 +301,7 @@ class HomeworkAssignmentCreateView(LoginRequiredMixin, HomeworkMixin, CreateView
         context["page_type"] = "create_assignment"
         context["homework_class"] = self.homework_class
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
         context["action"] = "Tạo bài tập"
         return context
 
@@ -350,6 +355,7 @@ class HomeworkAssignmentEditView(LoginRequiredMixin, HomeworkMixin, UpdateView):
         context["page_type"] = "edit_assignment"
         context["homework_class"] = self.homework_class
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
         context["action"] = "Lưu thay đổi"
         return context
 
@@ -636,6 +642,7 @@ class HomeworkSubmissionDetailView(LoginRequiredMixin, HomeworkMixin, DetailView
         context["homework_class"] = self.homework_class
         context["assignment"] = self.assignment
         context["is_manager"] = self.is_manager
+        context["is_creator"] = self.homework_class.creator == profile
 
         # Check if current manager already graded
         existing_grade = self.object.grades.filter(grader=profile).first()
@@ -758,6 +765,7 @@ class HomeworkAllSubmissionsView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["homework_class"] = self.homework_class
         context["assignment"] = self.assignment
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
 
         # Get students who haven't submitted
         submitted_students = self.assignment.submissions.values_list(
@@ -789,6 +797,7 @@ class HomeworkClassStudentsView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["page_type"] = "students"
         context["homework_class"] = self.homework_class
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
         context["co_managers"] = self.homework_class.co_managers.select_related(
             "user"
         ).all()
@@ -853,6 +862,7 @@ class HomeworkStudentDetailView(LoginRequiredMixin, HomeworkMixin, DetailView):
         context["page_type"] = "student_detail"
         context["homework_class"] = self.homework_class
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
         context["submissions_data"] = all_grades
         context["stats"] = {
             "total_assignments": total_assignments,
@@ -914,6 +924,7 @@ class HomeworkMySubmissionsView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["page_type"] = "my_submissions"
         context["homework_class"] = self.homework_class
         context["is_manager"] = False
+        context["is_creator"] = False
         context["is_student"] = True
         return context
 
@@ -1019,6 +1030,7 @@ class HomeworkJoinRequestsListView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["page_type"] = "join_requests"
         context["homework_class"] = self.homework_class
         context["is_manager"] = True
+        context["is_creator"] = self.homework_class.creator == self.get_profile()
         return context
 
 
