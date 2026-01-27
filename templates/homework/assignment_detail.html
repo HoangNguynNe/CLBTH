@@ -1,0 +1,301 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>{{ assignment.title }}</span>
+    </nav>
+
+    <div class="assignment-detail-header">
+      <div class="assignment-icon-large">
+        {% if assignment.category == 'CODE' %}
+          <i class="fa fa-code"></i>
+        {% else %}
+          <i class="fa fa-file-image"></i>
+        {% endif %}
+      </div>
+      <div class="assignment-info">
+        <h2>{{ assignment.title }}</h2>
+        <div class="assignment-meta-row">
+          {% if is_past_deadline %}
+            <span class="badge past-due"><i class="fa fa-clock"></i> Quá hạn</span>
+          {% else %}
+            <span class="badge active"><i class="fa fa-clock"></i> Đang mở</span>
+          {% endif %}
+          <span class="meta-item">
+            <i class="fa fa-calendar"></i> Hạn nộp: {{ assignment.deadline|date("N j, Y, H:i") }}
+          </span>
+          <span class="meta-item">
+            <i class="fa fa-star"></i> {{ assignment.points }} điểm
+          </span>
+        </div>
+        {% if is_manager %}
+          <div class="action-buttons">
+            <a href="{{ url('homework_assignment_edit', homework_class.slug, assignment.id) }}" class="btn-secondary">
+              <i class="fa fa-edit"></i> Sửa bài tập
+            </a>
+            <a href="{{ url('homework_all_submissions', homework_class.slug, assignment.id) }}" class="btn-primary">
+              <i class="fa fa-list"></i> Xem tất cả bài nộp
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="assignment-body">
+      <div class="content-section">
+        <h3><i class="fa fa-file-alt"></i> Đề bài</h3>
+        <div class="assignment-description">
+          {{ assignment.description|markdown|reference|str|safe }}
+        </div>
+
+        {% if assignment.images.exists() %}
+          <div class="assignment-images-section">
+            <h4><i class="fa fa-images"></i> Hình ảnh đính kèm</h4>
+            <div class="assignment-images-grid">
+              {% for img in assignment.images.all() %}
+                <div class="assignment-image-item">
+                  <img src="{{ img.image.url }}" alt="{{ img.original_filename }}" onclick="openImageLightbox(this.src)" style="cursor: pointer;">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="content-section">
+        <h3><i class="fa fa-info-circle"></i> Thông tin nộp bài</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Loại bài nộp:</label>
+            <span>
+              {% if assignment.category == 'CODE' %}
+                <i class="fa fa-code"></i> Mã nguồn
+              {% else %}
+                <i class="fa fa-upload"></i> Tệp đính kèm
+              {% endif %}
+            </span>
+          </div>
+          {% if assignment.category == 'IMAGE' %}
+            <div class="info-item">
+              <label>Định dạng cho phép:</label>
+              <span>{{ assignment.allowed_extensions }}</span>
+            </div>
+            <div class="info-item">
+              <label>Kích thước tối đa:</label>
+              <span>{{ assignment.max_file_size_mb }} MB</span>
+            </div>
+          {% endif %}
+          <div class="info-item">
+            <label>Nộp muộn:</label>
+            <span>
+              {% if assignment.allow_late_submission %}
+                <i class="fa fa-check text-success"></i> Cho phép
+              {% else %}
+                <i class="fa fa-times text-danger"></i> Không cho phép
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {% if not is_manager %}
+        <div class="content-section submission-section">
+          <h3><i class="fa fa-paper-plane"></i> Bài nộp của bạn</h3>
+
+          {% if my_submission %}
+            <div class="my-submission">
+              <div class="submission-status-card {% if my_submission.status == 'GR' %}graded{% else %}pending{% endif %}">
+                <div class="status-header">
+                  {% if my_submission.status == 'GR' %}
+                    <i class="fa fa-check-circle"></i> Đã chấm điểm
+                  {% else %}
+                    <i class="fa fa-clock"></i> Đang chờ chấm
+                  {% endif %}
+                </div>
+                <div class="submission-info">
+                  <p><strong>Thời gian nộp:</strong> {{ my_submission.submission_date|date("N j, Y, H:i") }}</p>
+                  {% if my_submission.is_late %}
+                    <p class="late-warning"><i class="fa fa-exclamation-triangle"></i> Nộp muộn</p>
+                  {% endif %}
+                  {% if my_grade is not none %}
+                    <div class="grade-result">
+                      <span class="grade-value">{{ my_grade }}/10</span>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              {% if assignment.category == 'CODE' %}
+                <div class="code-preview">
+                  <h4>Mã nguồn của bạn:</h4>
+                  {% if my_code_files %}
+                    <div class="code-files-list">
+                      {% for cf in my_code_files %}
+                        <div class="code-file-item">
+                          <i class="fa fa-file-code"></i>
+                          <span class="filename">{{ cf.filename }}</span>
+                          <span class="lang-badge">{{ cf.language }}</span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% elif my_submission.code_content %}
+                    <pre><code class="language-{{ my_submission.code_language }}">{{ my_submission.code_content }}</code></pre>
+                  {% else %}
+                    <p class="text-muted">Không có mã nguồn.</p>
+                  {% endif %}
+                </div>
+              {% elif my_submission.files.exists() %}
+                <div class="file-preview">
+                  <h4>Tệp của bạn:</h4>
+                  <div class="submitted-files-list">
+                    {% for file in my_submission.files.filter(edit_version=my_submission.edit_count) %}
+                      {% if not file.is_deleted %}
+                        <div class="submitted-file-item">
+                          <i class="fa fa-file"></i>
+                          <a href="{{ file.file.url }}" target="_blank">{{ file.original_filename }}</a>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% elif my_submission.submission_file %}
+                <div class="file-preview">
+                  <h4>Tệp của bạn:</h4>
+                  <p><i class="fa fa-file"></i> {{ my_submission.original_filename or my_submission.submission_file.name }}</p>
+                </div>
+              {% endif %}
+
+              {% if my_submission.grades.all()|list %}
+                <div class="feedback-section">
+                  <h4>Nhận xét:</h4>
+                  {% for grade in my_submission.grades.all() %}
+                    <div class="feedback-item">
+                      <div class="feedback-header">
+                        <span class="grader">{{ link_user(grade.grader) }}</span>
+                        <span class="score">{{ grade.score }}/10</span>
+                      </div>
+                      {% if grade.feedback %}
+                        <div class="feedback-content">{{ grade.feedback|markdown|reference|str|safe }}</div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if can_submit %}
+                <a href="{{ url('homework_submit', homework_class.slug, assignment.id) }}" class="btn-secondary">
+                  <i class="fa fa-edit"></i> Cập nhật bài nộp
+                </a>
+              {% endif %}
+            </div>
+          {% else %}
+            {% if can_submit %}
+              <div class="submit-prompt">
+                <p>Bạn chưa nộp bài tập này.</p>
+                <a href="{{ url('homework_submit', homework_class.slug, assignment.id) }}" class="btn-submit-large">
+                  <i class="fa fa-paper-plane"></i> Nộp bài
+                </a>
+              </div>
+            {% else %}
+              <div class="no-submit">
+                <i class="fa fa-exclamation-circle"></i>
+                <p>Đã hết hạn nộp và không cho phép nộp muộn.</p>
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if is_manager and submissions %}
+        <div class="content-section">
+          <h3><i class="fa fa-users"></i> Bài nộp gần đây</h3>
+          <table class="submissions-table">
+            <thead>
+              <tr>
+                <th>Học viên</th>
+                <th>Thời gian nộp</th>
+                <th>Trạng thái</th>
+                <th>Điểm</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sub in submissions[:10] %}
+                <tr>
+                  <td>{{ link_user(sub.student) }}</td>
+                  <td>
+                    {{ sub.submission_date|date("N j, Y, H:i") }}
+                    {% if sub.is_late %}
+                      <span class="badge-small late">Muộn</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if sub.status == 'GR' %}
+                      <span class="badge-small graded">Đã chấm</span>
+                    {% else %}
+                      <span class="badge-small pending">Chờ chấm</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% set grade = sub.get_final_grade() %}
+                    {% if grade is not none %}
+                      {{ grade }}/10
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url('homework_submission_detail', homework_class.slug, assignment.id, sub.id) }}" class="btn-small">
+                      Xem
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if submissions|length > 10 %}
+            <a href="{{ url('homework_all_submissions', homework_class.slug, assignment.id) }}" class="view-all-link">
+              Xem tất cả {{ submissions|length }} bài nộp <i class="fa fa-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Image Lightbox #}
+  <div id="image-lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-image" src="" alt="Full size">
+  </div>
+
+  <script>
+    function openImageLightbox(src) {
+      document.getElementById('lightbox-image').src = src;
+      document.getElementById('image-lightbox').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('image-lightbox').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
+{% endblock %}

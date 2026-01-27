@@ -1,0 +1,129 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ assignment.get_absolute_url() }}">{{ assignment.title }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Tất cả bài nộp</span>
+    </nav>
+
+    <div class="page-header">
+      <h2><i class="fa fa-list"></i> Tất cả bài nộp</h2>
+      <p class="page-subtitle">{{ assignment.title }}</p>
+    </div>
+
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-users"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ homework_class.students.count() }}</span>
+          <span class="stat-label">Tổng Học viên</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-paper-plane"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ submissions|length }}</span>
+          <span class="stat-label">Đã nộp</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-check-circle"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ submissions|selectattr('status', 'equalto', 'GR')|list|length }}</span>
+          <span class="stat-label">Đã chấm</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-clock"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ not_submitted|length }}</span>
+          <span class="stat-label">Chưa nộp</span>
+        </div>
+      </div>
+    </div>
+
+    {% if submissions %}
+      <div class="content-section">
+        <h3><i class="fa fa-paper-plane"></i> Bài nộp</h3>
+        <table class="submissions-table full-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Học viên</th>
+              <th>Thời gian nộp</th>
+              <th>Trạng thái</th>
+              <th>Điểm</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sub in submissions %}
+              <tr class="{% if sub.is_late %}late-row{% endif %}">
+                <td>{{ loop.index }}</td>
+                <td>{{ link_user(sub.student) }}</td>
+                <td>
+                  {{ sub.submission_date|date("N j, Y, H:i") }}
+                  {% if sub.is_late %}
+                    <span class="badge-small late">Muộn</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if sub.status == 'GR' %}
+                    <span class="badge-small graded">Đã chấm</span>
+                  {% elif sub.status == 'RE' %}
+                    <span class="badge-small returned">Đã trả</span>
+                  {% else %}
+                    <span class="badge-small pending">Chờ chấm</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if sub.avg_grade is not none %}
+                    <span class="grade-display-small">{{ sub.avg_grade|round(2) }}/10</span>
+                  {% else %}
+                    <span class="no-grade">-</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{{ url('homework_submission_detail', homework_class.slug, assignment.id, sub.id) }}" class="btn-small btn-view">
+                    <i class="fa fa-eye"></i> Xem
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    {% if not_submitted %}
+      <div class="content-section">
+        <h3><i class="fa fa-exclamation-circle"></i> Chưa nộp</h3>
+        <div class="not-submitted-list">
+          {% for student in not_submitted %}
+            <div class="not-submitted-item">
+              <span class="student-name">{{ link_user(student) }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="page-actions">
+      <a href="{{ assignment.get_absolute_url() }}" class="btn-secondary">
+        <i class="fa fa-arrow-left"></i> Quay lại bài tập
+      </a>
+    </div>
+  </div>
+{% endblock %}

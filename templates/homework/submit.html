@@ -1,0 +1,951 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+  <style>
+    .ace_editor {
+      min-height: 400px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* Code files tabs */
+    .code-files-container {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      padding: 0.25rem 0.25rem 0 0.25rem;
+    }
+
+    .code-files-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
+    .code-file-tab {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      background: #e0e0e0;
+      border-radius: 4px 4px 0 0;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .code-file-tab:hover {
+      background: #d0d0d0;
+    }
+
+    .code-file-tab.active {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-bottom: 1px solid #fff;
+      margin-bottom: -1px;
+      position: relative;
+    }
+
+    .code-file-tab .tab-name {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-add-code-file {
+      padding: 0.5rem 0.75rem;
+      background: #026599;
+      border: 1px dashed #888;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #555;
+      margin-left: 0.25rem;
+      margin-bottom: 0.25rem;
+      transition: all 0.2s;
+    }
+
+    .btn-add-code-file:hover {
+      background: #d0d0d0;
+      border-color: #555;
+      color: #333;
+    }
+
+    /* Context menu */
+    .tab-context-menu {
+      position: fixed;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+      min-width: 140px;
+    }
+
+    .context-menu-item {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s;
+    }
+
+    .context-menu-item:hover {
+      background: #f0f0f0;
+    }
+
+    .context-menu-item:first-child {
+      border-radius: 4px 4px 0 0;
+    }
+
+    .context-menu-item:last-child {
+      border-radius: 0 0 4px 4px;
+    }
+
+    .context-menu-item[data-action="delete"] {
+      color: #dc3545;
+    }
+
+    .context-menu-item[data-action="delete"]:hover {
+      background: #fee;
+    }
+
+    /* Dark mode support */
+    body.dark .code-files-container,
+    body[data-dark="true"] .code-files-container,
+    html.dark-mode .code-files-container {
+      background: #2d2d2d;
+      border-color: #444;
+    }
+
+    body.dark .code-file-tab,
+    body[data-dark="true"] .code-file-tab,
+    html.dark-mode .code-file-tab {
+      background: #3d3d3d;
+      color: #e0e0e0;
+    }
+
+    body.dark .code-file-tab:hover,
+    body[data-dark="true"] .code-file-tab:hover,
+    html.dark-mode .code-file-tab:hover {
+      background: #4d4d4d;
+    }
+
+    body.dark .code-file-tab.active,
+    body[data-dark="true"] .code-file-tab.active,
+    html.dark-mode .code-file-tab.active {
+      background: #1e1e1e;
+      border-color: #444;
+      border-bottom-color: #1e1e1e;
+    }
+
+    body.dark .btn-add-code-file,
+    body[data-dark="true"] .btn-add-code-file,
+    html.dark-mode .btn-add-code-file {
+      border-color: #666;
+      color: #aaa;
+    }
+
+    body.dark .btn-add-code-file:hover,
+    body[data-dark="true"] .btn-add-code-file:hover,
+    html.dark-mode .btn-add-code-file:hover {
+      background: #4d4d4d;
+      color: #e0e0e0;
+    }
+
+    body.dark .tab-context-menu,
+    body[data-dark="true"] .tab-context-menu,
+    html.dark-mode .tab-context-menu {
+      background: #2d2d2d;
+      border-color: #444;
+    }
+
+    body.dark .context-menu-item,
+    body[data-dark="true"] .context-menu-item,
+    html.dark-mode .context-menu-item {
+      color: #e0e0e0;
+    }
+
+    body.dark .context-menu-item:hover,
+    body[data-dark="true"] .context-menu-item:hover,
+    html.dark-mode .context-menu-item:hover {
+      background: #3d3d3d;
+    }
+
+    /* Current submission summary */
+    .current-submission-summary {
+      background: #e8f4fd;
+      border: 1px solid #b8daff;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .current-submission-summary h3 {
+      margin: 0 0 1rem 0;
+      color: #0056b3;
+    }
+
+    .submitted-files-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .file-summary-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      border: 1px solid #b8daff;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    .file-summary-item i {
+      color: #0056b3;
+    }
+
+    .file-summary-item .file-name {
+      font-weight: 500;
+    }
+
+    .file-summary-item .file-lang-badge {
+      background: #007bff;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Dark mode */
+    body.dark .current-submission-summary,
+    body[data-dark="true"] .current-submission-summary,
+    html.dark-mode .current-submission-summary {
+      background: #1a2a3a;
+      border-color: #2d4a6a;
+    }
+
+    body.dark .current-submission-summary h3,
+    body[data-dark="true"] .current-submission-summary h3,
+    html.dark-mode .current-submission-summary h3 {
+      color: #6db3f2;
+    }
+
+    body.dark .file-summary-item,
+    body[data-dark="true"] .file-summary-item,
+    html.dark-mode .file-summary-item {
+      background: #2d3d4d;
+      border-color: #3d5a7a;
+      color: #e0e0e0;
+    }
+
+    body.dark .file-summary-item i,
+    body[data-dark="true"] .file-summary-item i,
+    html.dark-mode .file-summary-item i {
+      color: #6db3f2;
+    }
+  </style>
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ assignment.get_absolute_url() }}">{{ assignment.title }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>{{ title }}</span>
+    </nav>
+
+    <div class="form-header">
+      <h2>
+        <i class="fa fa-paper-plane"></i>
+        {% if is_edit %}
+          Cập nhật bài nộp
+        {% else %}
+          Nộp bài
+        {% endif %}
+      </h2>
+      <p class="form-subtitle">{{ assignment.title }}</p>
+    </div>
+
+    {% if assignment.is_past_deadline() %}
+      <div class="alert alert-warning">
+        <i class="fa fa-exclamation-triangle"></i>
+        Đã hết hạn nộp. Bài của bạn sẽ được đánh dấu là nộp muộn.
+      </div>
+    {% endif %}
+
+    <div class="submission-info-card">
+      <h4><i class="fa fa-info-circle"></i> Thông tin bài tập</h4>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Hạn nộp:</label>
+          <span>{{ assignment.deadline|date("N j, Y, H:i") }}</span>
+        </div>
+        <div class="info-item">
+          <label>Điểm:</label>
+          <span>{{ assignment.points }}</span>
+        </div>
+        <div class="info-item">
+          <label>Loại bài nộp:</label>
+          <span>
+            {% if assignment.category == 'CODE' %}
+              <i class="fa fa-code"></i> Mã nguồn
+            {% else %}
+              <i class="fa fa-upload"></i> Tệp đính kèm
+            {% endif %}
+          </span>
+        </div>
+        {% if assignment.category == 'IMAGE' %}
+          <div class="info-item">
+            <label>Định dạng cho phép:</label>
+            <span>{{ assignment.allowed_extensions }}</span>
+          </div>
+          <div class="info-item">
+            <label>Kích thước tối đa:</label>
+            <span>{{ assignment.max_file_size_mb }} MB</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post" class="homework-form submission-form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% if assignment.category == 'CODE' %}
+        {% if is_edit and existing_code_files %}
+          <div class="form-section current-submission-summary">
+            <h3><i class="fa fa-file-code"></i> Mã nguồn hiện tại</h3>
+            <div class="submitted-files-summary">
+              {% for cf in existing_code_files %}
+                <div class="file-summary-item">
+                  <i class="fa fa-file-code"></i>
+                  <span class="file-name">{{ cf['filename'] }}</span>
+                  <span class="file-lang-badge">{{ cf['language'] }}</span>
+                </div>
+              {% endfor %}
+            </div>
+            <p class="form-help"><i class="fa fa-info-circle"></i> Chỉnh sửa mã nguồn bên dưới để cập nhật bài nộp.</p>
+          </div>
+        {% endif %}
+
+        <div class="form-section">
+          <h3><i class="fa fa-edit"></i> {% if is_edit %}Chỉnh sửa mã nguồn{% else %}Mã nguồn của bạn{% endif %}</h3>
+
+          <div class="form-group">
+            <label>Các tệp mã nguồn <span class="required">*</span></label>
+
+            <!-- Code files tabs -->
+            <div class="code-files-container">
+              <div class="code-files-tabs" id="code-tabs">
+                <!-- Tabs will be rendered by JS -->
+              </div>
+              <button type="button" class="btn-add-code-file" id="btn-add-code-file" title="Thêm tệp mới">
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- Code editor -->
+            <div id="code-editor"></div>
+
+            <!-- Hidden input to store all code files as JSON -->
+            <input type="hidden" name="code_files_data" id="code-files-data">
+
+            <!-- Context menu for tabs -->
+            <div class="tab-context-menu" id="tab-context-menu" style="display: none;">
+              <div class="context-menu-item" data-action="rename">
+                <i class="fa fa-edit"></i> Đổi tên
+              </div>
+              <div class="context-menu-item" data-action="delete">
+                <i class="fa fa-trash"></i> Xóa tệp
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="form-section">
+          <h3><i class="fa fa-upload"></i> Tải tệp lên</h3>
+
+          <div class="form-group">
+            <label>Tệp {% if not is_edit %}<span class="required">*</span>{% endif %}</label>
+
+            <!-- Hidden file input -->
+            <input type="file" name="submission_files" id="main-file-input"
+              accept="{{ '.' + assignment.allowed_extensions.replace(',', ',.') }}"
+              style="display: none;" multiple>
+
+            <!-- Upload zone -->
+            <div class="file-upload-zone" id="upload-zone">
+              <div class="upload-zone-content">
+                <i class="fa fa-cloud-upload-alt fa-3x"></i>
+                <p>Nhấp để chọn tệp hoặc kéo thả vào đây</p>
+                <small>Định dạng: {{ assignment.allowed_extensions }} | Tối đa: {{ assignment.max_file_size_mb }} MB/tệp</small>
+              </div>
+            </div>
+
+            <!-- Selected files manager -->
+            <div class="files-manager" id="files-manager" style="display: none;">
+              <div class="files-manager-header">
+                <span><i class="fa fa-check-circle"></i> <span id="file-count">0</span> tệp đã chọn</span>
+                <div class="files-manager-actions">
+                  <button type="button" class="btn-add-files" id="btn-add-files">
+                    <i class="fa fa-plus"></i> Thêm tệp
+                  </button>
+                  <button type="button" class="btn-clear-files" id="btn-clear-files">
+                    <i class="fa fa-trash"></i> Xóa tất cả
+                  </button>
+                </div>
+              </div>
+              <div class="files-list" id="files-list"></div>
+            </div>
+
+            {% if form.instance and form.instance.pk %}
+              {% set current_files = form.instance.files.filter(edit_version=form.instance.edit_count) %}
+              {% if current_files %}
+                <div class="existing-files">
+                  <h4><i class="fa fa-folder-open"></i> Tệp đã nộp (v{{ form.instance.edit_count }}):</h4>
+                  <div class="existing-files-list">
+                    {% for file in current_files %}
+                      <div class="existing-file-item">
+                        {% if file.is_deleted %}
+                          <i class="fa fa-ban text-muted"></i>
+                          <span class="text-muted">{{ file.original_filename }} (đã được hệ thống xóa)</span>
+                        {% else %}
+                          <i class="fa fa-file"></i>
+                          <span>{{ file.original_filename }}</span>
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <small class="form-help">Tải tệp mới sẽ tạo phiên bản mới.</small>
+                </div>
+              {% endif %}
+
+              {% if form.instance.edit_count > 1 %}
+                <div class="edit-history-toggle">
+                  <button type="button" class="btn-toggle-history" onclick="toggleHistory()">
+                    <i class="fa fa-history"></i> Xem lịch sử chỉnh sửa ({{ form.instance.edit_count - 1 }} lần)
+                  </button>
+                </div>
+                <div class="edit-history" id="edit-history" style="display: none;">
+                  {% for history in form.instance.history.all() %}
+                    <div class="history-item">
+                      <div class="history-header">
+                        <span class="history-version">Phiên bản {{ history.edit_version }}</span>
+                        <span class="history-date">{{ history.edited_date|date("d/m/Y H:i") }}</span>
+                      </div>
+                      {% set history_files = history.get_files() %}
+                      {% if history_files %}
+                        <div class="history-files">
+                          {% for file in history_files %}
+                            <div class="history-file">
+                              {% if file.is_deleted %}
+                                <i class="fa fa-ban text-muted"></i>
+                                <span class="text-muted">{{ file.original_filename }} (đã xóa)</span>
+                              {% else %}
+                                <i class="fa fa-file"></i>
+                                <a href="{{ file.file.url }}" target="_blank">{{ file.original_filename }}</a>
+                              {% endif %}
+                            </div>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endif %}
+            {% if form.non_field_errors() %}
+              {% for error in form.non_field_errors() %}
+                <div class="form-error">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="form-section">
+        <h3><i class="fa fa-comment"></i> Ghi chú (Không bắt buộc)</h3>
+
+        <div class="form-group">
+          <label for="id_submission_notes">Ghi chú cho giáo viên</label>
+          {{ form.submission_notes }}
+          <small class="form-help">Thêm bình luận hoặc ghi chú về bài nộp của bạn.</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary btn-large">
+          <i class="fa fa-paper-plane"></i>
+          {% if is_edit %}
+            Cập nhật bài nộp
+          {% else %}
+            Nộp bài
+          {% endif %}
+        </button>
+        <a href="{{ assignment.get_absolute_url() }}" class="btn-secondary">
+          <i class="fa fa-times"></i> Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+
+  {% if assignment.category == 'CODE' %}
+    <script src="{{ ACE_URL }}/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var editor = ace.edit("code-editor");
+        var tabsContainer = document.getElementById('code-tabs');
+        var btnAddFile = document.getElementById('btn-add-code-file');
+        var contextMenu = document.getElementById('tab-context-menu');
+        var codeFilesDataInput = document.getElementById('code-files-data');
+        var form = document.querySelector('form.submission-form');
+
+        var modeMap = {
+          'python': 'python',
+          'cpp': 'c_cpp',
+          'c': 'c_cpp',
+          'java': 'java',
+          'javascript': 'javascript',
+          'text': 'text'
+        };
+
+        var extMap = {
+          'python': 'py',
+          'cpp': 'cpp',
+          'c': 'c',
+          'java': 'java',
+          'javascript': 'js',
+          'text': 'txt'
+        };
+
+        // Code files data structure
+        var codeFiles = [];
+        var activeFileIndex = 0;
+        var contextMenuTargetIndex = null;
+
+        // Initialize editor
+        editor.setTheme("ace/theme/github");
+        editor.setOptions({
+          fontSize: "14px",
+          showLineNumbers: true,
+          showGutter: true,
+        });
+
+        // Load existing code files or create default
+        {% if existing_code_files %}
+          {% for cf in existing_code_files %}
+            codeFiles.push({
+              filename: "{{ cf['filename'] }}",
+              content: {{ cf['content']|tojson }},
+              language: "{{ cf['language'] }}"
+            });
+          {% endfor %}
+        {% elif form.instance and form.instance.code_content %}
+          // Migrate from old single-file format
+          codeFiles.push({
+            filename: "main." + extMap["{{ form.instance.code_language or 'python' }}"],
+            content: {{ form.instance.code_content|tojson }},
+            language: "{{ form.instance.code_language or 'python' }}"
+          });
+        {% endif %}
+
+        if (codeFiles.length === 0) {
+          codeFiles.push({
+            filename: "main.py",
+            content: "",
+            language: "python"
+          });
+        }
+
+        function getLanguageFromFilename(filename) {
+          var ext = filename.split('.').pop().toLowerCase();
+          var langMap = {
+            'py': 'python',
+            'cpp': 'cpp',
+            'c': 'c',
+            'java': 'java',
+            'js': 'javascript',
+            'txt': 'text'
+          };
+          return langMap[ext] || 'text';
+        }
+
+        function renderTabs() {
+          tabsContainer.innerHTML = '';
+          codeFiles.forEach(function(file, index) {
+            var tab = document.createElement('div');
+            tab.className = 'code-file-tab' + (index === activeFileIndex ? ' active' : '');
+            tab.setAttribute('data-index', index);
+            tab.innerHTML = '<span class="tab-name">' + file.filename + '</span>';
+            tab.addEventListener('click', function(e) {
+              if (e.button === 0) {
+                switchToFile(index);
+              }
+            });
+            tab.addEventListener('contextmenu', function(e) {
+              e.preventDefault();
+              showContextMenu(e, index);
+            });
+            tabsContainer.appendChild(tab);
+          });
+        }
+
+        var isFirstSwitch = true;
+
+        function switchToFile(index) {
+          // Save current file content (skip on first switch to avoid overwriting with empty editor)
+          if (!isFirstSwitch && codeFiles[activeFileIndex]) {
+            codeFiles[activeFileIndex].content = editor.getValue();
+          }
+          isFirstSwitch = false;
+
+          activeFileIndex = index;
+          var file = codeFiles[index];
+          editor.setValue(file.content || '', -1);
+          editor.session.setMode("ace/mode/" + (modeMap[file.language] || 'text'));
+          renderTabs();
+        }
+
+        function addNewFile() {
+          // Use the first file's language as default, or python
+          var lang = codeFiles.length > 0 ? codeFiles[0].language : 'python';
+          var ext = extMap[lang] || 'py';
+          var num = codeFiles.length + 1;
+          var filename = "file" + num + "." + ext;
+
+          // Check for duplicate names
+          while (codeFiles.some(function(f) { return f.filename === filename; })) {
+            num++;
+            filename = "file" + num + "." + ext;
+          }
+
+          codeFiles.push({
+            filename: filename,
+            content: "",
+            language: lang
+          });
+
+          switchToFile(codeFiles.length - 1);
+        }
+
+        function showContextMenu(e, index) {
+          contextMenuTargetIndex = index;
+          contextMenu.style.display = 'block';
+          contextMenu.style.left = e.clientX + 'px';
+          contextMenu.style.top = e.clientY + 'px';
+        }
+
+        function hideContextMenu() {
+          contextMenu.style.display = 'none';
+          contextMenuTargetIndex = null;
+        }
+
+        function renameFile(index) {
+          var file = codeFiles[index];
+          var newName = prompt('Nhập tên mới cho tệp:', file.filename);
+          if (newName && newName.trim()) {
+            newName = newName.trim();
+            // Check for duplicates
+            var isDuplicate = codeFiles.some(function(f, i) {
+              return i !== index && f.filename === newName;
+            });
+            if (isDuplicate) {
+              alert('Tên tệp đã tồn tại!');
+              return;
+            }
+            file.filename = newName;
+            file.language = getLanguageFromFilename(newName);
+            if (index === activeFileIndex) {
+              editor.session.setMode("ace/mode/" + modeMap[file.language]);
+            }
+            renderTabs();
+          }
+        }
+
+        function deleteFile(index) {
+          if (codeFiles.length <= 1) {
+            alert('Phải có ít nhất một tệp!');
+            return;
+          }
+          if (!confirm('Bạn có chắc chắn muốn xóa tệp "' + codeFiles[index].filename + '"?')) {
+            return;
+          }
+          codeFiles.splice(index, 1);
+          if (activeFileIndex >= codeFiles.length) {
+            activeFileIndex = codeFiles.length - 1;
+          }
+          switchToFile(activeFileIndex);
+        }
+
+        // Event listeners
+        btnAddFile.addEventListener('click', addNewFile);
+
+        document.addEventListener('click', function(e) {
+          if (!contextMenu.contains(e.target)) {
+            hideContextMenu();
+          }
+        });
+
+        contextMenu.querySelectorAll('.context-menu-item').forEach(function(item) {
+          item.addEventListener('click', function() {
+            var action = this.getAttribute('data-action');
+            if (contextMenuTargetIndex !== null) {
+              if (action === 'rename') {
+                renameFile(contextMenuTargetIndex);
+              } else if (action === 'delete') {
+                deleteFile(contextMenuTargetIndex);
+              }
+            }
+            hideContextMenu();
+          });
+        });
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+          // Save current file content before submit
+          codeFiles[activeFileIndex].content = editor.getValue();
+
+          // Check if any file has content
+          var hasContent = codeFiles.some(function(f) { return f.content.trim() !== ''; });
+          if (!hasContent) {
+            e.preventDefault();
+            alert('Vui lòng nhập mã nguồn cho ít nhất một tệp.');
+            return;
+          }
+
+          // Store code files as JSON
+          codeFilesDataInput.value = JSON.stringify(codeFiles);
+        });
+
+        // Initialize
+        renderTabs();
+        switchToFile(0);
+      });
+    </script>
+  {% else %}
+    <script>
+      function toggleHistory() {
+        var history = document.getElementById('edit-history');
+        if (history) {
+          history.style.display = history.style.display === 'none' ? 'block' : 'none';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('form.submission-form');
+        var mainInput = document.getElementById('main-file-input');
+        var uploadZone = document.getElementById('upload-zone');
+        var filesManager = document.getElementById('files-manager');
+        var filesList = document.getElementById('files-list');
+        var fileCount = document.getElementById('file-count');
+        var btnAddFiles = document.getElementById('btn-add-files');
+        var btnClearFiles = document.getElementById('btn-clear-files');
+
+        // Array to store selected files
+        var selectedFiles = [];
+
+        function formatFileSize(bytes) {
+          if (bytes < 1024) return bytes + ' B';
+          if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+          return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function getFileIcon(filename) {
+          var ext = filename.split('.').pop().toLowerCase();
+          if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return 'fa-image';
+          if (['pdf'].includes(ext)) return 'fa-file-pdf';
+          if (['zip', 'rar', '7z'].includes(ext)) return 'fa-file-archive';
+          if (['py', 'cpp', 'c', 'java', 'js'].includes(ext)) return 'fa-file-code';
+          return 'fa-file';
+        }
+
+        function renderFilesList() {
+          filesList.innerHTML = '';
+          fileCount.textContent = selectedFiles.length;
+
+          if (selectedFiles.length > 0) {
+            uploadZone.style.display = 'none';
+            filesManager.style.display = 'block';
+
+            selectedFiles.forEach(function(file, index) {
+              var item = document.createElement('div');
+              item.className = 'file-item';
+              item.innerHTML =
+              '<div class="file-item-info">' +
+              '<i class="fa ' + getFileIcon(file.name) + '"></i>' +
+              '<span class="file-item-name">' + file.name + '</span>' +
+              '<span class="file-item-size">' + formatFileSize(file.size) + '</span>' +
+              '</div>' +
+              '<button type="button" class="btn-remove-file" data-index="' + index + '" title="Xóa tệp này">' +
+              '<i class="fa fa-times"></i>' +
+              '</button>';
+              filesList.appendChild(item);
+            });
+
+            // Add remove handlers
+            filesList.querySelectorAll('.btn-remove-file').forEach(function(btn) {
+              btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var idx = parseInt(this.getAttribute('data-index'));
+                removeFile(idx);
+              });
+            });
+          } else {
+            uploadZone.style.display = 'block';
+            filesManager.style.display = 'none';
+          }
+        }
+
+        function addFiles(files) {
+          for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // Check for duplicates
+            var isDuplicate = selectedFiles.some(function(f) {
+              return f.name === file.name && f.size === file.size;
+            });
+            if (!isDuplicate) {
+              selectedFiles.push(file);
+            }
+          }
+          renderFilesList();
+        }
+
+        function removeFile(index) {
+          selectedFiles.splice(index, 1);
+          renderFilesList();
+        }
+
+        function clearAllFiles() {
+          selectedFiles = [];
+          renderFilesList();
+        }
+
+        // Click on upload zone
+        uploadZone.addEventListener('click', function() {
+          mainInput.click();
+        });
+
+        // File input change
+        mainInput.addEventListener('change', function() {
+          if (this.files.length > 0) {
+            addFiles(this.files);
+          }
+        });
+
+        // Add more files button
+        btnAddFiles.addEventListener('click', function(e) {
+          e.preventDefault();
+          var tempInput = document.createElement('input');
+          tempInput.type = 'file';
+          tempInput.multiple = true;
+          tempInput.accept = mainInput.accept;
+          tempInput.style.display = 'none';
+          document.body.appendChild(tempInput);
+
+          tempInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+              addFiles(this.files);
+            }
+            document.body.removeChild(tempInput);
+          });
+
+          tempInput.click();
+        });
+
+        // Clear all files button
+        btnClearFiles.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (confirm('Bạn có chắc chắn muốn xóa tất cả tệp đã chọn?')) {
+            clearAllFiles();
+          }
+        });
+
+        // Drag and drop
+        uploadZone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          this.classList.add('drag-over');
+        });
+
+        uploadZone.addEventListener('dragleave', function() {
+          this.classList.remove('drag-over');
+        });
+
+        uploadZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          this.classList.remove('drag-over');
+          if (e.dataTransfer.files.length > 0) {
+            addFiles(e.dataTransfer.files);
+          }
+        });
+
+        // Handle form submission with AJAX
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          var isEdit = JSON.parse('{{ "true" if is_edit else "false" }}');
+          if (!isEdit && selectedFiles.length === 0) {
+            alert('Vui lòng chọn ít nhất một tệp để tải lên.');
+            return;
+          }
+
+          var formData = new FormData(form);
+
+          // Remove the empty file input data
+          formData.delete('submission_files');
+
+          // Add all selected files
+          for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('submission_files', selectedFiles[i]);
+          }
+
+          // Show loading state
+          var submitBtn = form.querySelector('button[type="submit"]');
+          var originalBtnText = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải lên...';
+
+          fetch(form.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+          })
+            .then(function(response) {
+            if (response.redirected) {
+              window.location.href = response.url;
+            } else {
+              return response.text().then(function(html) {
+                document.open();
+                document.write(html);
+                document.close();
+              });
+            }
+          })
+            .catch(function(error) {
+            console.error('Upload error:', error);
+            alert('Đã xảy ra lỗi khi tải lên. Vui lòng thử lại.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+          });
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

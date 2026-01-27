@@ -1,0 +1,143 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <div class="class-header">
+      {% if homework_class.image_url %}
+        <div class="class-banner" style="background-image: url('{{ homework_class.image_url }}')"></div>
+      {% endif %}
+      <div class="class-info">
+        <h2>{{ homework_class.name }}</h2>
+        {% if homework_class.description %}
+          <div class="class-description">
+            {{ homework_class.description|markdown|reference|str|safe }}
+          </div>
+        {% endif %}
+        <div class="class-meta">
+          <span class="meta-item">
+            <i class="fa fa-user-shield"></i> {{ homework_class.co_managers.count() + 1 }} người hỗ trợ
+          </span>
+          <span class="meta-item">
+            <i class="fa fa-users"></i> {{ homework_class.students.count() }} Học viên
+          </span>
+          <span class="meta-item">
+            <i class="fa fa-calendar"></i> Ngày tạo: {{ homework_class.creation_date|date("N j, Y") }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h3><i class="fa fa-tasks"></i> Bài tập</h3>
+      {% if is_manager %}
+        <a href="{{ url('homework_assignment_create', homework_class.slug) }}" class="btn-primary">
+          <i class="fa fa-plus"></i> Tạo bài tập
+        </a>
+      {% endif %}
+    </div>
+
+    {% if assignment_data %}
+      <div class="assignment-list">
+        {% for data in assignment_data %}
+          {% set assignment = data.assignment %}
+          <div class="assignment-card {% if data.is_past_deadline %}past-deadline{% endif %}">
+            <div class="assignment-icon">
+              {% if assignment.category == 'CODE' %}
+                <i class="fa fa-code"></i>
+              {% else %}
+                <i class="fa fa-file-image"></i>
+              {% endif %}
+            </div>
+            <div class="assignment-content">
+              <div class="assignment-header">
+                <a href="{{ assignment.get_absolute_url() }}" class="assignment-title">
+                  {{ assignment.title }}
+                </a>
+                {% if not assignment.is_published %}
+                  <span class="badge draft">Nháp</span>
+                {% endif %}
+                {% if data.is_past_deadline %}
+                  <span class="badge past-due">Quá hạn</span>
+                {% endif %}
+              </div>
+              <div class="assignment-meta">
+                <span class="meta-item">
+                  <i class="fa fa-clock"></i> Hạn nộp: {{ assignment.deadline|date("N j, Y, H:i") }}
+                </span>
+                <span class="meta-item">
+                  <i class="fa fa-star"></i> {{ assignment.points }} điểm
+                </span>
+                {% if assignment.category == 'CODE' %}
+                  <span class="meta-item">
+                    <i class="fa fa-code"></i> Nộp mã nguồn
+                  </span>
+                {% else %}
+                  <span class="meta-item">
+                    <i class="fa fa-upload"></i> Nộp tệp
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="assignment-status">
+              {% if is_manager %}
+                <div class="submission-stats">
+                  <span class="stat">
+                    <strong>{{ data.submission_count }}</strong> đã nộp
+                  </span>
+                  <span class="stat">
+                    <strong>{{ data.graded_count }}</strong> đã chấm
+                  </span>
+                </div>
+                <a href="{{ url('homework_all_submissions', homework_class.slug, assignment.id) }}" class="btn-view">
+                  Xem bài nộp
+                </a>
+              {% else %}
+                {% if data.submission %}
+                  {% if data.grade is not none %}
+                    <div class="grade-display">
+                      <span class="grade-value">{{ data.grade }}/10</span>
+                      <span class="grade-label">Đã chấm</span>
+                    </div>
+                  {% else %}
+                    <div class="status-badge submitted">
+                      <i class="fa fa-check"></i> Đã nộp
+                    </div>
+                  {% endif %}
+                {% else %}
+                  {% if assignment.can_submit() %}
+                    <a href="{{ url('homework_submit', homework_class.slug, assignment.id) }}" class="btn-submit">
+                      <i class="fa fa-paper-plane"></i> Nộp bài
+                    </a>
+                  {% else %}
+                    <div class="status-badge not-submitted">
+                      <i class="fa fa-times"></i> Chưa nộp
+                    </div>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fa fa-clipboard-list"></i>
+        <h3>Chưa có bài tập</h3>
+        {% if is_manager %}
+          <p>Tạo bài tập đầu tiên cho lớp học này.</p>
+          <a href="{{ url('homework_assignment_create', homework_class.slug) }}" class="btn-primary">
+            <i class="fa fa-plus"></i> Tạo bài tập
+          </a>
+        {% else %}
+          <p>Lớp học này chưa có bài tập nào.</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

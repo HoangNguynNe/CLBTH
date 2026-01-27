@@ -1,0 +1,79 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Học viên</span>
+    </nav>
+
+    <div class="page-header">
+      <h2><i class="fa fa-users"></i> Thành viên lớp</h2>
+    </div>
+
+    <div class="content-section">
+      <h3><i class="fa fa-user-shield"></i> Hỗ trợ ({{ (co_managers|length) + 1 }})</h3>
+      <div class="members-grid">
+        <div class="member-card creator">
+          {{ link_user(homework_class.creator) }}
+          <span class="role-badge">Phó hỗ trợ</span>
+        </div>
+        {% for manager in co_managers %}
+          <div class="member-card">
+            {{ link_user(manager) }}
+            <span class="role-badge manager">Hỗ trợ</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3><i class="fa fa-user-graduate"></i> Học viên ({{ students|length }})</h3>
+      {% if students %}
+        <div class="members-grid">
+          {% for student in students %}
+            <div class="member-card student-card">
+              <div class="member-info">
+                {{ link_user(student) }}
+              </div>
+              <div class="member-actions">
+                <a href="{{ url('homework_student_detail', homework_class.slug, student.id) }}" class="btn-small btn-info" title="Chi tiết">
+                  <i class="fa fa-eye"></i>
+                </a>
+                <form method="post" action="{{ url('homework_remove_student', homework_class.slug, student.id) }}" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa Học viên này khỏi lớp?');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-small btn-danger" title="Xóa khỏi lớp">
+                    <i class="fa fa-user-minus"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state small">
+          <i class="fa fa-user-plus"></i>
+          <p>Chưa có Học viên nào.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="page-actions">
+      <a href="{{ url('homework_class_edit', homework_class.slug) }}" class="btn-primary">
+        <i class="fa fa-edit"></i> Quản lý thành viên
+      </a>
+      <a href="{{ homework_class.get_absolute_url() }}" class="btn-secondary">
+        <i class="fa fa-arrow-left"></i> Quay lại lớp
+      </a>
+    </div>
+  </div>
+{% endblock %}

@@ -16,4 +16,6 @@ sass_processed
 node_modules/
 package-lock.json
 /src
+/homework_submissions
+/assignment_images
 

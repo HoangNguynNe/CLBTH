@@ -1,0 +1,163 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <div class="homework-header">
+      <h2><i class="fa fa-book"></i> {{ title }}</h2>
+      {% if can_create_class %}
+        <a href="{{ url('homework_class_create') }}" class="btn-primary">
+          <i class="fa fa-plus"></i> Tạo lớp mới
+        </a>
+      {% endif %}
+    </div>
+
+    {# My Classes Section #}
+    {% if my_classes %}
+      <div class="section-header">
+        <h3><i class="fa fa-star"></i> Lớp của tôi</h3>
+      </div>
+      <div class="class-grid">
+        {% for hw_class in my_classes %}
+          <div class="class-card">
+            <div class="class-card-image">
+              {% if hw_class.image_url %}
+                <img src="{{ hw_class.image_url }}" alt="{{ hw_class.name }}" loading="lazy">
+              {% else %}
+                <div class="class-card-placeholder">
+                  <i class="fa fa-graduation-cap"></i>
+                </div>
+              {% endif %}
+              <div class="card-badges">
+                <div class="badge-left">
+                  {% if hw_class.is_manager(request.profile) %}
+                    <span class="role-badge manager">Hỗ trợ</span>
+                  {% else %}
+                    <span class="role-badge student">Học viên</span>
+                  {% endif %}
+                </div>
+                <div class="badge-right">
+                  {% if hw_class.is_manager(request.profile) and hw_class.pending_join_requests_count() > 0 %}
+                    <span class="pending-badge" title="Yêu cầu tham gia chờ duyệt">
+                      <i class="fa fa-user-plus"></i> {{ hw_class.pending_join_requests_count() }}
+                    </span>
+                  {% endif %}
+                  {% if hw_class.new_assignments_count is defined and hw_class.new_assignments_count > 0 %}
+                    <span class="new-assignment-badge" title="Bài tập mới">
+                      <i class="fa fa-bell"></i> {{ hw_class.new_assignments_count }}
+                    </span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="class-card-body">
+              <h3 class="class-card-title">
+                <a href="{{ hw_class.get_absolute_url() }}">{{ hw_class.name }}</a>
+              </h3>
+              {% if hw_class.description %}
+                <p class="class-card-desc">{{ hw_class.description|truncate(100) }}</p>
+              {% endif %}
+              <div class="class-card-meta">
+                <span class="meta-item">
+                  <i class="fa fa-user-shield"></i> {{ hw_class.co_managers.count() + 1 }} hỗ trợ
+                </span>
+                <span class="meta-item">
+                  <i class="fa fa-users"></i> {{ hw_class.students.count() }} Học viên
+                </span>
+              </div>
+            </div>
+            <div class="class-card-footer">
+              <a href="{{ hw_class.get_absolute_url() }}" class="btn-view">
+                Xem lớp <i class="fa fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Available Classes Section #}
+    {% if available_classes %}
+      <div class="section-header" style="margin-top: 2rem;">
+        <h3><i class="fa fa-globe"></i> Lớp có thể tham gia</h3>
+      </div>
+      <div class="class-grid">
+        {% for hw_class in available_classes %}
+          <div class="class-card available-class">
+            <div class="class-card-image">
+              {% if hw_class.image_url %}
+                <img src="{{ hw_class.image_url }}" alt="{{ hw_class.name }}" loading="lazy">
+              {% else %}
+                <div class="class-card-placeholder">
+                  <i class="fa fa-graduation-cap"></i>
+                </div>
+              {% endif %}
+              <div class="card-badges">
+                <div class="badge-left">
+                  {% if hw_class.visibility == 'PU' %}
+                    <span class="visibility-badge public"><i class="fa fa-globe"></i> Công khai</span>
+                  {% elif hw_class.visibility == 'RQ' %}
+                    <span class="visibility-badge request"><i class="fa fa-user-plus"></i> Xin vào</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="class-card-body">
+              <h3 class="class-card-title">{{ hw_class.name }}</h3>
+              {% if hw_class.description %}
+                <p class="class-card-desc">{{ hw_class.description|truncate(100) }}</p>
+              {% endif %}
+              <div class="class-card-meta">
+                <span class="meta-item">
+                  <i class="fa fa-user-shield"></i> {{ hw_class.co_managers.count() + 1 }} hỗ trợ
+                </span>
+                <span class="meta-item">
+                  <i class="fa fa-users"></i> {{ hw_class.students.count() }} Học viên
+                </span>
+              </div>
+            </div>
+            <div class="class-card-footer">
+              {% if hw_class.has_pending_request %}
+                <span class="btn-pending">
+                  <i class="fa fa-clock"></i> Đang chờ duyệt
+                </span>
+              {% elif hw_class.visibility == 'PU' %}
+                <form method="post" action="{{ url('homework_join_request', hw_class.slug) }}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-join btn-join-public">
+                    <i class="fa fa-sign-in-alt"></i> Tham gia ngay
+                  </button>
+                </form>
+              {% else %}
+                <form method="post" action="{{ url('homework_join_request', hw_class.slug) }}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-join">
+                    <i class="fa fa-user-plus"></i> Xin vào lớp
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if not my_classes and not available_classes %}
+      <div class="empty-state">
+        <i class="fa fa-folder-open"></i>
+        <h3>Không có lớp học nào</h3>
+        <p>Chưa có lớp học nào được tạo.</p>
+        {% if can_create_class %}
+          <a href="{{ url('homework_class_create') }}" class="btn-primary">
+            <i class="fa fa-plus"></i> Tạo lớp đầu tiên
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

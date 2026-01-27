@@ -1,0 +1,460 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+  <link rel="stylesheet" type="text/css" href="{{ static('pagedown_widget.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ static('dmmd-preview.css') }}">
+  {{ form.media.css }}
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Converter.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Sanitizer.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Editor.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown_init.js') }}"></script>
+  <script type="text/javascript" src="{{ static('dmmd-preview.js') }}"></script>
+  {{ form.media.js }}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>{{ title }}</span>
+    </nav>
+
+    <div class="form-header">
+      <h2><i class="fa fa-{% if page_type == 'create_assignment' %}plus-circle{% else %}edit{% endif %}"></i> {{ title }}</h2>
+    </div>
+
+    <form method="post" class="homework-form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <h3><i class="fa fa-info-circle"></i> Thông tin cơ bản</h3>
+
+        <div class="form-group">
+          <label for="id_title">Tên bài tập <span class="required">*</span></label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <div class="form-error">{{ form.title.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_description">Đề bài <span class="required">*</span></label>
+          {{ form.description }}
+          <small class="form-help">Viết mô tả bài tập.</small>
+          {% if form.description.errors %}
+            <div class="form-error">{{ form.description.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label>Ảnh đề bài (không bắt buộc)</label>
+
+          <!-- Hidden file input -->
+          <input type="file" name="assignment_images" id="assignment-images-input"
+            accept=".png,.jpg,.jpeg,.gif,.webp"
+            style="display: none;" multiple>
+
+          <!-- Upload zone -->
+          <div class="file-upload-zone" id="images-upload-zone">
+            <div class="upload-zone-content">
+              <i class="fa fa-images fa-2x"></i>
+              <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+              <small>Định dạng: PNG, JPG, JPEG, GIF, WEBP</small>
+            </div>
+          </div>
+
+          <!-- Selected images manager -->
+          <div class="files-manager" id="images-manager" style="display: none;">
+            <div class="files-manager-header">
+              <span><i class="fa fa-check-circle"></i> <span id="images-count">0</span> ảnh đã chọn</span>
+              <div class="files-manager-actions">
+                <button type="button" class="btn-add-files" id="btn-add-images">
+                  <i class="fa fa-plus"></i> Thêm ảnh
+                </button>
+                <button type="button" class="btn-clear-files" id="btn-clear-images">
+                  <i class="fa fa-trash"></i> Xóa tất cả
+                </button>
+              </div>
+            </div>
+            <div class="files-list" id="images-list"></div>
+          </div>
+
+          {% if assignment and assignment.images.count() > 0 %}
+            <div class="existing-images-section">
+              <h4><i class="fa fa-images"></i> Ảnh hiện có:</h4>
+              <div class="existing-images-grid" id="existing-images-grid">
+                {% for img in assignment.images.all() %}
+                  <div class="existing-image-item" data-image-id="{{ img.id }}">
+                    <img src="{{ img.image.url }}" alt="{{ img.original_filename }}" onclick="openLightbox('{{ img.image.url }}')">
+                    <button type="button" class="btn-delete-image" data-image-id="{{ img.id }}" title="Xóa ảnh này">
+                      <i class="fa fa-times"></i>
+                    </button>
+                    <div class="image-name">{{ img.original_filename }}</div>
+                  </div>
+                {% endfor %}
+              </div>
+              <small class="form-help" style="display: block; margin-top: 0.5rem;">Nhấn nút X để xóa ảnh. Tải ảnh mới sẽ thêm vào danh sách hiện có.</small>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="id_category">Loại bài nộp <span class="required">*</span></label>
+            {{ form.category }}
+            {% if form.category.errors %}
+              <div class="form-error">{{ form.category.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group half">
+            <label for="id_points">Điểm tối đa <span class="required">*</span></label>
+            {{ form.points }}
+            {% if form.points.errors %}
+              <div class="form-error">{{ form.points.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fa fa-clock"></i> Hạn nộp</h3>
+
+        <div class="form-group">
+          <label for="id_deadline">Ngày hết hạn <span class="required">*</span></label>
+          {{ form.deadline }}
+          {% if form.deadline.errors %}
+            <div class="form-error">{{ form.deadline.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.allow_late_submission }}
+            <span>Cho phép nộp muộn</span>
+          </label>
+          <small class="form-help">Học viên có thể nộp sau hạn (sẽ được đánh dấu là nộp muộn).</small>
+        </div>
+      </div>
+
+      <div class="form-section file-settings" id="file-settings">
+        <h3><i class="fa fa-file"></i> Cài đặt tệp</h3>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="id_max_file_size_mb">Kích thước tối đa (MB)</label>
+            {{ form.max_file_size_mb }}
+            {% if form.max_file_size_mb.errors %}
+              <div class="form-error">{{ form.max_file_size_mb.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Định dạng file cho phép</label>
+          <div class="extension-checkbox-grid">
+            {{ form.extension_choices }}
+          </div>
+          {% if form.extension_choices.errors %}
+            <div class="form-error">{{ form.extension_choices.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_custom_extensions">Định dạng khác</label>
+          {{ form.custom_extensions }}
+          <small class="form-help">Nhập các định dạng bổ sung, phân cách bằng dấu phẩy (ví dụ: doc,docx,xlsx)</small>
+          {% if form.custom_extensions.errors %}
+            <div class="form-error">{{ form.custom_extensions.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fa fa-cog"></i> Cài đặt chấm điểm</h3>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.allow_multiple_graders }}
+            <span>Cho phép nhiều người chấm</span>
+          </label>
+          <small class="form-help">Nhiều hỗ trợ có thể chấm cùng một bài (sẽ lấy điểm trung bình).</small>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.is_graded }}
+            <span>Có chấm điểm</span>
+          </label>
+          <small class="form-help">Bỏ chọn nếu bài tập này không cần chấm điểm.</small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fa fa-eye"></i> Hiển thị</h3>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.is_published }}
+            <span>Đã xuất bản</span>
+          </label>
+          <small class="form-help">Bài tập đã xuất bản sẽ hiển thị với Học viên.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="id_order">Thứ tự hiển thị</label>
+          {{ form.order }}
+          <small class="form-help">Số nhỏ hơn sẽ hiển thị trước.</small>
+          {% if form.order.errors %}
+            <div class="form-error">{{ form.order.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">
+          <i class="fa fa-save"></i> {{ action }}
+        </button>
+        <a href="{{ homework_class.get_absolute_url() }}" class="btn-secondary">
+          <i class="fa fa-times"></i> Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var categorySelect = document.getElementById('id_category');
+      var fileSettings = document.getElementById('file-settings');
+
+      function toggleFileSettings() {
+        if (categorySelect.value === 'IMAGE') {
+          fileSettings.style.display = 'block';
+        } else {
+          fileSettings.style.display = 'none';
+        }
+      }
+
+      categorySelect.addEventListener('change', toggleFileSettings);
+      toggleFileSettings();
+
+      // Images upload functionality
+      var form = document.querySelector('form.homework-form');
+      var imagesInput = document.getElementById('assignment-images-input');
+      var uploadZone = document.getElementById('images-upload-zone');
+      var imagesManager = document.getElementById('images-manager');
+      var imagesList = document.getElementById('images-list');
+      var imagesCount = document.getElementById('images-count');
+      var btnAddImages = document.getElementById('btn-add-images');
+      var btnClearImages = document.getElementById('btn-clear-images');
+
+      var selectedImages = [];
+
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      function renderImagesList() {
+        imagesList.innerHTML = '';
+        imagesCount.textContent = selectedImages.length;
+
+        if (selectedImages.length > 0) {
+          uploadZone.style.display = 'none';
+          imagesManager.style.display = 'block';
+
+          selectedImages.forEach(function(file, index) {
+            var item = document.createElement('div');
+            item.className = 'file-item';
+            item.innerHTML =
+            '<div class="file-item-info">' +
+            '<i class="fa fa-image"></i>' +
+            '<span class="file-item-name">' + file.name + '</span>' +
+            '<span class="file-item-size">' + formatFileSize(file.size) + '</span>' +
+            '</div>' +
+            '<button type="button" class="btn-remove-file" data-index="' + index + '" title="Xóa ảnh này">' +
+            '<i class="fa fa-times"></i>' +
+            '</button>';
+            imagesList.appendChild(item);
+          });
+
+          imagesList.querySelectorAll('.btn-remove-file').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              var idx = parseInt(this.getAttribute('data-index'));
+              selectedImages.splice(idx, 1);
+              renderImagesList();
+            });
+          });
+        } else {
+          uploadZone.style.display = 'block';
+          imagesManager.style.display = 'none';
+        }
+      }
+
+      function addImages(files) {
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          if (!file.type.startsWith('image/')) continue;
+          var isDuplicate = selectedImages.some(function(f) {
+            return f.name === file.name && f.size === file.size;
+          });
+          if (!isDuplicate) {
+            selectedImages.push(file);
+          }
+        }
+        renderImagesList();
+      }
+
+      uploadZone.addEventListener('click', function() {
+        imagesInput.click();
+      });
+
+      imagesInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          addImages(this.files);
+        }
+      });
+
+      btnAddImages.addEventListener('click', function(e) {
+        e.preventDefault();
+        var tempInput = document.createElement('input');
+        tempInput.type = 'file';
+        tempInput.multiple = true;
+        tempInput.accept = imagesInput.accept;
+        tempInput.style.display = 'none';
+        document.body.appendChild(tempInput);
+
+        tempInput.addEventListener('change', function() {
+          if (this.files.length > 0) {
+            addImages(this.files);
+          }
+          document.body.removeChild(tempInput);
+        });
+
+        tempInput.click();
+      });
+
+      btnClearImages.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Bạn có chắc chắn muốn xóa tất cả ảnh đã chọn?')) {
+          selectedImages = [];
+          renderImagesList();
+        }
+      });
+
+      uploadZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('drag-over');
+      });
+
+      uploadZone.addEventListener('dragleave', function() {
+        this.classList.remove('drag-over');
+      });
+
+      uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        if (e.dataTransfer.files.length > 0) {
+          addImages(e.dataTransfer.files);
+        }
+      });
+
+      // Handle deleting existing images
+      var existingImagesGrid = document.getElementById('existing-images-grid');
+      if (existingImagesGrid) {
+        existingImagesGrid.querySelectorAll('.btn-delete-image').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!confirm('Bạn có chắc chắn muốn xóa ảnh này?')) return;
+
+            var imageId = this.getAttribute('data-image-id');
+            var imageItem = this.closest('.existing-image-item');
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // Build URL for delete endpoint
+            var deleteUrl = window.location.pathname.replace('/edit/', '/images/' + imageId + '/delete/');
+
+            fetch(deleteUrl, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+              },
+              credentials: 'same-origin'
+            })
+              .then(function(response) {
+              return response.json();
+            })
+              .then(function(data) {
+              if (data.success) {
+                imageItem.remove();
+                // Check if no more images
+                if (existingImagesGrid.children.length === 0) {
+                  existingImagesGrid.closest('.existing-images-section').remove();
+                }
+              } else {
+                alert('Không thể xóa ảnh: ' + (data.error || 'Unknown error'));
+              }
+            })
+              .catch(function(error) {
+              console.error('Error:', error);
+              alert('Đã xảy ra lỗi khi xóa ảnh.');
+            });
+          });
+        });
+      }
+
+      // Handle form submission with AJAX to include images
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(form);
+
+        // Remove empty file input data and add selected images
+        formData.delete('assignment_images');
+        for (var i = 0; i < selectedImages.length; i++) {
+          formData.append('assignment_images', selectedImages[i]);
+        }
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang lưu...';
+
+        fetch(form.action || window.location.href, {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        })
+          .then(function(response) {
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            return response.text().then(function(html) {
+              document.open();
+              document.write(html);
+              document.close();
+            });
+          }
+        })
+          .catch(function(error) {
+          console.error('Error:', error);
+          alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        });
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <nav class="breadcrumb">
+      <a href="{{ url('homework_class_list') }}">Lớp học</a>
+      <i class="fa fa-chevron-right"></i>
+      <a href="{{ homework_class.get_absolute_url() }}">{{ homework_class.name }}</a>
+      <i class="fa fa-chevron-right"></i>
+      <span>Bài nộp của tôi</span>
+    </nav>
+
+    <div class="page-header">
+      <h2><i class="fa fa-file-alt"></i> Bài nộp của tôi</h2>
+      <p class="page-subtitle">{{ homework_class.name }}</p>
+    </div>
+
+    {% if submissions %}
+      <div class="submission-history">
+        {% for sub in submissions %}
+          <div class="submission-history-card">
+            <div class="submission-icon">
+              {% if sub.assignment.category == 'CODE' %}
+                <i class="fa fa-code"></i>
+              {% else %}
+                <i class="fa fa-file-image"></i>
+              {% endif %}
+            </div>
+            <div class="submission-info">
+              <a href="{{ sub.assignment.get_absolute_url() }}" class="assignment-title">
+                {{ sub.assignment.title }}
+              </a>
+              <div class="submission-meta">
+                <span><i class="fa fa-clock"></i> {{ sub.submission_date|date("N j, Y, H:i") }}</span>
+                {% if sub.is_late %}
+                  <span class="badge-small late">Muộn</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="submission-status">
+              {% if sub.status == 'GR' %}
+                {% set grade = sub.get_final_grade() %}
+                <div class="grade-display">
+                  <span class="grade-value">{{ grade }}/10</span>
+                  <span class="grade-label">Đã chấm</span>
+                </div>
+              {% else %}
+                <div class="status-badge pending">
+                  <i class="fa fa-clock"></i> Chờ chấm
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fa fa-inbox"></i>
+        <h3>Chưa có bài nộp nào</h3>
+        <p>Bạn chưa nộp bài tập nào cho lớp này.</p>
+        <a href="{{ homework_class.get_absolute_url() }}" class="btn-primary">
+          <i class="fa fa-arrow-left"></i> Xem bài tập
+        </a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends "homework/base.html" %}
+
+{% block two_col_media %}
+  {% compress css %}
+    <link rel="stylesheet" href="{{ static('homework.css') }}">
+  {% endcompress %}
+  <link rel="stylesheet" type="text/css" href="{{ static('pagedown_widget.css') }}">
+  {{ form.media.css }}
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Converter.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Sanitizer.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown/Markdown.Editor.js') }}"></script>
+  <script type="text/javascript" src="{{ static('pagedown_init.js') }}"></script>
+  {{ form.media.js }}
+{% endblock %}
+
+{% block middle_content %}
+  <div class="homework-container">
+    <div class="form-header">
+      <h2><i class="fa fa-{% if page_type == 'create' %}plus-circle{% else %}edit{% endif %}"></i> {{ title }}</h2>
+      {% if homework_class is defined and homework_class %}
+        <p class="form-subtitle">Lớp: <strong>{{ homework_class.name }}</strong></p>
+      {% endif %}
+    </div>
+
+    <form method="post" class="homework-form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% if form.non_field_errors() %}
+        <div class="alert alert-error">
+          {% for error in form.non_field_errors() %}
+            <p><i class="fa fa-exclamation-circle"></i> {{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="form-section">
+        <h3><i class="fa fa-info-circle"></i> Thông tin cơ bản</h3>
+
+        <div class="form-group">
+          <label for="id_name">Tên lớp <span class="required">*</span></label>
+          {{ form.name }}
+          {% if form.name.errors %}
+            <div class="form-error">{{ form.name.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_slug">Đường dẫn URL <span class="required">*</span></label>
+          {{ form.slug }}
+          <small class="form-help">Sẽ xuất hiện trong URL. Chỉ sử dụng chữ cái, số và dấu gạch ngang.</small>
+          {% if form.slug.errors %}
+            <div class="form-error">{{ form.slug.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_description">Mô tả</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <div class="form-error">{{ form.description.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_image_url">URL ảnh bìa</label>
+          {{ form.image_url }}
+          <small class="form-help">Không bắt buộc. Nhập URL ảnh bìa cho lớp học.</small>
+          {% if form.image_url.errors %}
+            <div class="form-error">{{ form.image_url.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fa fa-users"></i> Thành viên</h3>
+
+        <div class="form-group">
+          <label for="id_co_managers">Hỗ trợ</label>
+          {{ form.co_managers }}
+          <small class="form-help">Chọn người dùng có thể giúp hỗ trợ lớp, tạo bài tập và chấm điểm.</small>
+          {% if form.co_managers.errors %}
+            <div class="form-error">{{ form.co_managers.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_students">Học viên</label>
+          {{ form.students }}
+          <small class="form-help">Chọn Học viên tham gia lớp học này.</small>
+          {% if form.students.errors %}
+            <div class="form-error">{{ form.students.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fa fa-cog"></i> Cài đặt</h3>
+
+        <div class="form-group">
+          <label>Chế độ lớp <span class="required">*</span></label>
+          <div class="visibility-options">
+            <label class="visibility-option">
+              <input type="radio" name="visibility" value="PU" {{ 'checked' if form.visibility.value() == 'PU' else '' }}>
+              <span class="option-content">
+                <span class="option-title"><i class="fa fa-globe"></i> Công khai</span>
+                <span class="option-desc">Ai cũng có thể tham gia ngay lập tức</span>
+              </span>
+            </label>
+            <label class="visibility-option">
+              <input type="radio" name="visibility" value="RQ" {{ 'checked' if form.visibility.value() == 'RQ' or not form.visibility.value() else '' }}>
+              <span class="option-content">
+                <span class="option-title"><i class="fa fa-user-plus"></i> Xin vào</span>
+                <span class="option-desc">Học viên cần xin và được duyệt để tham gia</span>
+              </span>
+            </label>
+            <label class="visibility-option">
+              <input type="radio" name="visibility" value="PR" {{ 'checked' if form.visibility.value() == 'PR' else '' }}>
+              <span class="option-content">
+                <span class="option-title"><i class="fa fa-lock"></i> Riêng tư</span>
+                <span class="option-desc">Chỉ Học viên được mời mới có thể tham gia</span>
+              </span>
+            </label>
+          </div>
+          {% if form.visibility.errors %}
+            <div class="form-error">{{ form.visibility.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            {{ form.is_active }}
+            <span>Lớp đang hoạt động</span>
+          </label>
+          <small class="form-help">Lớp không hoạt động sẽ không hiển thị với Học viên.</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">
+          <i class="fa fa-save"></i> {{ action }}
+        </button>
+        <a href="{{ url('homework_class_list') }}" class="btn-secondary">
+          <i class="fa fa-times"></i> Hủy
+        </a>
+        {% if page_type == 'edit' and homework_class and homework_class.creator == profile %}
+          <a href="{{ url('homework_class_delete', homework_class.slug) }}" class="btn-danger"
+            onclick="return confirm('Bạn có chắc chắn muốn xóa lớp này? Hành động này không thể hoàn tác!');">
+            <i class="fa fa-trash"></i> Xóa lớp
+          </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function() {
+      const nameField = document.getElementById('id_name');
+      const slugField = document.getElementById('id_slug');
+
+      if (nameField && slugField) {
+        let userModifiedSlug = slugField.value.trim() !== '';
+
+        // Track if user manually modifies slug
+        slugField.addEventListener('input', function() {
+          userModifiedSlug = true;
+        });
+
+        nameField.addEventListener('input', function() {
+          if (!userModifiedSlug || slugField.value.trim() === '') {
+            // Convert Vietnamese to ASCII and create slug
+            const name = this.value;
+            const slug = name
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-+|-+$/g, '');
+            slugField.value = slug;
+            userModifiedSlug = false;
+          }
+        });
+      }
+    })();
+  </script>
+{% endblock %}

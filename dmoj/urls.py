@@ -540,6 +540,7 @@ urlpatterns = [
         paged_list_view(contests.OfficialContestList, "official_contest_list"),
     ),
     url(r"^courses/", paged_list_view(course.CourseList, "course_list")),
+    url(r"^homework/", include("homework.urls")),
     url(
         r"^course/(?P<slug>[\w-]*)",
         include(
