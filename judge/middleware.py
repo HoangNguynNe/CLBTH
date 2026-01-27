@@ -15,7 +15,6 @@ from django.utils.translation import gettext as _
 from judge.models import Organization
 from judge.utils.views import generic_message
 
-
 USED_DOMAINS = ["www"]
 URL_NAMES_BYPASS_SUBDOMAIN = ["submission_source_file"]
 

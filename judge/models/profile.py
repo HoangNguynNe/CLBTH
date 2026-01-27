@@ -22,7 +22,6 @@ from judge.models.runtime import Language
 from judge.ratings import rating_class
 from judge.caching import cache_wrapper
 
-
 __all__ = ["Organization", "Profile", "OrganizationRequest", "Friend"]
 
 

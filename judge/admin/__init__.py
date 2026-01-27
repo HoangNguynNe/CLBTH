@@ -61,7 +61,6 @@ from judge.models import (
     SiteMaintenance,
 )
 
-
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(CommentLock)

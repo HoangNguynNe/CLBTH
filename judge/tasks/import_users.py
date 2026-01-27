@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 
 from judge.models import Profile, Language, Organization
 
-
 fields = ["username", "password", "name", "school", "email", "organizations"]
 descriptions = [
     "my_username(edit old one if exist)",

@@ -115,9 +115,7 @@ def judge_submission(submission, rejudge=False, batch_rejudge=False, judge_id=No
                 "priority": (
                     BATCH_REJUDGE_PRIORITY
                     if batch_rejudge
-                    else REJUDGE_PRIORITY
-                    if rejudge
-                    else priority
+                    else REJUDGE_PRIORITY if rejudge else priority
                 ),
             }
         )

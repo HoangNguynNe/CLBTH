@@ -7,7 +7,6 @@ from django.utils.functional import cached_property
 from judge.models.profile import Profile
 from judge.caching import cache_wrapper
 
-
 __all__ = ["Message", "Room", "UserRoom", "Ignore"]
 
 

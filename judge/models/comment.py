@@ -22,7 +22,6 @@ from judge.models.profile import Profile
 from judge.utils.cachedict import CacheDict
 from judge.caching import cache_wrapper
 
-
 __all__ = ["Comment", "CommentLock", "CommentVote", "Notification"]
 
 

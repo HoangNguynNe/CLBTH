@@ -70,7 +70,6 @@ from judge.utils.infinite_paginator import InfinitePaginationMixin
 from judge.views.problem import ProblemList
 from .contests import ContestRanking
 
-
 __all__ = [
     "UserPage",
     "UserAboutPage",
@@ -543,9 +542,7 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, TitleMixin, ListVi
                     else (
                         "ND"
                         if current_rank == 2
-                        else "RD"
-                        if current_rank == 3
-                        else "TH"
+                        else "RD" if current_rank == 3 else "TH"
                     )
                 )
 

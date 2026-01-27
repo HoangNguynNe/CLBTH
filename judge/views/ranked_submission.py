@@ -48,9 +48,7 @@ class RankedSubmissions(ProblemSubmissions):
                         ON (sub.user_id = fastest.uid AND sub.time = fastest.time)
                 WHERE sub.problem_id = %s {constraint}
                 GROUP BY sub.user_id
-            """.format(
-                points=points, contest_join=contest_join, constraint=constraint
-            ),
+            """.format(points=points, contest_join=contest_join, constraint=constraint),
             params=(
                 [self.problem.id, self.contest.id] * 3
                 if self.in_contest
