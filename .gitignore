@@ -18,5 +18,7 @@ package-lock.json
 /src
 /homework_submissions
 /assignment_images
-
-
+problems/
+profile_images/
+ranking_report.xlsx
+node_modules/
