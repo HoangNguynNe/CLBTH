@@ -13,87 +13,64 @@
           {% endfor %}
         </div>
       {% endif %}
-      <<<<<<< Updated upstream
-      =======
-      <tr>
-        <label style="display: block;padding: 8px 0px;font-family: 'Play',sans-serif;font-size: 18px;font-weight: bold;" for="username">
-          Tên truy cập
-        </label>
-        <td>{{ form.username }}
-        </td>
-      </tr>
-      <tr>
-        <label style="display: block;padding: 8px 2px;font-family: 'Play',sans-serif;font-size: 17px;font-weight: bold;" for="username">
-          Mật khẩu
-        </label>
-        <td>{{ form.password }}
-        </td>
-      </tr>
-      <hr>
-      <a href="{{ url('password_reset') }}" style="float: right;">{{ _('Forgot your password?') }}</a>
-      <button class="btn-donate" style="float:left; width: -webkit-fill-available;" type="submit">{{ _('Login!') }}</button>
-      <input type="hidden" name="next" value="{{ next }}">
-    </form>
-    <br>
-    >>>>>>> Stashed changes
 
-    <div id="client-errors" class="alert alert-error hidden" role="alert"></div>
+      <div id="client-errors" class="alert alert-error hidden" role="alert"></div>
 
-    <form action="" method="post" class="form-area" id="login-form" novalidate>
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ next }}">
+      <form action="" method="post" class="form-area" id="login-form" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
 
-      <div class="field-row{% if form.username.errors %} has-error{% endif %}">
-        <label class="field-label" for="{{ form.username.id_for_label }}">Tên truy cập</label>
-        {{ form.username }}
-        {% if form.username.errors %}
-          <div class="field-errors">
-            {% for error in form.username.errors %}
-              <div>{{ error }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
+        <div class="field-row{% if form.username.errors %} has-error{% endif %}">
+          <label class="field-label" for="{{ form.username.id_for_label }}">Tên truy cập</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="field-errors">
+              {% for error in form.username.errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
 
-      <div class="field-row{% if form.password.errors %} has-error{% endif %}">
-        <label class="field-label" for="{{ form.password.id_for_label }}">Mật khẩu</label>
-        {{ form.password }}
-        {% if form.password.errors %}
-          <div class="field-errors">
-            {% for error in form.password.errors %}
-              <div>{{ error }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
+        <div class="field-row{% if form.password.errors %} has-error{% endif %}">
+          <label class="field-label" for="{{ form.password.id_for_label }}">Mật khẩu</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+            <div class="field-errors">
+              {% for error in form.password.errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
 
-      <div class="form-actions">
-        <a class="text-link" href="{{ url('password_reset') }}">{{ _('Forgot your password?') }}</a>
-        <button class="btn-donate" type="submit">{{ _('Login!') }}</button>
-      </div>
-    </form>
+        <div class="form-actions">
+          <a class="text-link" href="{{ url('password_reset') }}">{{ _('Forgot your password?') }}</a>
+          <button class="btn-donate" type="submit">{{ _('Login!') }}</button>
+        </div>
+      </form>
 
-    {% if form.has_google_auth or form.has_facebook_auth or form.has_github_auth %}
-      <div class="social-login">
-        <h4>{{ _('Or log in with...') }}</h4>
-        {% if form.has_google_auth %}
-          <a href="{{ url('social:begin', "google-oauth2") }}?next={{ next }}" class="social google-icon">
-            <i class="fab fa-square-google-plus"></i>
-          </a>
-        {% endif %}
-        {% if form.has_facebook_auth %}
-          <a href="{{ url('social:begin', "facebook") }}?next={{ next }}" class="social facebook-icon">
-            <i class="fab fa-facebook-square"></i>
-          </a>
-        {% endif %}
-        {% if form.has_github_auth %}
-          <a href="{{ url('social:begin', "github-secure") }}?next={{ next }}" class="social github-icon">
-            <i class="fab fa-github-square"></i>
-          </a>
-        {% endif %}
-      </div>
-    {% endif %}
-  </div>
+      {% if form.has_google_auth or form.has_facebook_auth or form.has_github_auth %}
+        <div class="social-login">
+          <h4>{{ _('Or log in with...') }}</h4>
+          {% if form.has_google_auth %}
+            <a href="{{ url('social:begin', "google-oauth2") }}?next={{ next }}" class="social google-icon">
+              <i class="fab fa-square-google-plus"></i>
+            </a>
+          {% endif %}
+          {% if form.has_facebook_auth %}
+            <a href="{{ url('social:begin', "facebook") }}?next={{ next }}" class="social facebook-icon">
+              <i class="fab fa-facebook-square"></i>
+            </a>
+          {% endif %}
+          {% if form.has_github_auth %}
+            <a href="{{ url('social:begin', "github-secure") }}?next={{ next }}" class="social github-icon">
+              <i class="fab fa-github-square"></i>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
   </div>
 
   <style>
