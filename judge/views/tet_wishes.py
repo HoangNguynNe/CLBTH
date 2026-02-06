@@ -137,9 +137,9 @@ def send_wish(request):
                 "success": True,
                 "message": f"Đã gửi lời chúc đến {receiver.username}!",
                 "sent_count": sent_count,
-                "remaining": user_limit - sent_count
-                if not is_superadmin
-                else "unlimited",
+                "remaining": (
+                    user_limit - sent_count if not is_superadmin else "unlimited"
+                ),
             }
         )
 
@@ -162,9 +162,11 @@ def get_wishes(request):
         result.append(
             {
                 "id": wish.id,
-                "sender_name": wish.sender.username
-                if wish.is_from_superadmin
-                else "Người gửi ẩn danh",
+                "sender_name": (
+                    wish.sender.username
+                    if wish.is_from_superadmin
+                    else "Người gửi ẩn danh"
+                ),
                 "is_from_superadmin": wish.is_from_superadmin,
                 "message": wish.message,
                 "is_read": wish.is_read,
