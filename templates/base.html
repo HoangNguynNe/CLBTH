@@ -54,6 +54,9 @@
       {% if misc_config.christmas_theme %}
         <link rel="stylesheet" href="{{ static('christmas.css') }}">
       {% endif %}
+      {% if misc_config.tet_theme %}
+        <link rel="stylesheet" href="{{ static('tet2026.css') }}">
+      {% endif %}
       {% if INLINE_FONTAWESOME %}
         <link rel="stylesheet" href="{{ static('fontawesome/css/all.min.css') }}">
       {% endif %}
@@ -400,6 +403,12 @@
         </script>
         <script src="{{ static('christmas.js') }}"></script>
       {% endif %}
+      {% if misc_config.tet_theme %}
+        <script>
+          window.use_darkmode = {{ 'true' if use_darkmode else 'false' }};
+        </script>
+        <script src="{{ static('tet2026.js') }}"></script>
+      {% endif %}
       <script src="{{ static('katex_config.js') }}"></script>
       {% include "katex-load.html" %}
       {% block footer %}
@@ -615,35 +624,22 @@
 
           <article id="wrap">
             <article id="lightings">
-              <a class="background-footer" target="_blank" href="https://dmoj.ca">Mã nguồn được cung cấp bởi <b>DMOJ</b></a>|<a target="_blank" href="https://github.com/LQDJudge/online-judge"> Lập trình bởi LQDJudge team </a> và <a target="_blank" href="https://www.facebook.com/clbtinhoc.ued"> Phát triển bởi CLBTH team </a>
+              <a class="background-footer" target="_blank" href="https://dmoj.ca">Mã nguồn được cung cấp bởi <b>DMOJ</b></a> | <a target="_blank" href="https://github.com/LQDJudge/online-judge"> Lập trình bởi LQDJudge team </a> | <a target="_blank" href="https://www.facebook.com/clbtinhoc.ued"> Phát triển bởi CLBTH team </a>
               {% if i18n_config.footer %}
                 {{ i18n_config.footer|safe }} |
               {% endif %}
-              <form action="{{ url('set_language') }}" method="post" style="display: inline" id="form-lang">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-                <select name="language" onchange="form.submit()" style="height: 1.5em">
-                  {% for language in language_info_list(LANGUAGES) %}
-                    <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-                      {{ language.name_local }} ({{ language.code }})
-                    </option>
-                  {% endfor %}
-                </select>
-              </form>
-              {% if misc_config.christmas_theme %}
-                <section id="one">
-                  <section id="two">
-                    <section id="three">
-                      <section id="four">
-                        <section id="five">
-                        </section>
-                      </section>
-                    </section>
-                  </section>
-                </section>
-              {% endif %}
-            </article>
+              {% csrf_token %}
+
+            </form>
+            {% if misc_config.christmas_theme %}
+
+            {% endif %}
+            {% if misc_config.tet_theme %}
+              <div class="tet-footer-decor" style="text-align: center; padding: 10px 0;">
+              </div>
+            {% endif %}
           </article>
+        </article>
         </footer>
       {% endblock %}
     </div>

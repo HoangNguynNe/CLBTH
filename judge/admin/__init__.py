@@ -31,6 +31,11 @@ from judge.admin.taxon import (
 from judge.admin.ticket import TicketAdmin
 from judge.admin.volunteer import VolunteerProblemVoteAdmin
 from judge.admin.course import CourseAdmin
+from judge.admin.new_year_greeting import (
+    NewYearGreetingAdmin,
+    NewYearGreetingPermissionAdmin,
+    NewYearGreetingSeenAdmin,
+)
 from judge.models import (
     BlogPost,
     Comment,

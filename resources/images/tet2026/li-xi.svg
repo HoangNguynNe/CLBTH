@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 90">
+  <defs>
+    <linearGradient id="envelopeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF0000"/>
+      <stop offset="50%" style="stop-color:#DC143C"/>
+      <stop offset="100%" style="stop-color:#B22222"/>
+    </linearGradient>
+
+    <!-- Vân hồi văn (key pattern) giãn 16x16: thưa hơn, nhìn sang hơn -->
+    <pattern id="keyPattern16" width="16" height="16" patternUnits="userSpaceOnUse">
+      <!-- Lớp 1 -->
+      <path d="M0 4 H12 V0 H16 V8 H4 V16 H0 V12 H8 V4"
+            fill="none" stroke="#FFD700" stroke-width="0.9"
+            stroke-linecap="square" stroke-linejoin="miter" opacity="0.16"/>
+      <!-- Lớp 2 (so le nhẹ tạo chiều sâu) -->
+      <path d="M16 12 H4 V16 H0 V8 H12 V0 H16 V4 H8 V12"
+            fill="none" stroke="#FFD700" stroke-width="0.9"
+            stroke-linecap="square" stroke-linejoin="miter" opacity="0.08"/>
+    </pattern>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="0.6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <g id="maiFlower">
+      <circle cx="0" cy="-2.1" r="1.35" fill="#FFD700" opacity="0.95"/>
+      <circle cx="2.0" cy="-0.6" r="1.35" fill="#FFD700" opacity="0.95"/>
+      <circle cx="1.25" cy="1.75" r="1.35" fill="#FFD700" opacity="0.95"/>
+      <circle cx="-1.25" cy="1.75" r="1.35" fill="#FFD700" opacity="0.95"/>
+      <circle cx="-2.0" cy="-0.6" r="1.35" fill="#FFD700" opacity="0.95"/>
+      <circle cx="0" cy="0" r="0.9" fill="#FFB000"/>
+      <circle cx="0.35" cy="-0.2" r="0.18" fill="#8B4513" opacity="0.7"/>
+      <circle cx="-0.25" cy="0.25" r="0.18" fill="#8B4513" opacity="0.7"/>
+    </g>
+
+    <g id="daoFlower">
+      <circle cx="0" cy="-2.0" r="1.35" fill="#FFB6C1" opacity="0.95"/>
+      <circle cx="2.0" cy="-0.6" r="1.35" fill="#FFB6C1" opacity="0.95"/>
+      <circle cx="1.25" cy="1.7" r="1.35" fill="#FFB6C1" opacity="0.95"/>
+      <circle cx="-1.25" cy="1.7" r="1.35" fill="#FFB6C1" opacity="0.95"/>
+      <circle cx="-2.0" cy="-0.6" r="1.35" fill="#FFB6C1" opacity="0.95"/>
+      <circle cx="0" cy="0" r="0.9" fill="#FF5A7A"/>
+      <circle cx="0.35" cy="-0.2" r="0.18" fill="#8B4513" opacity="0.7"/>
+      <circle cx="-0.25" cy="0.25" r="0.18" fill="#8B4513" opacity="0.7"/>
+    </g>
+
+    <g id="cloudMini" fill="none" stroke="#FFD700" stroke-width="0.9" opacity="0.35">
+      <path d="M0 3 C1 1, 3 1, 4 3 S7 5, 8 3" />
+      <path d="M0 6 C1 4, 3 4, 4 6 S7 8, 8 6" opacity="0.25"/>
+    </g>
+
+    <g id="spark" stroke="#FFD700" stroke-width="0.8" opacity="0.55" filter="url(#softGlow)">
+      <path d="M0 -2.2 V2.2"/>
+      <path d="M-2.2 0 H2.2"/>
+      <path d="M-1.6 -1.6 L1.6 1.6" opacity="0.35"/>
+      <path d="M1.6 -1.6 L-1.6 1.6" opacity="0.35"/>
+    </g>
+  </defs>
+
+  <!-- Nền bao -->
+  <rect x="5" y="5" width="50" height="80" rx="3" fill="url(#envelopeGrad)"/>
+
+  <!-- Họa tiết hồi văn nền -->
+  <rect x="6.5" y="6.5" width="47" height="77" rx="2.2" fill="url(#keyPattern16)" opacity="0.55"/>
+
+  <!-- Viền vàng -->
+  <rect x="5" y="5" width="50" height="80" rx="3" fill="none" stroke="#FFD700" stroke-width="2" filter="url(#softGlow)"/>
+
+  <!-- Thanh trang trí trên -->
+  <rect x="10" y="10" width="40" height="5" rx="1" fill="#FFD700" opacity="0.70"/>
+
+  
+
+  <!-- Cành + Hoa mai -->
+  <g opacity="0.95">
+    <path d="M12 22 C14 18, 17 16, 20 15" stroke="#8B4513" stroke-width="1.1" fill="none" opacity="0.65"/>
+    <path d="M14 21 C15 19, 16.2 18.2, 17.5 17.6" stroke="#8B4513" stroke-width="0.9" fill="none" opacity="0.55"/>
+    <g transform="translate(13.5 20.5) scale(0.9)"><use xlink:href="#maiFlower"/></g>
+    <g transform="translate(18.5 16.8) scale(0.8)"><use xlink:href="#maiFlower"/></g>
+    <g transform="translate(21.5 15.3) scale(0.65)"><use xlink:href="#maiFlower"/></g>
+    <circle cx="16.2" cy="18.8" r="0.7" fill="#FFD700" opacity="0.65"/>
+  </g>
+
+  <!-- Cành + Hoa đào -->
+  <g opacity="0.95">
+    <path d="M48 22 C46 18, 43 16, 40 15" stroke="#8B4513" stroke-width="1.1" fill="none" opacity="0.65"/>
+    <path d="M46 21 C45 19, 43.8 18.2, 42.5 17.6" stroke="#8B4513" stroke-width="0.9" fill="none" opacity="0.55"/>
+    <g transform="translate(46.5 20.5) scale(0.9)"><use xlink:href="#daoFlower"/></g>
+    <g transform="translate(41.5 16.8) scale(0.8)"><use xlink:href="#daoFlower"/></g>
+    <g transform="translate(38.5 15.3) scale(0.65)"><use xlink:href="#daoFlower"/></g>
+    <circle cx="43.8" cy="18.9" r="0.7" fill="#FFB6C1" opacity="0.75"/>
+  </g>
+
+  <!-- Mây -->
+  <g transform="translate(12 62)"><use xlink:href="#cloudMini"/></g>
+  <g transform="translate(40 64) scale(0.95)"><use xlink:href="#cloudMini"/></g>
+
+  <!-- Lấp lánh -->
+  <g>
+    <g transform="translate(16 30) scale(0.55)"><use xlink:href="#spark"/></g>
+    <g transform="translate(44 30) scale(0.55)"><use xlink:href="#spark"/></g>
+    <g transform="translate(12 48) scale(0.45)" opacity="0.35"><use xlink:href="#spark"/></g>
+    <g transform="translate(48 48) scale(0.45)" opacity="0.35"><use xlink:href="#spark"/></g>
+  </g>
+
+  <!-- Huy hiệu trung tâm -->
+  <circle cx="30" cy="45" r="18" fill="#FFD700" filter="url(#softGlow)"/>
+  <circle cx="30" cy="45" r="15" fill="url(#envelopeGrad)"/>
+  <text x="30" y="48" font-size="8" fill="#FFD700" text-anchor="middle" font-family="serif" font-weight="bold">CLBTH</text>
+
+  <!-- Sóng dưới -->
+  <path d="M10 75 Q15 70 20 75" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.9"/>
+  <path d="M40 75 Q45 70 50 75" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.9"/>
+  <path d="M22 78 Q26 75 30 78 Q34 81 38 78" fill="none" stroke="#FFD700" stroke-width="0.9" opacity="0.35"/>
+</svg>

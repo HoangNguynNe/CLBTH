@@ -1,0 +1,794 @@
+// Tết Nguyên Đán 2026 Theme - Vietnamese Lunar New Year
+// SCSS Styles with Traditional & Modern Elements
+
+// ========================================
+// COLOR PALETTE - Bảng màu Tết truyền thống
+// ========================================
+$tet-red: #DC143C;           // Đỏ may mắn
+$tet-red-dark: #8B0000;      // Đỏ đậm
+$tet-gold: #FFD700;          // Vàng phú quý
+$tet-gold-dark: #DAA520;     // Vàng đậm
+$tet-pink: #FF69B4;          // Hồng hoa đào
+$tet-pink-light: #FFB6C1;    // Hồng nhạt
+$tet-green: #228B22;         // Xanh lá (bánh chưng)
+$tet-cream: #FFF8DC;         // Kem nhạt
+$tet-orange: #FF4500;        // Cam
+$tet-brown: #8B4513;         // Nâu gỗ
+
+// ========================================
+// KEYFRAME ANIMATIONS
+// ========================================
+@keyframes tetFall {
+    0% { top: -10%; }
+    100% { top: 100%; }
+}
+
+@keyframes tetSway {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(30px) rotate(10deg); }
+    75% { transform: translateX(-30px) rotate(-10deg); }
+}
+
+@keyframes tetSwing {
+    0%, 100% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+}
+
+@keyframes tetGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba($tet-gold, 0.5);
+        filter: brightness(1);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba($tet-gold, 0.8), 0 0 50px rgba($tet-red, 0.3);
+        filter: brightness(1.1);
+    }
+}
+
+@keyframes tetPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes tetShimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes tetFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes tetSparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+// ========================================
+// PETAL ANIMATION
+// ========================================
+.tet-petal {
+    position: fixed;
+    top: -10%;
+    z-index: 9999;
+    user-select: none;
+    pointer-events: none;
+    animation-name: tetFall, tetSway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+}
+
+// ========================================
+// BASE BODY STYLES
+// ========================================
+body {
+    background-color: $tet-cream !important;
+    background-image:
+    radial-gradient(circle at 20% 80%, rgba($tet-pink-light, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba($tet-gold, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, rgba($tet-red, 0.02) 0%, transparent 50%);
+    position: relative;
+    min-height: 100vh;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg,
+            $tet-red 0%,
+            $tet-gold 25%,
+            $tet-red 50%,
+            $tet-gold 75%,
+            $tet-red 100%
+        );
+        z-index: 10001;
+        pointer-events: none;
+    }
+}
+
+// Page container for footer positioning
+#page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#content {
+    flex: 1;
+    padding-top: 2px !important;
+    margin-top: 0 !important;
+}
+
+// ========================================
+// NAVIGATION BAR - Thanh điều hướng
+// ========================================
+#nav-container {
+    background: linear-gradient(135deg, $tet-red 0%, $tet-red-dark 100%) !important;
+    border-bottom: 4px solid $tet-gold;
+    box-shadow: 0 4px 15px rgba($tet-red-dark, 0.4);
+    position: relative;
+    overflow: visible;
+    margin-top: 0;
+
+    &::before {
+        content: '🏮';
+        position: absolute;
+        left: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.3rem;
+        animation: tetSwing 3s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    &::after {
+        content: '🏮';
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.3rem;
+        animation: tetSwing 3s ease-in-out infinite reverse;
+        z-index: 1;
+    }
+}
+
+#navigation {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+}
+
+#nav-list > li > a {
+    color: white !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+        background-color: rgba($tet-gold, 0.3) !important;
+        text-shadow: 0 0 10px rgba(white, 0.5);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: $tet-gold;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    &:hover::after {
+        width: 80%;
+    }
+}
+
+// Logo enhancement
+.logo-container, #navigation .logo {
+    position: relative;
+
+    &::before {
+        content: '🌸';
+        position: absolute;
+        left: -25px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+        animation: tetSparkle 2s ease-in-out infinite;
+    }
+}
+
+// ========================================
+// BUTTONS - Nút bấm
+// ========================================
+.btn-primary, .btn-donate {
+    background: linear-gradient(135deg, $tet-red 0%, darken($tet-red, 10%) 100%) !important;
+    border: 2px solid $tet-gold !important;
+    color: white !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba($tet-red, 0.3);
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(white, 0.3), transparent);
+        animation: tetShimmer 3s infinite;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($tet-red, 0.5);
+        background: linear-gradient(135deg, lighten($tet-red, 5%) 0%, $tet-red 100%) !important;
+    }
+}
+
+.btn-NopBai {
+    background: linear-gradient(135deg, $tet-gold 0%, $tet-gold-dark 100%) !important;
+    border: 2px solid $tet-red !important;
+    color: $tet-red-dark !important;
+    font-weight: bold;
+    position: relative;
+
+    &::after {
+        content: '🧧';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: 1.2rem;
+        animation: tetFloat 2s ease-in-out infinite;
+        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+    }
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 20px rgba($tet-gold, 0.5);
+    }
+}
+
+// ========================================
+// LINKS - Liên kết
+// ========================================
+#content a {
+    color: $tet-red;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: $tet-gold-dark;
+        text-shadow: 0 0 5px rgba($tet-gold, 0.3);
+    }
+}
+
+// ========================================
+// HEADINGS - Tiêu đề
+// ========================================
+h1, h2, h3, h4 {
+    color: $tet-red-dark;
+    position: relative;
+}
+
+h1 {
+    &::before {
+        content: '✿ ';
+        color: $tet-gold;
+    }
+    &::after {
+        content: ' ✿';
+        color: $tet-gold;
+    }
+}
+
+.page-title, .content-title {
+    background: linear-gradient(90deg, $tet-red, $tet-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+}
+
+// ========================================
+// BOX & CARD STYLES - Khung và thẻ
+// ========================================
+.box {
+    border-top: 4px solid $tet-red !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        background: url('/static/images/tet2026/hoa-dao.svg') no-repeat center;
+        background-size: contain;
+        opacity: 0.12;
+        pointer-events: none;
+        border-radius: 50%;
+    }
+}
+
+// ========================================
+// SIDEBAR STYLES - Thanh bên
+// ========================================
+.blog-sidebox {
+    border: 2px solid $tet-gold !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 20px rgba($tet-red, 0.15);
+    background: white;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: visible !important;
+
+    h3 {
+        background: linear-gradient(135deg, $tet-red 0%, $tet-red-dark 100%) !important;
+        color: white !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        border-bottom: 3px solid $tet-gold !important;
+        text-align: center;
+        font-size: 1.3em;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        position: relative;
+        border-radius: 13px 13px 0 0;
+
+        &::before {
+            content: '🌸 ';
+        }
+        &::after {
+            content: ' 🌸';
+        }
+
+        i {
+            color: $tet-gold !important;
+        }
+    }
+
+    .sidebox-content {
+        padding: 15px;
+        padding-right: 25px;
+        padding-bottom: 20px;
+        background: linear-gradient(to bottom, white, rgba($tet-cream, 0.5));
+        border-radius: 0 0 13px 13px;
+        overflow: visible !important;
+
+        &::before {
+            content: '✿';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: rgba($tet-pink, 0.2);
+            font-size: 2rem;
+            pointer-events: none;
+        }
+    }
+}
+
+// Left sidebar items
+.left-sidebar-item {
+    border-radius: 12px !important;
+    margin-bottom: 10px !important;
+    border: 2px solid transparent !important;
+    border-left: 4px solid $tet-red !important;
+    transition: all 0.3s ease !important;
+    background: white;
+    position: relative !important;
+
+    &:hover {
+        border-color: $tet-gold !important;
+        border-left-color: $tet-pink !important;
+        border-left-width: 6px !important;
+        background: linear-gradient(to right, rgba($tet-pink-light, 0.2), rgba($tet-gold, 0.1)) !important;
+    }
+
+    &.active {
+        background: linear-gradient(135deg, $tet-red, $tet-red-dark) !important;
+        border-color: $tet-gold !important;
+
+        .sidebar-icon i, .sidebar-text {
+            color: white !important;
+        }
+
+        &::after {
+            content: '🌸';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+    }
+
+    .sidebar-icon i {
+        color: $tet-red !important;
+    }
+
+    .sidebar-text {
+        color: $tet-red-dark !important;
+        font-weight: 600;
+    }
+}
+
+// ========================================
+// PROFILE CARD - Thẻ hồ sơ
+// ========================================
+.profile-card {
+    .card-header {
+        text-align: center;
+        margin-bottom: 15px;
+
+        .avatar {
+            border: 3px solid $tet-gold;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 0 10px rgba($tet-gold, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba($tet-gold, 0.5);
+            }
+        }
+
+        h4 a {
+            color: $tet-red !important;
+            font-weight: bold;
+            text-decoration: none;
+
+            &:hover {
+                color: $tet-gold-dark !important;
+            }
+        }
+    }
+
+    .card-body .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed rgba($tet-pink, 0.3);
+        transition: all 0.2s;
+
+        &:hover {
+            background: rgba($tet-gold, 0.1);
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        div:first-child {
+            color: $tet-red-dark;
+            font-weight: 600;
+
+            i {
+                color: $tet-gold-dark !important;
+            }
+        }
+
+        .user-info-body {
+            color: $tet-red;
+            font-weight: bold;
+        }
+    }
+}
+
+// ========================================
+// FOOTER - Chân trang
+// ========================================
+footer {
+    background: linear-gradient(135deg, $tet-red-dark 0%, darken($tet-red-dark, 10%) 100%) !important;
+    color: white !important;
+    position: relative;
+    border-top: 4px solid $tet-gold;
+    margin-top: auto;
+
+    &::before {
+        content: '🏮 🌸 🎊 Chúc Mừng Năm Mới 2026 🎊 🌸 🏮';
+        display: block;
+        text-align: center;
+        padding: 10px;
+        background: rgba($tet-gold, 0.2);
+        color: $tet-gold;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    a {
+        color: $tet-gold !important;
+        transition: all 0.2s;
+
+        &:hover {
+            color: white !important;
+            text-shadow: 0 0 10px $tet-gold;
+        }
+    }
+}
+
+// ========================================
+// LOGIN PAGE - Trang đăng nhập
+// ========================================
+.login-card {
+    border: 3px solid $tet-gold !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 40px rgba($tet-red, 0.2) !important;
+    background: linear-gradient(to bottom right, white, $tet-cream) !important;
+    overflow: hidden;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: repeating-linear-gradient(
+            90deg,
+            $tet-red 0px,
+            $tet-red 20px,
+            $tet-gold 20px,
+            $tet-gold 40px
+        );
+    }
+
+    &::after {
+        content: '🌸';
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 3rem;
+        opacity: 0.2;
+    }
+
+    .login-title {
+        color: $tet-gold !important;
+        text-align: center;
+        font-size: 2rem !important;
+        margin-bottom: 20px !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+
+        &::before, &::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 40px;
+            background: url('/static/images/tet2026/li-xi.svg') no-repeat center;
+            background-size: contain;
+            vertical-align: middle;
+        }
+    }
+
+    .field-row {
+        label {
+            color: $tet-red-dark !important;
+            font-weight: bold;
+        }
+
+        input {
+            border: 2px solid #ddd !important;
+            border-radius: 10px !important;
+            padding: 12px !important;
+            transition: all 0.3s ease;
+
+            &:focus {
+                border-color: $tet-gold !important;
+                box-shadow: 0 0 10px rgba($tet-gold, 0.3) !important;
+            }
+        }
+    }
+
+    button[type="submit"] {
+        background: linear-gradient(135deg, $tet-red 0%, $tet-red-dark 100%) !important;
+        border: 2px solid $tet-gold !important;
+        border-radius: 25px !important;
+        color: white !important;
+        font-weight: bold;
+        padding: 12px 30px !important;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba($tet-red, 0.4);
+        }
+    }
+}
+
+// ========================================
+// TABLE STYLES - Bảng
+// ========================================
+table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    thead {
+        background: linear-gradient(135deg, $tet-red 0%, $tet-red-dark 100%) !important;
+
+        th {
+            color: white !important;
+            border-bottom: 3px solid $tet-gold !important;
+        }
+    }
+
+    tbody tr {
+        transition: all 0.2s;
+
+        &:hover {
+            background: rgba($tet-pink-light, 0.2) !important;
+        }
+
+        &:nth-child(even) {
+            background: rgba($tet-cream, 0.5);
+        }
+    }
+}
+
+// ========================================
+// SPECIAL DECORATIONS - Trang trí đặc biệt
+// ========================================
+// Lantern decorations on certain elements
+.link-row i, .info-float i {
+    color: $tet-red !important;
+    transition: all 0.3s;
+
+    &:hover {
+        color: $tet-gold !important;
+        transform: scale(1.2);
+    }
+}
+
+// Problem tags
+.problem-tag {
+    background: linear-gradient(135deg, $tet-pink-light, $tet-pink) !important;
+    border: 1px solid $tet-red !important;
+    color: $tet-red-dark !important;
+}
+
+// Rating colors enhancement
+.rate-box {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+// Contest cards
+.contest-card {
+    border-left: 4px solid $tet-gold !important;
+    transition: all 0.3s;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba($tet-red, 0.2);
+    }
+}
+
+// ========================================
+// DARK MODE SUPPORT - Chế độ tối
+// ========================================
+body.tet-dark-mode, html.tet-dark-mode body {
+    background-color: #1a1a1a !important;
+    background-image:
+    radial-gradient(circle at 20% 80%, rgba($tet-red-dark, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba($tet-gold-dark, 0.1) 0%, transparent 50%);
+
+    .box {
+        background: #2a2a2a;
+        border-color: darken($tet-gold, 20%) !important;
+    }
+
+    .blog-sidebox {
+        background: #2a2a2a !important;
+        border-color: darken($tet-gold, 20%) !important;
+
+        h3 {
+            background: linear-gradient(135deg, darken($tet-red, 20%) 0%, darken($tet-red-dark, 20%) 100%) !important;
+        }
+
+        .sidebox-content {
+            background: linear-gradient(to bottom, #2a2a2a, #252525) !important;
+        }
+    }
+
+    .left-sidebar-item {
+        background: #2a2a2a;
+
+        &:hover {
+            background: linear-gradient(to right, rgba($tet-red-dark, 0.2), #2a2a2a) !important;
+        }
+    }
+
+    .login-card {
+        background: linear-gradient(to bottom right, #2a2a2a, #252525) !important;
+
+        .field-row input {
+            background: #1a1a1a !important;
+            border-color: #444 !important;
+            color: #e8e6e3 !important;
+        }
+    }
+
+    table tbody tr:nth-child(even) {
+        background: rgba(#333, 0.5);
+    }
+}
+
+// ========================================
+// RESPONSIVE ADJUSTMENTS
+// ========================================
+@media (max-width: 768px) {
+    #nav-container {
+        &::before, &::after {
+            display: none;
+        }
+    }
+
+    .tet-lantern {
+        font-size: 35px !important;
+    }
+
+    h1::before, h1::after {
+        display: none;
+    }
+
+    .blog-sidebox h3 {
+        font-size: 1.1em;
+
+        &::before, &::after {
+            content: '';
+        }
+    }
+
+    footer::before {
+        font-size: 0.8em;
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 480px) {
+    body::before {
+        height: 3px;
+    }
+
+    .login-card .login-title {
+        font-size: 1.5rem !important;
+    }
+}
+
+// ========================================
+// PRINT STYLES - Khi in
+// ========================================
+@media print {
+    .tet-petal,
+    .tet-lantern,
+    .tet-firework,
+    #tet-petal-container,
+    #tet-firework-container {
+        display: none !important;
+    }
+}

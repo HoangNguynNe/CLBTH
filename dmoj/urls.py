@@ -64,6 +64,7 @@ from judge.views import (
 )
 from judge.views import maintenance
 from judge import authentication
+from judge.views import tet_wishes
 
 from judge.views.test_formatter import test_formatter
 
@@ -224,6 +225,66 @@ urlpatterns = [
     url(r"^i18n/", include("django.conf.urls.i18n")),
     url(r"^accounts/", include(register_patterns)),
     url(r"^", include("social_django.urls")),
+    # Tet Wishes API
+    url(
+        r"^api/tet-wishes/search-users/$",
+        tet_wishes.search_users,
+        name="tet_wishes_search_users",
+    ),
+    url(r"^api/tet-wishes/send/$", tet_wishes.send_wish, name="tet_wishes_send"),
+    url(r"^api/tet-wishes/list/$", tet_wishes.get_wishes, name="tet_wishes_list"),
+    url(
+        r"^api/tet-wishes/mark-read/$",
+        tet_wishes.mark_wish_read,
+        name="tet_wishes_mark_read",
+    ),
+    url(r"^api/tet-wishes/stats/$", tet_wishes.get_wish_stats, name="tet_wishes_stats"),
+    url(
+        r"^api/tet-wishes/set-limit/$",
+        tet_wishes.set_user_limit,
+        name="tet_wishes_set_limit",
+    ),
+    url(
+        r"^api/tet-wishes/get-limit/$",
+        tet_wishes.get_user_limit,
+        name="tet_wishes_get_limit",
+    ),
+    # New Year Greeting Modal API
+    url(
+        r"^api/new-year-greeting/check/$",
+        tet_wishes.check_new_year_greeting,
+        name="new_year_greeting_check",
+    ),
+    url(
+        r"^api/new-year-greeting/list/$",
+        tet_wishes.get_new_year_greetings,
+        name="new_year_greeting_list",
+    ),
+    url(
+        r"^api/new-year-greeting/seen/$",
+        tet_wishes.mark_new_year_greeting_seen,
+        name="new_year_greeting_seen",
+    ),
+    url(
+        r"^api/new-year-greeting/submit/$",
+        tet_wishes.submit_supporter_greeting,
+        name="new_year_greeting_submit",
+    ),
+    url(
+        r"^api/new-year-greeting/can-send/$",
+        tet_wishes.check_can_send_greeting,
+        name="new_year_greeting_can_send",
+    ),
+    url(
+        r"^api/new-year-greeting/set-permission/$",
+        tet_wishes.set_greeting_permission,
+        name="new_year_greeting_set_permission",
+    ),
+    url(
+        r"^api/new-year-greeting/permissions/$",
+        tet_wishes.get_greeting_permissions,
+        name="new_year_greeting_permissions",
+    ),
     url(
         r"^feed/",
         include(

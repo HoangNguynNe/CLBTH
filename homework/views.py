@@ -357,6 +357,7 @@ class HomeworkAssignmentEditView(LoginRequiredMixin, HomeworkMixin, UpdateView):
         context["is_manager"] = True
         context["is_creator"] = self.homework_class.creator == self.get_profile()
         context["action"] = "Lưu thay đổi"
+        context["assignment"] = self.object  # For displaying existing images
         return context
 
 

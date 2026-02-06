@@ -1,0 +1,2037 @@
+@charset "UTF-8";
+@keyframes tetFall {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+@keyframes tetSway {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(30px) rotate(10deg);
+  }
+  75% {
+    transform: translateX(-30px) rotate(-10deg);
+  }
+}
+@keyframes tetSwing {
+  0%, 100% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+}
+@keyframes tetGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 50px rgba(220, 20, 60, 0.3);
+    filter: brightness(1.1);
+  }
+}
+@keyframes tetPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@keyframes tetShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+@keyframes tetFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes tetSparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+.tet-petal {
+  position: fixed;
+  top: -10%;
+  z-index: 9999;
+  user-select: none;
+  pointer-events: none;
+  animation-name: tetFall, tetSway;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+body {
+  background-color: #FFF8DC !important;
+  background-image: radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%), linear-gradient(135deg, rgba(220, 20, 60, 0.02) 0%, transparent 50%);
+  position: relative;
+  min-height: 100vh;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+@keyframes tetLedRun {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
+  }
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, 
+    #DC143C 0%, 
+    #E8A000 12.5%, 
+    #FFD700 25%, 
+    #E8A000 37.5%, 
+    #DC143C 50%, 
+    #E8A000 62.5%, 
+    #FFD700 75%, 
+    #E8A000 87.5%, 
+    #DC143C 100%);
+  background-size: 200% 100%;
+  animation: tetLedRun 6s ease-in-out infinite alternate;
+  z-index: 10001;
+  pointer-events: none;
+}
+
+#nav-container {
+  background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+  border-bottom: 4px solid #FFD700;
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+  position: relative;
+  overflow: visible;
+  margin-top: 0;
+}
+#nav-container::before {
+  content: "🏮";
+  position: absolute;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.3rem;
+  animation: tetSwing 3s ease-in-out infinite;
+  z-index: 1;
+}
+#nav-container::after {
+  content: "🏮";
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.3rem;
+  animation: tetSwing 3s ease-in-out infinite reverse;
+  z-index: 1;
+}
+
+#navigation {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* User links (Đăng nhập, Đăng ký) ở góc phải */
+#user-links, #user-links a, .nav-right-text, #navigation a[href*="login"], #navigation a[href*="register"] {
+  color: white !important;
+}
+#user-links:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+#nav-list > li > a {
+  color: white !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+#nav-list > li > a:hover {
+  background-color: rgba(255, 215, 0, 0.3) !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+#nav-list > li > a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: #FFD700;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+#nav-list > li > a:hover::after {
+  width: 80%;
+}
+
+.logo-container, #navigation .logo {
+  position: relative;
+}
+.logo-container::before, #navigation .logo::before {
+  content: "🌸";
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  animation: tetSparkle 2s ease-in-out infinite;
+}
+
+.btn-primary, .btn-donate {
+  background: linear-gradient(135deg, #DC143C 0%, rgb(173.25, 15.75, 47.25) 100%) !important;
+  border: 2px solid #FFD700 !important;
+  color: white !important;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+}
+.btn-primary::before, .btn-donate::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: tetShimmer 3s infinite;
+}
+.btn-primary:hover, .btn-donate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 20, 60, 0.5);
+  background: linear-gradient(135deg, rgb(234.625, 30.875, 71.625) 0%, #DC143C 100%) !important;
+}
+
+.btn-NopBai {
+  background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%) !important;
+  border: 2px solid #DC143C !important;
+  color: #8B0000 !important;
+  font-weight: bold;
+  position: relative;
+}
+.btn-NopBai::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 32px;
+  background: url("/static/images/tet2026/li-xi.svg") no-repeat center;
+  background-size: contain;
+  animation: tetFloat 2s ease-in-out infinite;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+}
+.btn-NopBai:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+}
+
+#content a {
+  color: #DC143C;
+  transition: all 0.2s ease;
+}
+#content a:hover {
+  color: #DAA520;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+h1, h2, h3, h4 {
+  color: #8B0000;
+  position: relative;
+}
+
+h1::before {
+  content: "✿ ";
+  color: #FFD700;
+}
+h1::after {
+  content: " ✿";
+  color: #FFD700;
+}
+
+/* Chỉ áp dụng gradient cho heading, không phải toàn bộ page-title */
+.page-title h2, .content-title {
+  background: linear-gradient(90deg, #DC143C, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #DC143C;
+  font-weight: bold;
+}
+
+/* Style cho tabs trong page-title */
+.page-title .tabs ul li a,
+.page-title .tabs ul li span {
+  color: #555 !important;
+  -webkit-text-fill-color: #555 !important;
+  background: none !important;
+  background-clip: initial !important;
+}
+
+.page-title .tabs ul li a:hover {
+  color: #DC143C !important;
+  -webkit-text-fill-color: #DC143C !important;
+}
+
+.page-title .tabs ul li.active a,
+.page-title .tabs ul li.active span {
+  color: #DC143C !important;
+  -webkit-text-fill-color: #DC143C !important;
+}
+
+.page-title .tabs ul li .tab-icon {
+  color: #888 !important;
+  -webkit-text-fill-color: #888 !important;
+}
+
+.page-title .tabs ul li.active .tab-icon {
+  color: #DC143C !important;
+  -webkit-text-fill-color: #DC143C !important;
+}
+
+.box {
+  border-top: 4px solid #DC143C !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: white;
+  position: relative;
+}
+.box::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  background: url("/static/images/tet2026/hoa-dao.svg") no-repeat center;
+  background-size: contain;
+  opacity: 0.12;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.blog-sidebox {
+  border: 2px solid #FFD700 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 20px rgba(220, 20, 60, 0.15);
+  background: white;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: visible !important;
+}
+.blog-sidebox h3 {
+  background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+  color: white !important;
+  padding: 15px !important;
+  margin: 0 !important;
+  border-bottom: 3px solid #FFD700 !important;
+  text-align: center;
+  font-size: 1.3em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border-radius: 13px 13px 0 0;
+}
+.blog-sidebox h3::before {
+  content: "🌸 ";
+}
+.blog-sidebox h3::after {
+  content: " 🌸";
+}
+.blog-sidebox h3 i {
+  color: #FFD700 !important;
+}
+.blog-sidebox .sidebox-content {
+  padding: 15px;
+  padding-right: 25px;
+  padding-bottom: 20px;
+  background: linear-gradient(to bottom, white, rgba(255, 248, 220, 0.5));
+  border-radius: 0 0 13px 13px;
+  overflow: visible !important;
+}
+.blog-sidebox .sidebox-content::before {
+  content: "✿";
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: rgba(255, 105, 180, 0.2);
+  font-size: 2rem;
+  pointer-events: none;
+}
+
+.left-sidebar-item {
+  border-radius: 12px !important;
+  margin-bottom: 10px !important;
+  border: 2px solid transparent !important;
+  border-left: 4px solid #DC143C !important;
+  transition: all 0.3s ease !important;
+  background: white;
+  position: relative !important;
+}
+.left-sidebar-item:hover {
+  border-color: #FFD700 !important;
+  border-left-color: #FF69B4 !important;
+  border-left-width: 6px !important;
+  background: linear-gradient(to right, rgba(255, 182, 193, 0.2), rgba(255, 215, 0, 0.1)) !important;
+}
+.left-sidebar-item.active {
+  background: linear-gradient(135deg, #DC143C, #8B0000) !important;
+  border-color: #FFD700 !important;
+}
+.left-sidebar-item.active .sidebar-icon i, .left-sidebar-item.active .sidebar-text {
+  color: white !important;
+}
+.left-sidebar-item.active::after {
+  content: "🌸";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 1rem;
+  pointer-events: none;
+}
+.left-sidebar-item .sidebar-icon i {
+  color: #DC143C !important;
+}
+.left-sidebar-item .sidebar-text {
+  color: #8B0000 !important;
+  font-weight: 600;
+}
+
+.profile-card .card-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.profile-card .card-header .avatar {
+  border: 3px solid #FFD700;
+  border-radius: 50%;
+  padding: 3px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.profile-card .card-header .avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+.profile-card .card-header h4 a {
+  color: #DC143C !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+.profile-card .card-header h4 a:hover {
+  color: #DAA520 !important;
+}
+.profile-card .card-body .user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(255, 105, 180, 0.3);
+  transition: all 0.2s;
+}
+.profile-card .card-body .user-info:hover {
+  background: rgba(255, 215, 0, 0.1);
+  padding-left: 10px;
+  border-radius: 5px;
+}
+.profile-card .card-body .user-info:last-child {
+  border-bottom: none;
+}
+.profile-card .card-body .user-info div:first-child {
+  color: #8B0000;
+  font-weight: 600;
+}
+.profile-card .card-body .user-info div:first-child i {
+  color: #DAA520 !important;
+}
+.profile-card .card-body .user-info .user-info-body {
+  color: #DC143C;
+  font-weight: bold;
+}
+
+footer {
+  background: linear-gradient(135deg, #8B0000 0%, #580000 100%) !important;
+  color: white !important;
+  position: relative;
+  border-top: 4px solid #FFD700;
+  margin-top: auto;
+}
+footer::before {
+  content: "🏮 🌸 🎊 Chúc Mừng Năm Mới 2026 🎊 🌸 🏮";
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background: rgba(255, 215, 0, 0.2);
+  color: #FFD700;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* Wrapper để footer ở dưới cùng */
+#page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#content {
+  flex: 1;
+  padding-top: 0 !important;
+  margin-top: 20px !important;
+}
+footer a {
+  color: #FFD700 !important;
+  transition: all 0.2s;
+}
+footer a:hover {
+  color: white !important;
+  text-shadow: 0 0 10px #FFD700;
+}
+
+.login-card {
+  border: 3px solid #FFD700 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 40px rgba(220, 20, 60, 0.2) !important;
+  background: linear-gradient(to bottom right, white, #FFF8DC) !important;
+  overflow: hidden;
+  position: relative;
+}
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, #DC143C 0px, #DC143C 20px, #FFD700 20px, #FFD700 40px);
+}
+.login-card::after {
+  content: "🌸";
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 3rem;
+  opacity: 0.2;
+}
+.login-card .login-title {
+  color: #DC143C !important;
+  text-align: center;
+  font-size: 2rem !important;
+  margin-bottom: 20px !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4), 1px 1px 2px rgba(0,0,0,0.3);
+  animation: tetTitleGlow 2s ease-in-out infinite;
+}
+@keyframes tetTitleGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4), 1px 1px 2px rgba(0,0,0,0.3);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 0 30px rgba(255, 215, 0, 0.8), 0 0 45px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4), 1px 1px 2px rgba(0,0,0,0.3);
+  }
+}
+@keyframes tetLiXiSwing {
+  0%, 100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+.login-card .login-title::before,
+.login-card .login-title::after {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 40px;
+  background: url("/static/images/tet2026/li-xi.svg") no-repeat center;
+  background-size: contain;
+  vertical-align: middle;
+  animation: tetLiXiSwing 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+.login-card .login-title::after {
+  animation-delay: 0.5s;
+}
+.login-card .field-row label {
+  color: #8B0000 !important;
+  font-weight: bold;
+}
+.login-card .field-row input {
+  border: 2px solid #ddd !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  transition: all 0.3s ease;
+}
+.login-card .field-row input:focus {
+  border-color: #FFD700 !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+.login-card button[type=submit] {
+  background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+  border: 2px solid #FFD700 !important;
+  border-radius: 25px !important;
+  color: white !important;
+  font-weight: bold;
+  padding: 12px 30px !important;
+}
+.login-card button[type=submit]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(220, 20, 60, 0.4);
+}
+
+table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+table thead {
+  background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+}
+table thead th {
+  color: white !important;
+  border-bottom: 3px solid #FFD700 !important;
+}
+table tbody tr {
+  transition: all 0.2s;
+}
+table tbody tr:hover {
+  background: rgba(255, 182, 193, 0.2) !important;
+}
+table tbody tr:nth-child(even) {
+  background: rgba(255, 248, 220, 0.5);
+}
+
+.link-row i, .info-float i {
+  color: #DC143C !important;
+  transition: all 0.3s;
+}
+.link-row i:hover, .info-float i:hover {
+  color: #FFD700 !important;
+  transform: scale(1.2);
+}
+
+.problem-tag {
+  background: linear-gradient(135deg, #FFB6C1, #FF69B4) !important;
+  border: 1px solid #DC143C !important;
+  color: #8B0000 !important;
+}
+
+.rate-box {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.contest-card {
+  border-left: 4px solid #FFD700 !important;
+  transition: all 0.3s;
+}
+.contest-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2);
+}
+
+body.tet-dark-mode, html.tet-dark-mode body {
+  background-color: #1a1a1a !important;
+  background-image: radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(218, 165, 32, 0.1) 0%, transparent 50%);
+}
+body.tet-dark-mode .box, html.tet-dark-mode body .box {
+  background: #2a2a2a;
+  border-color: #998100 !important;
+}
+body.tet-dark-mode .blog-sidebox, html.tet-dark-mode body .blog-sidebox {
+  background: #2a2a2a !important;
+  border-color: #998100 !important;
+}
+body.tet-dark-mode .blog-sidebox h3, html.tet-dark-mode body .blog-sidebox h3 {
+  background: linear-gradient(135deg, rgb(126.5, 11.5, 34.5) 0%, #250000 100%) !important;
+}
+body.tet-dark-mode .blog-sidebox .sidebox-content, html.tet-dark-mode body .blog-sidebox .sidebox-content {
+  background: linear-gradient(to bottom, #2a2a2a, #252525) !important;
+}
+body.tet-dark-mode .left-sidebar-item, html.tet-dark-mode body .left-sidebar-item {
+  background: #2a2a2a;
+}
+body.tet-dark-mode .left-sidebar-item:hover, html.tet-dark-mode body .left-sidebar-item:hover {
+  background: linear-gradient(to right, rgba(139, 0, 0, 0.2), #2a2a2a) !important;
+}
+body.tet-dark-mode .login-card, html.tet-dark-mode body .login-card {
+  background: linear-gradient(to bottom right, #2a2a2a, #252525) !important;
+}
+body.tet-dark-mode .login-card .field-row input, html.tet-dark-mode body .login-card .field-row input {
+  background: #1a1a1a !important;
+  border-color: #444 !important;
+  color: #e8e6e3 !important;
+}
+body.tet-dark-mode table tbody tr:nth-child(even), html.tet-dark-mode body table tbody tr:nth-child(even) {
+  background: rgba(51, 51, 51, 0.5);
+}
+
+@media (max-width: 768px) {
+  #nav-container::before, #nav-container::after {
+    display: none;
+  }
+  .tet-lantern {
+    font-size: 35px !important;
+  }
+  h1::before, h1::after {
+    display: none;
+  }
+  .blog-sidebox h3 {
+    font-size: 1.1em;
+  }
+  .blog-sidebox h3::before, .blog-sidebox h3::after {
+    content: "";
+  }
+  footer::before {
+    font-size: 0.8em;
+    letter-spacing: 1px;
+  }
+  
+  /* Fix mobile navbar text color */
+  #nav-container {
+    background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+  }
+  
+  /* Mobile left sidebar nav-list - set background red so white text is visible */
+  #nav-list {
+    background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+    border-color: #FFD700 !important;
+  }
+  #nav-list li {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  }
+  #nav-list li a,
+  #nav-list > li > a,
+  #nav-list li a:visited {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+    background: transparent !important;
+  }
+  #nav-list li a:hover {
+    background: rgba(255, 215, 0, 0.3) !important;
+  }
+  #nav-list li ul {
+    background: #8B0000 !important;
+  }
+  #nav-list li ul a {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+  }
+  
+  #navigation,
+  #navigation a,
+  .nav-list a,
+  .navbar-nav a,
+  #user-links,
+  #user-links a,
+  .nav-right a,
+  #navigation .dropdown-toggle,
+  #navigation .nav-link {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+  }
+  
+  /* Mobile menu toggle button */
+  .navbar-toggler,
+  .nav-toggle,
+  #nav-toggle,
+  .menu-toggle {
+    color: white !important;
+    border-color: white !important;
+  }
+  .navbar-toggler-icon,
+  .nav-toggle i,
+  #nav-toggle i {
+    color: white !important;
+    filter: brightness(0) invert(1);
+  }
+  
+  /* Mobile dropdown menu */
+  #navigation .dropdown-menu,
+  #nav-list .dropdown-content,
+  .nav-dropdown {
+    background: #8B0000 !important;
+  }
+  #navigation .dropdown-menu a,
+  #nav-list .dropdown-content a,
+  .nav-dropdown a {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+  }
+}
+@media (max-width: 480px) {
+  body::before {
+    height: 3px;
+  }
+  .login-card .login-title {
+    font-size: 1.5rem !important;
+  }
+}
+@media print {
+  .tet-petal,
+  .tet-lantern,
+  .tet-firework,
+  #tet-petal-container,
+  #tet-firework-container {
+    display: none !important;
+  }
+}
+
+/* ==================== NEW YEAR GREETING MODAL ==================== */
+@keyframes nygFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nygFirework {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes nygFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+@keyframes nygPulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    transform: scale(1.02);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(220, 20, 60, 0.4);
+  }
+}
+
+@keyframes nygSnake {
+  0%, 100% {
+    transform: rotate(-5deg) scale(1);
+  }
+  50% {
+    transform: rotate(5deg) scale(1.1);
+  }
+}
+
+/* Import Goldman font for New Year greeting */
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+
+.nyg-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.nyg-modal-overlay.nyg-active {
+  opacity: 1;
+}
+
+.nyg-modal-overlay.nyg-closing {
+  opacity: 0;
+}
+
+.nyg-modal-content {
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.nyg-fireworks-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(255, 69, 0, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, #1a0000 0%, #2d0000 50%, #1a0000 100%);
+  animation: nygFirework 20s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+.nyg-pages-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1;
+}
+
+.nyg-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  animation: nygFadeIn 0.5s ease-out;
+}
+
+/* Trang Giới thiệu */
+.nyg-intro-page {
+  text-align: center;
+  color: #FFD700;
+  max-width: 700px;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(45, 0, 0, 0.6));
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 30px;
+  position: relative;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(139, 0, 0, 0.3);
+}
+
+.nyg-clb-logo {
+  margin-bottom: 20px;
+}
+
+.nyg-clb-logo img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid #FFD700;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3);
+  animation: nygLogoGlow 3s ease-in-out infinite;
+  background: white;
+  padding: 5px;
+}
+
+@keyframes nygLogoGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.5);
+    transform: scale(1.02);
+  }
+}
+
+.nyg-intro-text {
+  margin-bottom: 10px;
+}
+
+.nyg-clb-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.nyg-clb-dept {
+  font-size: 1.3rem;
+  color: #FFA500;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.nyg-clb-univ {
+  font-size: 1.1rem;
+  color: #FFE4B5;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.nyg-new-year-text {
+  margin-top: 10px;
+}
+
+.nyg-happy {
+  font-family: 'Goldman', sans-serif;
+  font-size: 1.8rem;
+  color: #FFE4B5;
+  text-shadow: 0 0 15px rgba(255, 228, 181, 0.5);
+  margin-bottom: 5px;
+  font-weight: 400;
+  letter-spacing: 3px;
+}
+
+.nyg-year {
+  font-family: 'Goldman', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nygPulse 2s ease-in-out infinite;
+  text-shadow: none;
+  letter-spacing: 5px;
+}
+
+.nyg-year-subtitle {
+  font-family: 'Goldman', sans-serif;
+  font-size: 1.5rem;
+  color: #FF6B6B;
+  margin-top: 5px;
+  letter-spacing: 8px;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.nyg-snake {
+  font-size: 5rem;
+  margin-top: 20px;
+  animation: nygSnake 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+/* Intro decorations */
+.nyg-intro-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.nyg-intro-deco {
+  position: absolute;
+  font-size: 2.5rem;
+  animation: nygFloat 3s ease-in-out infinite;
+}
+
+.nyg-intro-deco.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.nyg-intro-deco.top-right {
+  top: 20px;
+  right: 20px;
+  animation-delay: 0.5s;
+}
+
+.nyg-intro-deco.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  animation-delay: 1s;
+}
+
+.nyg-intro-deco.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  animation-delay: 1.5s;
+}
+
+/* Divider */
+.nyg-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.nyg-divider-line {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+}
+
+.nyg-divider-icon {
+  font-size: 2.5rem;
+  animation: nygSnake 3s ease-in-out infinite;
+}
+
+/* Intro hint */
+.nyg-intro-hint {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 25px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 30px;
+  animation: nygPulse 2s ease-in-out infinite;
+}
+
+.nyg-hint-icon {
+  font-size: 1.5rem;
+  animation: nygBounce 1s ease-in-out infinite;
+}
+
+.nyg-hint-text {
+  color: #FFE4B5;
+  font-size: 1rem;
+}
+
+@keyframes nygBounce {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+/* Trang lời chúc */
+.nyg-wish-page {
+  text-align: center;
+  max-width: 700px;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(45, 0, 0, 0.5));
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  position: relative;
+  flex-direction: column;
+}
+
+/* Trang lời chúc CLB - rất lớn */
+.nyg-clb-wish-page {
+  max-width: 950px;
+  min-height: 500px;
+  padding: 60px 50px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.5), rgba(80, 0, 0, 0.7));
+  border: 3px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 60px rgba(255, 215, 0, 0.3), inset 0 0 100px rgba(255, 215, 0, 0.1);
+}
+
+.nyg-clb-wish-page .nyg-wish-decorations {
+  font-size: 3rem;
+  padding: 25px 40px;
+}
+
+.nyg-clb-wish-page .nyg-wish-title {
+  font-size: 2.8rem;
+  margin-bottom: 35px;
+  text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+}
+
+.nyg-clb-wish-page .nyg-wish-message {
+  font-size: 1.8rem;
+  line-height: 2;
+  margin-bottom: 40px;
+}
+
+.nyg-clb-wish-page .nyg-wish-author {
+  font-size: 1.5rem;
+}
+
+/* Trang lời chúc Superadmin - lớn */
+.nyg-superadmin-wish-page {
+  max-width: 900px;
+  min-height: 450px;
+  padding: 55px 45px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.45), rgba(70, 0, 0, 0.65));
+  border: 3px solid rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.25), inset 0 0 80px rgba(255, 215, 0, 0.08);
+}
+
+.nyg-superadmin-wish-page .nyg-wish-decorations {
+  font-size: 2.8rem;
+  padding: 22px 35px;
+}
+
+.nyg-superadmin-wish-page .nyg-wish-title {
+  font-size: 2.4rem;
+  margin-bottom: 30px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+}
+
+.nyg-superadmin-wish-page .nyg-wish-message {
+  font-size: 1.6rem;
+  line-height: 1.9;
+  margin-bottom: 35px;
+}
+
+.nyg-superadmin-wish-page .nyg-wish-author {
+  font-size: 1.35rem;
+}
+
+.nyg-wish-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 30px;
+  font-size: 2rem;
+}
+
+.nyg-deco {
+  animation: nygFloat 3s ease-in-out infinite;
+}
+
+.nyg-deco.right {
+  animation-delay: 0.5s;
+}
+
+.nyg-wish-title {
+  font-size: 1.8rem;
+  color: #FFD700;
+  margin-bottom: 25px;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.nyg-wish-message {
+  font-size: 1.3rem;
+  color: #FFE4B5;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  text-align: justify;
+  text-align-last: center;
+}
+
+.nyg-wish-author {
+  font-size: 1.1rem;
+  color: #FFA500;
+  font-style: italic;
+}
+
+/* Trang hỗ trợ viên - lớn hơn 1 chút */
+.nyg-supporter-wish-page {
+  max-width: 1000px;
+  min-height: 420px;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(60, 0, 0, 0.6));
+  border: 2px solid rgba(255, 215, 0, 0.35);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+.nyg-page-title {
+  font-size: 1.8rem;
+  color: #FFD700;
+  margin-bottom: 25px;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.nyg-supporter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+}
+
+.nyg-supporter-card {
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(45, 0, 0, 0.6));
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.nyg-supporter-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.nyg-supporter-message {
+  font-size: 0.95rem;
+  color: #FFE4B5;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.nyg-supporter-author {
+  font-size: 0.85rem;
+  color: #FFA500;
+  font-style: italic;
+}
+
+/* Trang kết thúc - lớn hơn */
+.nyg-ending-page {
+  max-width: 900px;
+  min-height: 450px;
+  padding: 55px 45px;
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.45), rgba(55, 0, 0, 0.65));
+  border: 3px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 45px rgba(255, 215, 0, 0.25);
+}
+
+.nyg-ending-page .nyg-wish-title {
+  font-size: 2.4rem;
+  margin-bottom: 30px;
+}
+
+.nyg-ending-page .nyg-wish-message {
+  font-size: 1.5rem;
+  line-height: 1.9;
+}
+
+.nyg-ending-footer {
+  margin-top: 40px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.nyg-ending-clb {
+  font-size: 1.8rem;
+  color: #FFD700;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.nyg-ending-meet {
+  font-size: 1.3rem;
+  color: #FF6B6B;
+  animation: nygPulse 2s ease-in-out infinite;
+}
+
+/* Navigation */
+.nyg-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px 30px;
+  z-index: 1;
+}
+
+.nyg-nav-btn {
+  background: linear-gradient(135deg, #8B0000, #B22222);
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  min-width: 140px;
+}
+
+.nyg-nav-btn:hover {
+  background: linear-gradient(135deg, #B22222, #DC143C);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+.nyg-nav-btn.nyg-finish {
+  background: linear-gradient(135deg, #228B22, #32CD32);
+  border-color: #90EE90;
+}
+
+.nyg-nav-btn.nyg-finish:hover {
+  background: linear-gradient(135deg, #32CD32, #7CFC00);
+  box-shadow: 0 0 20px rgba(50, 205, 50, 0.5);
+}
+
+.nyg-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.nyg-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.3);
+  border: 2px solid #FFD700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nyg-dot:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+.nyg-dot.active {
+  background: #FFD700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Supporter Greeting Button */
+#nyg-supporter-btn-container {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 10000;
+}
+
+.nyg-supporter-btn {
+  background: linear-gradient(135deg, #8B0000, #B22222);
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+  animation: nygPulse 2s ease-in-out infinite;
+}
+
+.nyg-supporter-btn:hover {
+  background: linear-gradient(135deg, #B22222, #DC143C);
+  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Test Button for Superadmin */
+#nyg-test-btn-container {
+  position: fixed;
+  bottom: 230px;
+  right: 20px;
+  z-index: 10000;
+}
+
+.nyg-test-btn {
+  background: linear-gradient(135deg, #2E7D32, #4CAF50);
+  color: white;
+  border: 2px solid #81C784;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+}
+
+.nyg-test-btn:hover {
+  background: linear-gradient(135deg, #388E3C, #66BB6A);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Supporter Form Modal */
+.nyg-supporter-form {
+  background: linear-gradient(135deg, #1a0000 0%, #2d0000 100%);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+  position: relative;
+}
+
+/* Nút X đóng form - góc trên bên phải */
+.nyg-supporter-form-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(139, 0, 0, 0.6);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  color: #FFD700;
+  font-size: 1.8rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.nyg-supporter-form-close:hover {
+  background: rgba(178, 34, 34, 0.8);
+  border-color: #FFD700;
+  color: #FF6B6B;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.nyg-form-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 50px 20px 25px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.nyg-form-header h3 {
+  color: #FFD700;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.nyg-form-close {
+  background: none;
+  border: none;
+  color: #FFD700;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.nyg-form-close:hover {
+  color: #FF6B6B;
+  transform: rotate(90deg);
+}
+
+.nyg-form-body {
+  padding: 25px;
+}
+
+.nyg-form-group {
+  margin-bottom: 20px;
+}
+
+.nyg-form-group label {
+  display: block;
+  color: #FFD700;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.nyg-form-group input,
+.nyg-form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #FFE4B5;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.nyg-form-group input:focus,
+.nyg-form-group textarea:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.nyg-form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.nyg-char-count {
+  text-align: right;
+  color: #FFA500;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.nyg-form-status {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  min-height: 20px;
+}
+
+.nyg-form-status.error {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FF6B6B;
+}
+
+.nyg-form-status.success {
+  background: rgba(0, 255, 0, 0.2);
+  color: #90EE90;
+}
+
+.nyg-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #8B0000, #B22222);
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.nyg-submit-btn:hover {
+  background: linear-gradient(135deg, #B22222, #DC143C);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .nyg-intro-page {
+    padding: 30px 20px;
+    max-width: 95%;
+    border-radius: 20px;
+  }
+
+  .nyg-clb-logo img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .nyg-clb-name {
+    font-size: 1.5rem;
+  }
+
+  .nyg-clb-dept {
+    font-size: 1.1rem;
+  }
+
+  .nyg-clb-univ {
+    font-size: 0.95rem;
+  }
+
+  .nyg-divider {
+    margin: 20px 0;
+  }
+
+  .nyg-divider-line {
+    width: 50px;
+  }
+
+  .nyg-divider-icon {
+    font-size: 2rem;
+  }
+
+  .nyg-happy {
+    font-size: 1.4rem;
+  }
+
+  .nyg-year {
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+  }
+
+  .nyg-year-subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+  }
+
+  .nyg-snake {
+    font-size: 3.5rem;
+  }
+
+  .nyg-intro-hint {
+    padding: 10px 20px;
+    margin-top: 20px;
+  }
+
+  .nyg-hint-text {
+    font-size: 0.9rem;
+  }
+
+  .nyg-intro-deco {
+    font-size: 1.8rem;
+  }
+
+  .nyg-intro-deco.top-left,
+  .nyg-intro-deco.top-right {
+    top: 10px;
+  }
+
+  .nyg-intro-deco.bottom-left,
+  .nyg-intro-deco.bottom-right {
+    bottom: 10px;
+  }
+
+  .nyg-intro-deco.top-left,
+  .nyg-intro-deco.bottom-left {
+    left: 10px;
+  }
+
+  .nyg-intro-deco.top-right,
+  .nyg-intro-deco.bottom-right {
+    right: 10px;
+  }
+
+  .nyg-wish-page {
+    max-width: 95%;
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .nyg-wish-title {
+    font-size: 1.4rem;
+  }
+
+  .nyg-wish-message {
+    font-size: 1.1rem;
+  }
+
+  /* CLB wishes - tablet */
+  .nyg-clb-wish-page {
+    max-width: 95%;
+    min-height: auto;
+    padding: 45px 30px;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-decorations {
+    font-size: 2.5rem;
+    padding: 20px 30px;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-title {
+    font-size: 2.2rem;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-message {
+    font-size: 1.5rem;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-author {
+    font-size: 1.25rem;
+  }
+
+  /* Superadmin wishes - tablet */
+  .nyg-superadmin-wish-page {
+    max-width: 95%;
+    min-height: auto;
+    padding: 40px 25px;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-decorations {
+    font-size: 2.2rem;
+    padding: 18px 25px;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-title {
+    font-size: 1.9rem;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-message {
+    font-size: 1.35rem;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-author {
+    font-size: 1.15rem;
+  }
+
+  /* Supporter wishes - tablet */
+  .nyg-supporter-wish-page {
+    max-width: 95%;
+    min-height: auto;
+    padding: 30px 20px;
+  }
+
+  /* Ending page - tablet */
+  .nyg-ending-page {
+    max-width: 95%;
+    min-height: auto;
+    padding: 40px 30px;
+  }
+
+  .nyg-ending-page .nyg-wish-title {
+    font-size: 2rem;
+  }
+
+  .nyg-ending-page .nyg-wish-message {
+    font-size: 1.3rem;
+  }
+
+  .nyg-ending-clb {
+    font-size: 1.5rem;
+  }
+
+  .nyg-ending-meet {
+    font-size: 1.1rem;
+  }
+
+  .nyg-supporter-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .nyg-navigation {
+    padding: 15px 20px 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .nyg-nav-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    min-width: 120px;
+  }
+
+  .nyg-dots {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+
+  .nyg-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nyg-pages-container {
+    padding: 10px;
+  }
+
+  .nyg-intro-page {
+    padding: 25px 15px;
+  }
+
+  .nyg-clb-logo img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .nyg-clb-name {
+    font-size: 1.3rem;
+  }
+
+  .nyg-clb-dept {
+    font-size: 1rem;
+  }
+
+  .nyg-clb-univ {
+    font-size: 0.85rem;
+  }
+
+  .nyg-divider {
+    margin: 15px 0;
+  }
+
+  .nyg-divider-line {
+    width: 40px;
+  }
+
+  .nyg-divider-icon {
+    font-size: 1.8rem;
+  }
+
+  .nyg-happy {
+    font-size: 1.2rem;
+  }
+
+  .nyg-year {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .nyg-year-subtitle {
+    font-size: 1rem;
+    letter-spacing: 4px;
+  }
+
+  .nyg-snake {
+    font-size: 3rem;
+  }
+
+  .nyg-intro-hint {
+    padding: 8px 15px;
+    margin-top: 15px;
+  }
+
+  .nyg-hint-icon {
+    font-size: 1.2rem;
+  }
+
+  .nyg-hint-text {
+    font-size: 0.8rem;
+  }
+
+  .nyg-intro-deco {
+    font-size: 1.5rem;
+  }
+
+  .nyg-wish-page {
+    padding: 25px 15px;
+  }
+
+  .nyg-wish-title {
+    font-size: 1.2rem;
+  }
+
+  .nyg-wish-message {
+    font-size: 1rem;
+  }
+
+  /* CLB wishes - mobile */
+  .nyg-clb-wish-page {
+    padding: 35px 20px;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-decorations {
+    font-size: 2rem;
+    padding: 15px 20px;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-title {
+    font-size: 1.8rem;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-message {
+    font-size: 1.25rem;
+    line-height: 1.7;
+  }
+
+  .nyg-clb-wish-page .nyg-wish-author {
+    font-size: 1.1rem;
+  }
+
+  /* Superadmin wishes - mobile */
+  .nyg-superadmin-wish-page {
+    padding: 30px 18px;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-decorations {
+    font-size: 1.8rem;
+    padding: 12px 18px;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-title {
+    font-size: 1.5rem;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-message {
+    font-size: 1.15rem;
+    line-height: 1.6;
+  }
+
+  .nyg-superadmin-wish-page .nyg-wish-author {
+    font-size: 1rem;
+  }
+
+  /* Ending page - mobile */
+  .nyg-ending-page {
+    padding: 30px 20px;
+  }
+
+  .nyg-ending-page .nyg-wish-title {
+    font-size: 1.6rem;
+  }
+
+  .nyg-ending-page .nyg-wish-message {
+    font-size: 1.1rem;
+  }
+
+  .nyg-ending-clb {
+    font-size: 1.3rem;
+  }
+
+  .nyg-ending-meet {
+    font-size: 1rem;
+  }
+
+  /* Nút X - mobile */
+  .nyg-supporter-form-close {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+
+  .nyg-supporter-message {
+    font-size: 0.9rem;
+  }
+
+  .nyg-navigation {
+    padding: 10px 15px 20px;
+  }
+
+  .nyg-nav-btn {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+    min-width: 100px;
+  }
+  
+  /* Mobile: Supporter button */
+  #nyg-supporter-btn-container {
+    bottom: 160px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .nyg-supporter-btn {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 10px 15px;
+  }
+  
+  #nyg-test-btn-container {
+    bottom: 210px;
+    right: 10px;
+  }
+  
+  .nyg-test-btn {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+  
+  .nyg-supporter-form {
+    width: 95%;
+    max-height: 85vh;
+  }
+  
+  .nyg-form-header {
+    padding: 15px 20px;
+  }
+  
+  .nyg-form-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .nyg-form-body {
+    padding: 20px;
+  }
+}
+/* ==================== END NEW YEAR GREETING MODAL ==================== */
+
+/*# sourceMappingURL=tet2026.css.map */

@@ -71,6 +71,14 @@ from judge.models.bookmark import BookMark, MakeBookMark
 from judge.models.course import Course, CourseRole, CourseLesson
 from judge.models.notification import Notification, NotificationProfile
 from judge.models.test_formatter import TestFormatterModel
+from judge.models.tet_wishes import (
+    TetWish,
+    TetWishLimit,
+    DEFAULT_WISH_LIMIT,
+    NewYearGreeting,
+    NewYearGreetingPermission,
+    NewYearGreetingSeen,
+)
 
 revisions.register(Profile, exclude=["points", "last_access", "ip", "rating"])
 revisions.register(Problem, follow=["language_limits"])
