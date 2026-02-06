@@ -92,10 +92,9 @@ class HomeworkClassListView(LoginRequiredMixin, HomeworkMixin, ListView):
         context["available_classes"] = available_classes
         context["title"] = "Lớp học"
         context["page_type"] = "list"
-        context[
-            "can_create_class"
-        ] = self.request.user.is_staff or self.request.user.has_perm(
-            "homework.add_homeworkclass"
+        context["can_create_class"] = (
+            self.request.user.is_staff
+            or self.request.user.has_perm("homework.add_homeworkclass")
         )
         return context
 
@@ -236,9 +235,9 @@ class HomeworkAssignmentDetailView(LoginRequiredMixin, HomeworkMixin, DetailView
         context["homework_class"] = self.homework_class
         context["is_manager"] = is_manager
         context["is_creator"] = self.homework_class.creator == profile
-        context[
-            "can_submit"
-        ] = self.object.can_submit() and self.homework_class.is_student(profile)
+        context["can_submit"] = (
+            self.object.can_submit() and self.homework_class.is_student(profile)
+        )
         context["is_past_deadline"] = self.object.is_past_deadline()
 
         if not is_manager:
