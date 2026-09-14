@@ -1,0 +1,360 @@
+name: Authorized load test - clbtinhocued.com
+
+on:
+  push:
+    branches:
+      - codex/load-test-clbtinhocued-com-20260914
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authorized-load-test-clbtinhocued-com
+  cancel-in-progress: false
+
+jobs:
+  load-test:
+    name: Crawl public pages and test 200 concurrent users
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TARGET_URL: https://clbtinhocued.com/
+      MAX_URLS: "300"
+
+    steps:
+      - name: Checkout test definition
+        uses: actions/checkout@v4
+
+      - name: Set up k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Discover public same-origin HTML pages
+        run: |
+          mkdir -p load-test/results
+          python3 - <<'PY'
+          import json
+          import os
+          import ssl
+          import time
+          from collections import deque
+          from html.parser import HTMLParser
+          from urllib.error import HTTPError, URLError
+          from urllib.parse import urljoin, urlsplit, urlunsplit
+          from urllib.request import Request, urlopen
+          from xml.etree import ElementTree
+
+          BASE = os.environ["TARGET_URL"]
+          MAX_URLS = int(os.environ.get("MAX_URLS", "300"))
+          USER_AGENT = "CLBTH-Authorized-Load-Test/1.0 (+https://clbtinhocued.com/)"
+          start_host = (urlsplit(BASE).hostname or "").lower()
+          canonical_host = start_host[4:] if start_host.startswith("www.") else start_host
+          skipped_prefixes = (
+              "/admin", "/api", "/logout", "/accounts/logout", "/password",
+              "/reset", "/delete", "/remove", "/download", "/export",
+          )
+          skipped_suffixes = (
+              ".css", ".js", ".map", ".png", ".jpg", ".jpeg", ".gif", ".webp",
+              ".svg", ".ico", ".woff", ".woff2", ".ttf", ".eot", ".mp3", ".mp4",
+              ".avi", ".mov", ".zip", ".rar", ".7z", ".tar", ".gz", ".pdf",
+              ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+          )
+
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.hrefs = []
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != "a":
+                      return
+                  for key, value in attrs:
+                      if key.lower() == "href" and value:
+                          self.hrefs.append(value)
+
+          def normalize(raw, parent=BASE):
+              try:
+                  parsed = urlsplit(urljoin(parent, raw))
+              except ValueError:
+                  return None
+              if parsed.scheme not in ("http", "https"):
+                  return None
+              hostname = (parsed.hostname or "").lower()
+              comparable = hostname[4:] if hostname.startswith("www.") else hostname
+              if comparable != canonical_host:
+                  return None
+              path = parsed.path or "/"
+              lower = path.lower()
+              if any(lower == p or lower.startswith(p + "/") for p in skipped_prefixes):
+                  return None
+              if lower.endswith(skipped_suffixes):
+                  return None
+              if any(token in lower for token in ("/logout/", "/delete/", "/remove/")):
+                  return None
+              return urlunsplit((parsed.scheme, parsed.netloc, path, "", ""))
+
+          def get(url, limit=2_000_000):
+              req = Request(
+                  url,
+                  headers={
+                      "User-Agent": USER_AGENT,
+                      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.1",
+                      "Cache-Control": "no-cache",
+                  },
+                  method="GET",
+              )
+              started = time.perf_counter()
+              with urlopen(req, timeout=12, context=ssl.create_default_context()) as response:
+                  body = response.read(limit)
+                  elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
+                  return response.status, response.headers.get("Content-Type", ""), body, response.geturl(), elapsed_ms
+
+          seeds = deque([normalize(BASE)])
+          sitemap_url = normalize("/sitemap.xml")
+          if sitemap_url:
+              try:
+                  status, content_type, body, final_url, elapsed = get(sitemap_url)
+                  root = ElementTree.fromstring(body)
+                  for node in root.iter():
+                      if node.tag.lower().endswith("loc") and node.text:
+                          candidate = normalize(node.text.strip(), final_url)
+                          if candidate:
+                              seeds.append(candidate)
+                  print(f"Sitemap: HTTP {status}, {elapsed} ms")
+              except Exception as exc:
+                  print(f"Sitemap unavailable; continuing with HTML crawl: {exc}")
+
+          queue = deque(x for x in seeds if x)
+          queued = set(queue)
+          visited = set()
+          pages = []
+          errors = []
+
+          while queue and len(visited) < MAX_URLS:
+              url = queue.popleft()
+              if url in visited:
+                  continue
+              visited.add(url)
+              try:
+                  status, content_type, body, final_url, elapsed_ms = get(url)
+                  final_normalized = normalize(final_url, url)
+                  if not final_normalized:
+                      continue
+                  is_html = "text/html" in content_type.lower() or "application/xhtml+xml" in content_type.lower()
+                  if 200 <= status < 400 and is_html:
+                      page_id = len(pages)
+                      pages.append({
+                          "id": page_id,
+                          "url": final_normalized,
+                          "path": urlsplit(final_normalized).path or "/",
+                          "baseline_ms": elapsed_ms,
+                          "status": status,
+                          "bytes_sampled": len(body),
+                      })
+                      parser = Links()
+                      parser.feed(body.decode("utf-8", errors="ignore"))
+                      for href in parser.hrefs:
+                          candidate = normalize(href, final_normalized)
+                          if candidate and candidate not in visited and candidate not in queued:
+                              queue.append(candidate)
+                              queued.add(candidate)
+                  else:
+                      errors.append({"url": url, "status": status, "content_type": content_type})
+              except HTTPError as exc:
+                  errors.append({"url": url, "status": exc.code, "error": str(exc)})
+              except (URLError, TimeoutError, OSError, ValueError) as exc:
+                  errors.append({"url": url, "error": str(exc)})
+              time.sleep(0.10)
+
+          if not pages:
+              raise SystemExit("No public HTML page could be reached; load test not started.")
+
+          result = {
+              "target": BASE,
+              "discovered_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+              "max_urls": MAX_URLS,
+              "pages": pages,
+              "crawl_errors": errors,
+          }
+          with open("load-test/results/pages.json", "w", encoding="utf-8") as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(f"Discovered {len(pages)} public HTML pages; crawl errors: {len(errors)}")
+          for page in pages:
+              print(f"[{page['id']:03d}] HTTP {page['status']} {page['baseline_ms']:8.2f} ms {page['url']}")
+          PY
+
+      - name: Write k6 scenario
+        run: |
+          cat > load-test/site-load.js <<'K6'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+          import { Rate, Trend } from 'k6/metrics';
+
+          const discovery = JSON.parse(open('./results/pages.json'));
+          const pages = discovery.pages;
+          const serverErrors = new Rate('server_errors');
+          const pageFailures = new Rate('page_failures');
+          const pageDuration = new Trend('page_duration', true);
+
+          const perPageThresholds = {};
+          for (const page of pages) {
+            perPageThresholds[`page_duration{page_id:${page.id}}`] = ['p(95)<10000'];
+            perPageThresholds[`page_failures{page_id:${page.id}}`] = ['rate<0.20'];
+          }
+
+          export const options = {
+            discardResponseBodies: true,
+            maxRedirects: 5,
+            scenarios: {
+              public_pages: {
+                executor: 'ramping-vus',
+                startVUs: 0,
+                stages: [
+                  { duration: '15s', target: 10 },
+                  { duration: '20s', target: 50 },
+                  { duration: '25s', target: 100 },
+                  { duration: '30s', target: 200 },
+                  { duration: '2m', target: 200 },
+                  { duration: '20s', target: 0 },
+                ],
+                gracefulRampDown: '10s',
+              },
+            },
+            thresholds: {
+              http_req_failed: [
+                { threshold: 'rate<0.05', abortOnFail: true, delayAbortEval: '15s' },
+              ],
+              http_req_duration: [
+                { threshold: 'p(95)<10000', abortOnFail: true, delayAbortEval: '30s' },
+              ],
+              server_errors: [
+                { threshold: 'rate<0.05', abortOnFail: true, delayAbortEval: '15s' },
+              ],
+              checks: ['rate>0.95'],
+              ...perPageThresholds,
+            },
+          };
+
+          export default function () {
+            const page = pages[((__VU - 1) + (__ITER * 200)) % pages.length];
+            const tags = { page_id: String(page.id), page_path: page.path };
+            const response = http.get(page.url, {
+              redirects: 5,
+              timeout: '12s',
+              headers: {
+                'User-Agent': 'CLBTH-Authorized-Load-Test/1.0 (+https://clbtinhocued.com/)',
+                'Accept': 'text/html,application/xhtml+xml',
+                'Cache-Control': 'no-cache',
+              },
+              tags,
+            });
+
+            const failed = response.status < 200 || response.status >= 400;
+            serverErrors.add(response.status >= 500, tags);
+            pageFailures.add(failed, tags);
+            pageDuration.add(response.timings.duration, tags);
+            check(response, {
+              'HTTP status is 2xx/3xx': (r) => r.status >= 200 && r.status < 400,
+            }, tags);
+            sleep(1 + Math.random() * 2);
+          }
+          K6
+
+      - name: Run staged load test up to 200 concurrent users
+        id: k6
+        continue-on-error: true
+        run: |
+          k6 run             --summary-export=load-test/results/k6-summary.json             load-test/site-load.js 2>&1 | tee load-test/results/k6-console.log
+
+      - name: Build test report
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          results = Path("load-test/results")
+          pages_path = results / "pages.json"
+          summary_path = results / "k6-summary.json"
+          output_path = results / "report.md"
+
+          discovery = json.loads(pages_path.read_text(encoding="utf-8")) if pages_path.exists() else {"pages": [], "crawl_errors": []}
+          summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {"metrics": {}}
+          metrics = summary.get("metrics", {})
+          pages = discovery.get("pages", [])
+
+          def values(name):
+              return metrics.get(name, {}).get("values", {})
+
+          duration = values("http_req_duration")
+          failed = values("http_req_failed")
+          requests = values("http_reqs")
+          checks = values("checks")
+          vus_max = values("vus_max")
+          server_errors = values("server_errors")
+
+          lines = [
+              "# Authorized load-test report",
+              "",
+              f"- Target: {discovery.get('target', os.environ.get('TARGET_URL', 'unknown'))}",
+              f"- Public HTML pages discovered: {len(pages)}",
+              f"- Crawl errors/skips: {len(discovery.get('crawl_errors', []))}",
+              f"- Maximum concurrent users reached: {vus_max.get('max', 'n/a')}",
+              f"- Total requests: {requests.get('count', 'n/a')}",
+              f"- Average request rate: {requests.get('rate', 'n/a')} req/s",
+              f"- HTTP failure rate: {failed.get('rate', 'n/a')}",
+              f"- HTTP 5xx rate: {server_errors.get('rate', 'n/a')}",
+              f"- Average response: {duration.get('avg', 'n/a')} ms",
+              f"- Median response: {duration.get('med', 'n/a')} ms",
+              f"- p90 response: {duration.get('p(90)', 'n/a')} ms",
+              f"- p95 response: {duration.get('p(95)', 'n/a')} ms",
+              f"- Maximum response: {duration.get('max', 'n/a')} ms",
+              f"- Successful check rate: {checks.get('rate', 'n/a')}",
+              "",
+              "## Results by page",
+              "",
+              "| ID | Status | Baseline ms | Load avg ms | Load p95 ms | Failure rate | Path |",
+              "|---:|---:|---:|---:|---:|---:|---|",
+          ]
+
+          def fmt(value):
+              if isinstance(value, (int, float)):
+                  return f"{value:.2f}"
+              return "n/a"
+
+          rows = []
+          for page in pages:
+              page_id = page["id"]
+              d = values(f"page_duration{{page_id:{page_id}}}")
+              f = values(f"page_failures{{page_id:{page_id}}}")
+              rows.append((
+                  d.get("p(95)", -1),
+                  f"| {page_id} | {page.get('status', '')} | {fmt(page.get('baseline_ms'))} | "
+                  f"{fmt(d.get('avg'))} | {fmt(d.get('p(95)'))} | {fmt(f.get('rate'))} | "
+                  f"{page.get('path', '/').replace('|', '%7C')} |"
+              ))
+          for _, row in sorted(rows, reverse=True):
+              lines.append(row)
+
+          if discovery.get("crawl_errors"):
+              lines.extend(["", "## Crawl errors/skips", ""])
+              lines.append(json.dumps(discovery["crawl_errors"][:100], ensure_ascii=False, indent=2))
+
+          output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          print(output_path.read_text(encoding="utf-8"))
+          PY
+          cat load-test/results/report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload detailed results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clbtinhocued-load-test-results
+          path: load-test/results/
+          retention-days: 7
+
+      - name: Enforce safety thresholds
+        if: steps.k6.outcome == 'failure'
+        run: |
+          echo "The test was stopped or failed because a safety/performance threshold was exceeded."
+          exit 1
