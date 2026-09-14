@@ -1,11 +1,6 @@
 name: Passive security audit - clbtinhocued.com
 
 on:
-  push:
-    branches:
-      - codex/load-test-clbtinhocued-com-20260914
-    paths:
-      - .github/workflows/passive-security-audit-clbtinhocued-com.yml
   workflow_dispatch:
 
 permissions:
