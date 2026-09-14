@@ -1,0 +1,335 @@
+name: Passive security audit - clbtinhocued.com
+
+on:
+  push:
+    branches:
+      - codex/load-test-clbtinhocued-com-20260914
+    paths:
+      - .github/workflows/passive-security-audit-clbtinhocued-com.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: passive-security-audit-clbtinhocued-com
+  cancel-in-progress: true
+
+jobs:
+  passive-audit:
+    name: Read-only web security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_URL: https://clbtinhocued.com/
+      AUDIT_USER_AGENT: CLBTH-Authorized-Passive-Security-Audit/1.0
+
+    steps:
+      - name: Checkout audit definition
+        uses: actions/checkout@v4
+
+      - name: Run bounded read-only probes
+        run: |
+          mkdir -p security-results
+          python3 - <<'PY'
+          import hashlib
+          import html
+          import json
+          import os
+          import re
+          import socket
+          import ssl
+          import time
+          from pathlib import Path
+          from urllib.error import HTTPError, URLError
+          from urllib.parse import parse_qsl, urljoin, urlsplit, urlunsplit
+          from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+          TARGET = os.environ["TARGET_URL"]
+          USER_AGENT = os.environ["AUDIT_USER_AGENT"]
+          RESULTS = Path("security-results")
+          RESULTS.mkdir(parents=True, exist_ok=True)
+
+          class NoRedirect(HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+
+          opener = build_opener(NoRedirect)
+          endpoints = [
+              ("home_https", TARGET),
+              ("home_http", "http://clbtinhocued.com/"),
+              ("login", urljoin(TARGET, "/accounts/login/")),
+              ("register", urljoin(TARGET, "/accounts/register/")),
+              ("password_reset", urljoin(TARGET, "/accounts/password/reset/")),
+              ("admin", urljoin(TARGET, "/admin/")),
+              ("admin_users", urljoin(TARGET, "/admin/auth/user/")),
+              ("internal", urljoin(TARGET, "/internal/")),
+              ("profile", urljoin(TARGET, "/accounts/profile/")),
+              ("env_file", urljoin(TARGET, "/.env")),
+              ("git_head", urljoin(TARGET, "/.git/HEAD")),
+              ("local_settings", urljoin(TARGET, "/dmoj/local_settings.py")),
+              ("settings_file", urljoin(TARGET, "/settings.py")),
+              ("server_status", urljoin(TARGET, "/server-status")),
+              ("debug", urljoin(TARGET, "/debug/")),
+          ]
+
+          def safe_location(value):
+              if not value:
+                  return ""
+              parsed = urlsplit(value)
+              query_keys = sorted({key for key, _ in parse_qsl(parsed.query, keep_blank_values=True)})
+              query = "&".join(key + "=<redacted>" for key in query_keys)
+              return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, ""))
+
+          def cookie_metadata(headers):
+              result = []
+              values = headers.get_all("Set-Cookie") if hasattr(headers, "get_all") else []
+              for raw in values or []:
+                  parts = [part.strip() for part in raw.split(";")]
+                  name = parts[0].split("=", 1)[0].strip()
+                  attrs = {part.split("=", 1)[0].strip().lower() for part in parts[1:]}
+                  same_site = ""
+                  for part in parts[1:]:
+                      if part.lower().startswith("samesite="):
+                          same_site = part.split("=", 1)[1].strip()
+                  result.append({
+                      "name": name,
+                      "secure": "secure" in attrs,
+                      "httponly": "httponly" in attrs,
+                      "samesite": same_site,
+                  })
+              return result
+
+          def request_once(label, url):
+              request = Request(
+                  url,
+                  headers={
+                      "User-Agent": USER_AGENT,
+                      "Accept": "text/html,application/xhtml+xml,application/json;q=0.8,*/*;q=0.2",
+                      "Cache-Control": "no-cache",
+                  },
+                  method="GET",
+              )
+              started = time.perf_counter()
+              try:
+                  response = opener.open(request, timeout=15)
+              except HTTPError as exc:
+                  response = exc
+              except (URLError, TimeoutError, OSError, ValueError) as exc:
+                  return {
+                      "label": label,
+                      "url": url,
+                      "error": type(exc).__name__ + ": " + str(exc)[:180],
+                      "elapsed_ms": round((time.perf_counter() - started) * 1000, 2),
+                  }
+
+              body = response.read(1_500_000)
+              elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
+              headers = response.headers
+              text_body = body.decode("utf-8", errors="ignore")
+              lower = text_body.lower()
+              forms = re.findall(r"<form\b[^>]*>", text_body, flags=re.I)
+              methods = []
+              for form in forms:
+                  match = re.search(r"\bmethod\s*=\s*['\"]?([^'\"\s>]+)", form, flags=re.I)
+                  methods.append((match.group(1).lower() if match else "get"))
+              password_inputs = len(re.findall(r"<input\b[^>]*\btype\s*=\s*['\"]password['\"]", text_body, flags=re.I))
+              has_csrf = bool(re.search(r"\bname\s*=\s*['\"]csrfmiddlewaretoken['\"]", text_body, flags=re.I))
+              return {
+                  "label": label,
+                  "url": url,
+                  "status": getattr(response, "status", response.getcode()),
+                  "reason": getattr(response, "reason", ""),
+                  "elapsed_ms": elapsed_ms,
+                  "content_type": headers.get("Content-Type", ""),
+                  "content_length_sampled": len(body),
+                  "body_sha256": hashlib.sha256(body).hexdigest(),
+                  "location": safe_location(headers.get("Location", "")),
+                  "headers": {
+                      key: headers.get(key, "")
+                      for key in [
+                          "Strict-Transport-Security",
+                          "Content-Security-Policy",
+                          "X-Content-Type-Options",
+                          "Referrer-Policy",
+                          "Permissions-Policy",
+                          "X-Frame-Options",
+                          "Cross-Origin-Opener-Policy",
+                          "Cross-Origin-Resource-Policy",
+                          "Server",
+                          "Cache-Control",
+                      ]
+                  },
+                  "cookies": cookie_metadata(headers),
+                  "forms": {
+                      "count": len(forms),
+                      "methods": methods,
+                      "password_inputs": password_inputs,
+                      "csrf_token_present": has_csrf,
+                  },
+                  "signatures": {
+                      "git_head": lower.startswith("ref: refs/") or bool(re.fullmatch(r"[0-9a-f]{40}\s*", lower)),
+                      "environment_file": sum(marker in lower for marker in [
+                          "secret_key=", "database_url=", "db_password=", "aws_secret_access_key="
+                      ]) >= 1,
+                      "django_settings_source": sum(marker in lower for marker in [
+                          "secret_key", "installed_apps", "middleware", "databases"
+                      ]) >= 3,
+                  },
+              }
+
+          results = []
+          for label, url in endpoints:
+              results.append(request_once(label, url))
+              time.sleep(0.25)
+
+          tls = {"host": urlsplit(TARGET).hostname}
+          try:
+              context = ssl.create_default_context()
+              with socket.create_connection((tls["host"], 443), timeout=10) as raw:
+                  with context.wrap_socket(raw, server_hostname=tls["host"]) as secure:
+                      cert = secure.getpeercert()
+                      tls.update({
+                          "version": secure.version(),
+                          "cipher": secure.cipher()[0] if secure.cipher() else "",
+                          "certificate_not_after": cert.get("notAfter", ""),
+                          "subject_alt_names": [value for kind, value in cert.get("subjectAltName", []) if kind == "DNS"],
+                      })
+          except Exception as exc:
+              tls["error"] = type(exc).__name__ + ": " + str(exc)[:180]
+
+          by_label = {item["label"]: item for item in results}
+          sensitive_labels = ["env_file", "git_head", "local_settings", "settings_file"]
+          exposed = []
+          for label in sensitive_labels:
+              item = by_label.get(label, {})
+              sig = item.get("signatures", {})
+              if item.get("status") == 200 and (
+                  sig.get("git_head") or sig.get("environment_file") or sig.get("django_settings_source")
+              ):
+                  exposed.append(label)
+
+          register = by_label.get("register", {})
+          registration_form_public = (
+              register.get("status") == 200
+              and register.get("forms", {}).get("password_inputs", 0) >= 1
+          )
+          protected_results = {}
+          for label in ["admin", "admin_users", "internal", "profile"]:
+              item = by_label.get(label, {})
+              status = item.get("status")
+              location = item.get("location", "").lower()
+              protected_results[label] = bool(
+                  status in (401, 403, 404)
+                  or (status in (301, 302, 303, 307, 308) and ("login" in location or "accounts" in location))
+              )
+
+          https_headers = by_label.get("home_https", {}).get("headers", {})
+          header_findings = {
+              "hsts": bool(https_headers.get("Strict-Transport-Security")),
+              "csp": bool(https_headers.get("Content-Security-Policy")),
+              "x_content_type_options": bool(https_headers.get("X-Content-Type-Options")),
+              "referrer_policy": bool(https_headers.get("Referrer-Policy")),
+              "permissions_policy": bool(https_headers.get("Permissions-Policy")),
+              "x_frame_options": bool(https_headers.get("X-Frame-Options")),
+          }
+
+          summary = {
+              "target": TARGET,
+              "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+              "method": "Bounded unauthenticated GET requests only; redirects disabled; no credentials or payloads submitted.",
+              "registration_form_public": registration_form_public,
+              "protected_endpoints_blocked": protected_results,
+              "sensitive_file_exposures": exposed,
+              "security_headers_on_home": header_findings,
+              "tls": tls,
+              "results": results,
+          }
+          (RESULTS / "passive-probe.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          lines = [
+              "# Passive security probe",
+              "",
+              "- Target: " + TARGET,
+              "- Method: unauthenticated GET only; redirects disabled; no credentials or exploit payloads submitted.",
+              "- Public registration form detected: " + str(registration_form_public),
+              "- Sensitive source/config file signatures exposed: " + (", ".join(exposed) if exposed else "none detected"),
+              "- TLS: " + str(tls.get("version", "unknown")) + "; certificate expires " + str(tls.get("certificate_not_after", "unknown")),
+              "",
+              "## Endpoint results",
+              "",
+              "| Check | HTTP | Time ms | Redirect | Forms | Password fields | CSRF |",
+              "|---|---:|---:|---|---:|---:|---|",
+          ]
+          for item in results:
+              lines.append(
+                  "| {label} | {status} | {elapsed} | {location} | {forms} | {passwords} | {csrf} |".format(
+                      label=html.escape(str(item.get("label", ""))),
+                      status=html.escape(str(item.get("status", "ERR"))),
+                      elapsed=html.escape(str(item.get("elapsed_ms", ""))),
+                      location=html.escape(str(item.get("location", "")).replace("|", "%7C")),
+                      forms=item.get("forms", {}).get("count", 0),
+                      passwords=item.get("forms", {}).get("password_inputs", 0),
+                      csrf=item.get("forms", {}).get("csrf_token_present", False),
+                  )
+              )
+
+          lines.extend([
+              "",
+              "## Security headers on HTTPS home",
+              "",
+              "| Header control | Present |",
+              "|---|---|",
+          ])
+          for key, present in header_findings.items():
+              lines.append("| " + key + " | " + str(present) + " |")
+
+          lines.extend([
+              "",
+              "## Protected endpoint verdict",
+              "",
+              "| Endpoint | Blocked for unauthenticated client |",
+              "|---|---|",
+          ])
+          for key, blocked in protected_results.items():
+              lines.append("| " + key + " | " + str(blocked) + " |")
+
+          (RESULTS / "passive-probe.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          print((RESULTS / "passive-probe.md").read_text(encoding="utf-8"))
+          PY
+
+      - name: Run OWASP ZAP baseline passive scan
+        id: zap
+        continue-on-error: true
+        run: |
+          chmod 777 security-results
+          docker run --rm \
+            -v "$PWD/security-results:/zap/wrk/:rw" \
+            -t ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t "$TARGET_URL" \
+            -m 1 \
+            -r zap-report.html \
+            -J zap-report.json \
+            -w zap-report.md \
+            -I
+
+      - name: Publish audit summary
+        if: always()
+        run: |
+          cat security-results/passive-probe.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f security-results/zap-report.md ]; then
+            printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat security-results/zap-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload passive audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clbtinhocued-passive-security-audit
+          path: security-results/
+          retention-days: 7
