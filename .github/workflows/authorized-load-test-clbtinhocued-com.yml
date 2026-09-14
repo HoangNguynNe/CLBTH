@@ -1,9 +1,6 @@
 name: Authorized load test - clbtinhocued.com
 
 on:
-  push:
-    branches:
-      - codex/load-test-clbtinhocued-com-20260914
   workflow_dispatch:
 
 permissions:
