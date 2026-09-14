@@ -128,6 +128,8 @@ jobs:
           visited = set()
           pages = []
           errors = []
+          redirects = []
+          accepted_final_urls = set()
 
           while queue and len(visited) < MAX_URLS:
               url = queue.popleft()
@@ -139,8 +141,14 @@ jobs:
                   final_normalized = normalize(final_url, url)
                   if not final_normalized:
                       continue
+                  requested_normalized = normalize(url)
+                  if requested_normalized != final_normalized:
+                      redirects.append({"from": requested_normalized, "to": final_normalized, "status": status})
                   is_html = "text/html" in content_type.lower() or "application/xhtml+xml" in content_type.lower()
                   if 200 <= status < 400 and is_html:
+                      if final_normalized in accepted_final_urls:
+                          continue
+                      accepted_final_urls.add(final_normalized)
                       page_id = len(pages)
                       pages.append({
                           "id": page_id,
@@ -173,11 +181,12 @@ jobs:
               "discovered_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
               "max_urls": MAX_URLS,
               "pages": pages,
+              "redirects": redirects,
               "crawl_errors": errors,
           }
           with open("load-test/results/pages.json", "w", encoding="utf-8") as handle:
               json.dump(result, handle, ensure_ascii=False, indent=2)
-          print(f"Discovered {len(pages)} public HTML pages; crawl errors: {len(errors)}")
+          print(f"Discovered {len(pages)} unique public HTML pages; redirects: {len(redirects)}; crawl errors: {len(errors)}")
           for page in pages:
               print(f"[{page['id']:03d}] HTTP {page['status']} {page['baseline_ms']:8.2f} ms {page['url']}")
           PY
@@ -263,7 +272,8 @@ jobs:
         id: k6
         continue-on-error: true
         run: |
-          k6 run             --summary-export=load-test/results/k6-summary.json             load-test/site-load.js 2>&1 | tee load-test/results/k6-console.log
+          set -o pipefail
+          k6 run --summary-export=load-test/results/k6-summary.json load-test/site-load.js 2>&1 | tee load-test/results/k6-console.log
 
       - name: Build test report
         if: always()
@@ -284,7 +294,8 @@ jobs:
           pages = discovery.get("pages", [])
 
           def values(name):
-              return metrics.get(name, {}).get("values", {})
+              metric = metrics.get(name, {})
+              return metric.get("values", metric)
 
           duration = values("http_req_duration")
           failed = values("http_req_failed")
@@ -297,7 +308,8 @@ jobs:
               "# Authorized load-test report",
               "",
               f"- Target: {discovery.get('target', os.environ.get('TARGET_URL', 'unknown'))}",
-              f"- Public HTML pages discovered: {len(pages)}",
+              f"- Unique public HTML pages discovered: {len(pages)}",
+              f"- Protected/duplicate redirects excluded: {len(discovery.get('redirects', []))}",
               f"- Crawl errors/skips: {len(discovery.get('crawl_errors', []))}",
               f"- Maximum concurrent users reached: {vus_max.get('max', 'n/a')}",
               f"- Total requests: {requests.get('count', 'n/a')}",
